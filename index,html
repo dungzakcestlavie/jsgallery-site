@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KJS GALLERY</title>
+
+<style>
+body {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+
+  /* 깊이 있는 블루그린 + 코발트 */
+  background: radial-gradient(circle at 30% 30%, #1b8f94, transparent 60%),
+              radial-gradient(circle at 70% 70%, #082f73, transparent 60%),
+              linear-gradient(135deg, #0a2633, #081a30);
+
+  color: #d4b15a;
+  font-family: "Times New Roman", serif;
+}
+
+.container {
+  max-width: 720px;
+  padding: 24px;
+}
+
+.title {
+  font-size: 50px;
+  letter-spacing: 7px;
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+
+.subtitle {
+  font-size: 13px;
+  letter-spacing: 5px;
+  opacity: 0.8;
+  margin-bottom: 64px;
+}
+
+.text {
+  font-size: 16px;
+  line-height: 1.85;
+  opacity: 0.95;
+}
+
+.text-en {
+  margin-top: 8px;
+  font-size: 15px;
+  opacity: 0.75;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+  <div class="title">KJS GALLERY</div>
+  <div class="subtitle">KIM JUNG SOOK GALLERY</div>
+
+  <div class="text">
+    KJS GALLERY 웹사이트로 정비 중입니다.
+  </div>
+  <div class="text-en">
+    Currently being redesigned as KJS GALLERY.
+  </div>
+
+</div>
+</body>
+</html>
