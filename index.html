@@ -325,8 +325,7 @@
       display:grid;
       gap:18px
     }
-    #page-shop{display:none !important}
-    .artist-detail-header{
+        .artist-detail-header{
       display:flex;
       align-items:flex-end;
       justify-content:space-between;
@@ -595,17 +594,17 @@
     <nav class="primary" aria-label="Primary navigation">
       <button class="nav-btn active" data-page="home"><span class="ko">갤러리</span><span class="en">Gallery</span></button>
       <button class="nav-btn" data-page="about"><span class="ko">소개</span><span class="en">About</span></button>
-      <button class="nav-btn" data-page="artists"><span class="ko">작가</span><span class="en">Artists</span></button>
       <button class="nav-btn" data-page="exhibitions"><span class="ko">전시</span><span class="en">Exhibitions</span></button>
-      <button class="nav-btn" data-page="js-art-space"><span class="ko">JS ART SPACE</span><span class="en">JS ART SPACE</span></button>
+      <button class="nav-btn" data-page="artists"><span class="ko">작가</span><span class="en">Artists</span></button>
+      <button class="nav-btn" data-page="shop"><span class="ko">아트샵</span><span class="en">Art Shop</span></button>
       <button class="nav-btn" data-page="contact"><span class="ko">문의</span><span class="en">Contact</span></button>
     </nav>
 
     <div class="menu-panel" id="menuPanel" aria-hidden="true">
       <button class="menu-link" data-menu-kind="page" data-page="about">About</button>
+      <button class="menu-link" data-menu-kind="page" data-page="exhibitions">Exhibition</button>
       <button class="menu-link" data-menu-kind="page" data-page="artists">Artists</button>
-      <button class="menu-link" data-menu-kind="page" data-page="exhibitions">Current Exhibition</button>
-      <button class="menu-link" data-menu-kind="page" data-page="js-art-space">JS ART SPACE</button>
+      <button class="menu-link" data-menu-kind="page" data-page="shop">Art Shop</button>
       <button class="menu-link" data-menu-kind="page" data-page="contact">Visit</button>
       <a class="menu-link" href="https://instagram.com" target="_blank" rel="noopener">Instagram</a>
       <a class="menu-link" href="https://youtube.com" target="_blank" rel="noopener">YouTube</a>
@@ -645,7 +644,8 @@ they emerge through relationships within the exhibition.</div>
             </div>
             <div class="hero-actions">
               <button class="btn btn-primary" data-page-jump="artists"><span class="ko">작가·작품 보기</span><span class="en">View Artists &amp; Works</span></button>
-              <button class="btn btn-secondary" data-page-jump="exhibitions"><span class="ko">전시 보기</span><span class="en">View Exhibitions</span></button>
+              <button class="btn btn-secondary" data-page-jump="exhibitions"><span class="ko">전시 보기</span><span class="en">View Exhibition</span></button>
+              <button class="btn btn-secondary" data-page-jump="shop"><span class="ko">아트샵 보기</span><span class="en">View Art Shop</span></button>
             </div>
           </div>
           <div class="hero-visual">
@@ -766,7 +766,7 @@ they emerge through relationships within the exhibition.</div>
       </div>
     </section>
 
-    <section class="page" id="page-js-art-space">
+    <section class="page" id="page-js-art-space" style="display:none">
       <div class="wrap">
         <div class="section-head">
           <h2 class="section-title">JS ART SPACE</h2>
@@ -783,7 +783,7 @@ they emerge through relationships within the exhibition.</div>
       <div class="wrap">
         <div class="section-head">
           <h2 class="section-title"><span class="ko">아트샵</span><span class="en">Art Shop</span></h2>
-          <div class="section-note"><div class="ko">작품 정보를 유지하면서, standard 이미지와 zoom 상세를 연결하는 선택된 작품 구조입니다.</div><div class="en">A selected structure connecting artwork information with standard thumbnails and zoom detail views.</div></div>
+          <div class="section-note"><div class="ko">갤러리 구조 안에서 조용히 연결되는 선택된 작품 접근 레이어입니다.</div><div class="en">A selected access layer to artworks, quietly integrated within the gallery structure.</div></div>
         </div>
         <div class="shop-grid" id="shopGrid"></div>
       </div>
