@@ -1,3 +1,25 @@
 {
-  "artists": []
+  "artists": [
+    {
+      "id": "dungzak",
+      "name_kr": "등작",
+      "name_en": "DUNGZAK CESTLAVIE",
+      "works": [
+        {
+          "id": "dz-001",
+          "title_kr": "존재가 움직이기 시작했다",
+          "title_en": "The Being Begins to Move",
+          "year": "2026",
+          "material_kr": "acrylic on canvas",
+          "material_en": "acrylic on canvas",
+          "size_kr": "162.2 × 130.3 cm",
+          "size_en": "162.2 × 130.3 cm",
+          "price": "17000000",
+          "status": "available",
+          "image": "https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/artists/dungzak-cestlavie/standard/dz-001.jpg",
+          "zoom": "https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/artists/dungzak-cestlavie/zoom/dz-001.jpg"
+        }
+      ]
+    }
+  ]
 }
