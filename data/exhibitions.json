@@ -8,7 +8,7 @@
       "title_en": "CONNECTION : IN PROGRESS",
       "date_kr": "2026.03.18 — 2026.03.30 · 김정숙 갤러리 · JS ART SPACE",
       "date_en": "March 18 — March 30, 2026 · Kim Jung sook Gallery · JS ART SPACE",
-      "image": "images/exhibitions/group-cover.jpg"
+      "image": "https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/exhibitions/group-cover.jpg"
     },
     {
       "id": "solo",
@@ -18,7 +18,7 @@
       "title_en": "Thought Shapes Life — Where",
       "date_kr": "2026.03.04 — 2026.03.16 · 김정숙 갤러리 · JS ART SPACE",
       "date_en": "March 4 — March 16, 2026 · Kim Jung sook Gallery · JS ART SPACE",
-      "image": "images/exhibitions/solo-cover.jpg"
+     "image": "https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/exhibitions/solo-cover.jpg"
     }
   ]
 }
