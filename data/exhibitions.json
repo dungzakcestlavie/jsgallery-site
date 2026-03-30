@@ -19,6 +19,128 @@
       "date_kr": "2026.03.04 — 2026.03.16 · 김정숙 갤러리 · JS ART SPACE",
       "date_en": "March 4 — March 16, 2026 · Kim Jung sook Gallery · JS ART SPACE",
      "image": "https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/exhibitions/solo-cover.jpg"
-    }
+    },
+    "works": [
+  {
+    "id": "DZ-001",
+    "title_kr": "존재를 견디다",
+    "title_en": "Enduring Being",
+    "material_kr": "acrylic on canvas",
+    "material_en": "acrylic on canvas",
+    "size_kr": "60.6 x 72.7 cm",
+    "size_en": "60.6 x 72.7 cm",
+    "year": "2026",
+    "image": "https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/standard/DZ-001.jpg",
+    "zoom": "https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/zoom/DZ-001.jpg"
+  },
+  {
+    "id": "DZ-002",
+    "title_kr": "사랑은 숨을 담아 살아낸다",
+    "title_en": "Love Endures, Carrying Breath Within",
+    "material_kr": "acrylic on canvas",
+    "material_en": "acrylic on canvas",
+    "size_kr": "162.2 x 130.3 cm",
+    "size_en": "162.2 x 130.3 cm",
+    "year": "2026",
+    "image": "https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/standard/DZ-002.jpg",
+    "zoom": "https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/zoom/DZ-002.jpg"
+  },
+  {
+    "id": "DZ-003",
+    "title_kr": "존재가 움직이기 시작했다",
+    "title_en": "The Being Begins to Move",
+    "material_kr": "acrylic on canvas",
+    "material_en": "acrylic on canvas",
+    "size_kr": "162.2 x 130.3 cm",
+    "size_en": "162.2 x 130.3 cm",
+    "year": "2026",
+    "image": "https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/standard/DZ-003.jpg",
+    "zoom": "https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/zoom/DZ-003.jpg"
+  },
+  {
+    "id": "DZ-004",
+    "title_kr": "존재는 이루며 홀로서서 함께하니",
+    "title_en": "Being Comes into Itself, Standing Alone and Together",
+    "material_kr": "acrylic on canvas",
+    "material_en": "acrylic on canvas",
+    "size_kr": "116.8 x 91 cm",
+    "size_en": "116.8 x 91 cm",
+    "year": "2026",
+    "image": "https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/standard/DZ-004.jpg",
+    "zoom": "https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/zoom/DZ-004.jpg"
+  },
+  {
+    "id": "DZ-005",
+    "title_kr": "심장의 숨결",
+    "title_en": "Breath of the Heart",
+    "material_kr": "oil stick, acrylic on canvas",
+    "material_en": "oil stick, acrylic on canvas",
+    "size_kr": "116.8 x 91 cm",
+    "size_en": "116.8 x 91 cm",
+    "year": "2025",
+    "image": "https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/standard/DZ-005.jpg",
+    "zoom": "https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/zoom/DZ-005.jpg"
+  },
+  {
+    "id": "DZ-006",
+    "title_kr": "우리 사이의 거리",
+    "title_en": "Distance of Us",
+    "material_kr": "pencil, acrylic on paper",
+    "material_en": "pencil, acrylic on paper",
+    "size_kr": "70 x 100 cm",
+    "size_en": "70 x 100 cm",
+    "year": "2025",
+    "image": "https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/standard/DZ-006.jpg",
+    "zoom": "https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/zoom/DZ-006.jpg"
+  },
+  {
+    "id": "DZ-007",
+    "title_kr": "눈물 속에 우주가 있으니 : 우리를 위해 기도해 주세요",
+    "title_en": "Tears Contain the Universe: Pray for Us",
+    "material_kr": "acrylic on canvas",
+    "material_en": "acrylic on canvas",
+    "size_kr": "130.3 x 162.2 cm",
+    "size_en": "130.3 x 162.2 cm",
+    "year": "2025",
+    "image": "https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/standard/DZ-007.jpg",
+    "zoom": "https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/zoom/DZ-007.jpg"
+  },
+  {
+    "id": "DZ-008",
+    "title_kr": "생태계 : 우리를 위해 기도해 주세요",
+    "title_en": "Ecological System: Pray for Us",
+    "material_kr": "acrylic on canvas",
+    "material_en": "acrylic on canvas",
+    "size_kr": "130.3 x 162.2 cm",
+    "size_en": "130.3 x 162.2 cm",
+    "year": "2024",
+    "image": "https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/standard/DZ-008.jpg",
+    "zoom": "https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/zoom/DZ-008.jpg"
+  },
+  {
+    "id": "DZ-009",
+    "title_kr": "우리를 위해 기도해 주세요",
+    "title_en": "Pray for Us",
+    "material_kr": "acrylic on canvas",
+    "material_en": "acrylic on canvas",
+    "size_kr": "162.2 x 130.3 cm",
+    "size_en": "162.2 x 130.3 cm",
+    "year": "2025",
+    "image": "https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/standard/DZ-009.jpg",
+    "zoom": "https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/zoom/DZ-009.jpg"
+  },
+  {
+    "id": "DZ-010",
+    "title_kr": "빛은 고요 속에서 밤을 버틴다",
+    "title_en": "Light Withstands the Night in Quiet",
+    "material_kr": "watercolour on paper",
+    "material_en": "watercolour on paper",
+    "size_kr": "57 x 76 cm",
+    "size_en": "57 x 76 cm",
+    "year": "2026",
+    "image": "https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/standard/DZ-010.jpg",
+    "zoom": "https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/zoom/DZ-010.jpg"
+  }
+]
   ]
 }
