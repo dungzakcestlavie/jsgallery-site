@@ -522,7 +522,6 @@ they emerge through relationships within the exhibition.</div>
             <a id="contactEmail" href="#">Email</a>
             <a id="contactInstagram" href="#" target="_blank" rel="noopener">Instagram</a>
             <a id="contactYouTube" href="#" target="_blank" rel="noopener">YouTube</a>
-            <a id="contactWebsite" href="#" target="_blank" rel="noopener">Website</a>
           </div>
         </aside>
       </div>
@@ -669,7 +668,6 @@ function syncContact() {
   document.getElementById('contactEmail').href = 'mailto:' + c.email;
   document.getElementById('contactInstagram').href = c.instagram;
   document.getElementById('contactYouTube').href = c.youtube;
-  document.getElementById('contactWebsite').href = c.website;
   document.getElementById('jsSpaceTitle').textContent = m === 'en' ? DATA.js_art_space.title_en : DATA.js_art_space.title_kr;
   document.getElementById('jsSpaceInfo').textContent = m === 'en'
     ? `${DATA.js_art_space.title_en}\n${DATA.js_art_space.address_en}\n\nT. ${DATA.js_art_space.phone_en}`
