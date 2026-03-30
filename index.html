@@ -30,6 +30,11 @@
         radial-gradient(circle at 85% 20%, rgba(31,141,123,.12), transparent 25%),
         linear-gradient(180deg, #f9fcfd 0%, #eef3f4 100%);
     }
+
+    body.modal-open{overflow:hidden}
+    body.lightbox-open .exhibition-modal{visibility:hidden;pointer-events:none}
+    .solo-work-card{position:relative;z-index:1}
+    .solo-work-thumb{position:relative;z-index:1}
     a{color:inherit;text-decoration:none}
     img{display:block;max-width:100%;height:auto}
     button{font:inherit;color:inherit;background:none;border:none;cursor:pointer;padding:0}
@@ -283,13 +288,13 @@ section.page.active{display:block}
     .contact-box p{margin:0 0 20px;color:rgba(255,255,255,.82);font-size:15px;white-space:pre-line}
     .contact-links{display:flex;flex-wrap:wrap;gap:12px}
     .contact-links a{display:inline-flex;align-items:center;min-height:46px;padding:0 16px;border-radius:999px;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.14);font-size:14px;font-weight:800}
-    .lightbox{position:fixed;inset:0;z-index:220;display:none;background:rgba(7,14,20,.92);padding:20px}
+    .lightbox{position:fixed;inset:0;z-index:1400;display:none;background:rgba(7,14,20,.97);padding:20px}
     .lightbox.open{display:flex;align-items:center;justify-content:center}
-    .lightbox-inner{position:relative;width:min(1100px, 100%);max-height:100%;display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:18px;align-items:start}
-    .lightbox-media{background:#0b1218;border-radius:22px;overflow:hidden;max-height:calc(100vh - 40px);display:flex;align-items:center;justify-content:center}
-    .lightbox-media img{width:100%;height:auto;max-height:calc(100vh - 40px);object-fit:contain}
-    .lightbox-caption{background:rgba(255,255,255,.96);border-radius:22px;padding:20px;box-shadow:var(--shadow);max-height:calc(100vh - 40px);overflow:auto}
-    .lightbox-close,.lightbox-nav{position:absolute;z-index:2;width:44px;height:44px;border-radius:999px;background:rgba(255,255,255,.92);color:var(--cobalt-deep);box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700}
+    .lightbox-inner{position:relative;width:min(1240px, 100%);max-height:100%;display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,340px);gap:18px;align-items:start}
+    .lightbox-media{background:#0b1218;border-radius:22px;overflow:hidden;max-height:calc(100vh - 56px);display:flex;align-items:center;justify-content:center;box-shadow:0 24px 64px rgba(0,0,0,.35)}
+    .lightbox-media img{width:100%;height:auto;max-height:calc(100vh - 56px);object-fit:contain}
+    .lightbox-caption{background:rgba(255,255,255,.98);border-radius:22px;padding:20px;box-shadow:var(--shadow);max-height:calc(100vh - 56px);overflow:auto}
+    .lightbox-close,.lightbox-nav{position:absolute;z-index:4;width:48px;height:48px;border-radius:999px;background:rgba(255,255,255,.96);color:var(--cobalt-deep);box-shadow:var(--shadow);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700}
     .lightbox-close{top:12px;right:12px} .lightbox-prev{left:12px;top:50%;transform:translateY(-50%)} .lightbox-next{right:12px;top:50%;transform:translateY(-50%)}
     .exhibition-modal{display:none;position:fixed;inset:0;background:rgba(7,14,20,.56);z-index:999;align-items:center;justify-content:center;padding:20px}
     .exhibition-modal.open{display:flex}
@@ -727,16 +732,16 @@ function renderShop() {
 
 function getSoloWorks() {
   return [
-    { id:"DZ-001", title_kr:"빛의 초의식 1", title_en:"Metaconsciousness of Light 1", material_kr:"acrylic on canvas", material_en:"acrylic on canvas", size_kr:"162.2 × 130.3 cm", size_en:"162.2 × 130.3 cm", year:"2026", standard:"https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/standard/DZ-001.jpg", zoom:"https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/zoom/DZ-001.jpg" },
-    { id:"DZ-002", title_kr:"빛의 초의식 2", title_en:"Metaconsciousness of Light 2", material_kr:"acrylic on canvas", material_en:"acrylic on canvas", size_kr:"162.2 × 130.3 cm", size_en:"162.2 × 130.3 cm", year:"2026", standard:"https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/standard/DZ-002.jpg", zoom:"https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/zoom/DZ-002.jpg" },
-    { id:"DZ-003", title_kr:"빛의 초의식 3", title_en:"Metaconsciousness of Light 3", material_kr:"acrylic on canvas", material_en:"acrylic on canvas", size_kr:"162.2 × 130.3 cm", size_en:"162.2 × 130.3 cm", year:"2026", standard:"https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/standard/DZ-003.jpg", zoom:"https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/zoom/DZ-003.jpg" },
-    { id:"DZ-004", title_kr:"빛의 초의식 4", title_en:"Metaconsciousness of Light 4", material_kr:"acrylic on canvas", material_en:"acrylic on canvas", size_kr:"162.2 × 130.3 cm", size_en:"162.2 × 130.3 cm", year:"2026", standard:"https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/standard/DZ-004.jpg", zoom:"https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/zoom/DZ-004.jpg" },
-    { id:"DZ-005", title_kr:"빛의 초의식 5", title_en:"Metaconsciousness of Light 5", material_kr:"acrylic on canvas", material_en:"acrylic on canvas", size_kr:"116.8 × 91.0 cm", size_en:"116.8 × 91.0 cm", year:"2026", standard:"https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/standard/DZ-005.jpg", zoom:"https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/zoom/DZ-005.jpg" },
-    { id:"DZ-006", title_kr:"빛의 초의식 6", title_en:"Metaconsciousness of Light 6", material_kr:"acrylic on canvas", material_en:"acrylic on canvas", size_kr:"116.8 × 91.0 cm", size_en:"116.8 × 91.0 cm", year:"2026", standard:"https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/standard/DZ-006.jpg", zoom:"https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/zoom/DZ-006.jpg" },
-    { id:"DZ-007", title_kr:"빛의 초의식 7", title_en:"Metaconsciousness of Light 7", material_kr:"acrylic on canvas", material_en:"acrylic on canvas", size_kr:"116.8 × 91.0 cm", size_en:"116.8 × 91.0 cm", year:"2026", standard:"https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/standard/DZ-007.jpg", zoom:"https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/zoom/DZ-007.jpg" },
-    { id:"DZ-008", title_kr:"빛의 초의식 8", title_en:"Metaconsciousness of Light 8", material_kr:"acrylic on canvas", material_en:"acrylic on canvas", size_kr:"91.0 × 72.7 cm", size_en:"91.0 × 72.7 cm", year:"2026", standard:"https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/standard/DZ-008.jpg", zoom:"https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/zoom/DZ-008.jpg" },
-    { id:"DZ-009", title_kr:"빛의 초의식 9", title_en:"Metaconsciousness of Light 9", material_kr:"acrylic on canvas", material_en:"acrylic on canvas", size_kr:"91.0 × 72.7 cm", size_en:"91.0 × 72.7 cm", year:"2026", standard:"https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/standard/DZ-009.jpg", zoom:"https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/zoom/DZ-009.jpg" },
-    { id:"DZ-010", title_kr:"빛의 초의식 10", title_en:"Metaconsciousness of Light 10", material_kr:"acrylic on canvas", material_en:"acrylic on canvas", size_kr:"91.0 × 72.7 cm", size_en:"91.0 × 72.7 cm", year:"2026", standard:"https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/standard/DZ-010.jpg", zoom:"https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/zoom/DZ-010.jpg" }
+    { id:"DZ-001", title_kr:"존재를 견디다", title_en:"Enduring Being", caption_kr:"존재는 스스로를 견디는 힘에서 시작된다.", caption_en:"Being begins from the strength to endure itself.", material_kr:"acrylic on canvas", material_en:"acrylic on canvas", size_kr:"60.6 x 72.7 cm", size_en:"60.6 x 72.7 cm", year:"2026", standard:"https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/standard/DZ-001.jpg", zoom:"https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/zoom/DZ-001.jpg" },
+    { id:"DZ-002", title_kr:"사랑은 숨을 담아 살아낸다", title_en:"Love Endures, Carrying Breath Within", caption_kr:"사랑은 숨을 품은 채 삶을 끝까지 통과한다.", caption_en:"Love carries breath within and passes through life to the end.", material_kr:"acrylic on canvas", material_en:"acrylic on canvas", size_kr:"162.2 x 130.3 cm", size_en:"162.2 x 130.3 cm", year:"2026", standard:"https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/standard/DZ-002.jpg", zoom:"https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/zoom/DZ-002.jpg" },
+    { id:"DZ-003", title_kr:"존재가 움직이기 시작했다", title_en:"The Being Begins to Move", caption_kr:"멈추어 있던 존재가 마침내 스스로의 방향을 갖기 시작한다.", caption_en:"What had remained still begins at last to move with its own direction.", material_kr:"acrylic on canvas", material_en:"acrylic on canvas", size_kr:"162.2 x 130.3 cm", size_en:"162.2 x 130.3 cm", year:"2026", standard:"https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/standard/DZ-003.jpg", zoom:"https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/zoom/DZ-003.jpg" },
+    { id:"DZ-004", title_kr:"존재는 이루며 홀로서서 함께하니", title_en:"Being Comes into Itself, Standing Alone and Together", caption_kr:"존재는 홀로 서면서도 함께 이루어지는 관계 속에서 완성된다.", caption_en:"Being is fulfilled in relation, standing alone and together at once.", material_kr:"acrylic on canvas", material_en:"acrylic on canvas", size_kr:"116.8 x 91 cm", size_en:"116.8 x 91 cm", year:"2026", standard:"https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/standard/DZ-004.jpg", zoom:"https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/zoom/DZ-004.jpg" },
+    { id:"DZ-005", title_kr:"심장의 숨결", title_en:"Breath of the Heart", caption_kr:"심장은 보이지 않는 리듬으로 존재의 숨을 이어 간다.", caption_en:"The heart continues the breath of being through an unseen rhythm.", material_kr:"oil stick, acrylic on canvas", material_en:"oil stick, acrylic on canvas", size_kr:"116.8 x 91 cm", size_en:"116.8 x 91 cm", year:"2025", standard:"https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/standard/DZ-005.jpg", zoom:"https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/zoom/DZ-005.jpg" },
+    { id:"DZ-006", title_kr:"우리 사이의 거리", title_en:"Distance of Us", caption_kr:"거리란 멀어짐이 아니라 서로를 읽게 하는 간격일지도 모른다.", caption_en:"Distance may not be separation, but the interval through which we come to read one another.", material_kr:"pencil, acrylic on paper", material_en:"pencil, acrylic on paper", size_kr:"70 x 100 cm", size_en:"70 x 100 cm", year:"2025", standard:"https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/standard/DZ-006.jpg", zoom:"https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/zoom/DZ-006.jpg" },
+    { id:"DZ-007", title_kr:"눈물 속에 우주가 있으니 : 우리를 위해 기도해 주세요", title_en:"Tears Contain the Universe: Pray for Us", caption_kr:"눈물은 무너짐이 아니라 우주를 품은 기도의 깊이이다.", caption_en:"Tears are not collapse, but the depth of prayer holding a universe within.", material_kr:"acrylic on canvas", material_en:"acrylic on canvas", size_kr:"130.3 x 162.2 cm", size_en:"130.3 x 162.2 cm", year:"2025", standard:"https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/standard/DZ-007.jpg", zoom:"https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/zoom/DZ-007.jpg" },
+    { id:"DZ-008", title_kr:"생태계 : 우리를 위해 기도해 주세요", title_en:"Ecological System: Pray for Us", caption_kr:"기도는 인간만이 아니라 생태 전체를 향한 요청으로 확장된다.", caption_en:"Prayer extends beyond the human and becomes an appeal addressed to the whole ecology.", material_kr:"acrylic on canvas", material_en:"acrylic on canvas", size_kr:"130.3 x 162.2 cm", size_en:"130.3 x 162.2 cm", year:"2024", standard:"https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/standard/DZ-008.jpg", zoom:"https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/zoom/DZ-008.jpg" },
+    { id:"DZ-009", title_kr:"우리를 위해 기도해 주세요", title_en:"Pray for Us", caption_kr:"기도는 누군가를 위한 말이 아니라 함께 버티기 위한 구조가 된다.", caption_en:"Prayer becomes not a phrase for someone, but a structure through which we endure together.", material_kr:"acrylic on canvas", material_en:"acrylic on canvas", size_kr:"162.2 x 130.3 cm", size_en:"162.2 x 130.3 cm", year:"2025", standard:"https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/standard/DZ-009.jpg", zoom:"https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/zoom/DZ-009.jpg" },
+    { id:"DZ-010", title_kr:"빛은 고요 속에서 밤을 버틴다", title_en:"Light Withstands the Night in Quiet", caption_kr:"빛은 소리치지 않고도 밤을 견디며 끝내 남는다.", caption_en:"Light does not need to shout; it endures the night in quiet and remains.", material_kr:"watercolour on paper", material_en:"watercolour on paper", size_kr:"57 x 76 cm", size_en:"57 x 76 cm", year:"2026", standard:"https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/standard/DZ-010.jpg", zoom:"https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/zoom/DZ-010.jpg" }
   ];
 }
 
@@ -753,7 +758,7 @@ function renderSoloWorks() {
       </div>
       <div class="solo-work-caption">
         <div class="solo-work-title">${escapeHtml(m === 'en' ? work.title_en : work.title_kr)}</div>
-        <div class="solo-work-meta">${escapeHtml(m === 'en' ? work.material_en : work.material_kr)}\n${escapeHtml(m === 'en' ? work.size_en : work.size_kr)}\n${escapeHtml(work.year)}</div>
+        <div class="solo-work-meta">${escapeHtml(m === 'en' ? work.material_en : work.material_kr)}\n${escapeHtml(m === 'en' ? work.size_en : work.size_kr)}\n${escapeHtml(work.year)}${work.caption_kr || work.caption_en ? `\n\n${escapeHtml(m === 'en' ? (work.caption_en || '') : (work.caption_kr || ''))}` : ''}</div>
       </div>
     </article>
   `).join('');
@@ -871,7 +876,7 @@ function openExhibitionModal(kind) {
   }
 
   EXHIBITION_MODAL.classList.add('open');
-  document.body.style.overflow = 'hidden';
+  document.body.classList.add('modal-open');
 
   EXHIBITION_MODAL.querySelectorAll('.accordion-trigger').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -895,7 +900,8 @@ function openExhibitionModal(kind) {
 
 function closeExhibitionModal() {
   EXHIBITION_MODAL.classList.remove('open');
-  document.body.style.overflow = '';
+  document.body.classList.remove('modal-open');
+  document.body.classList.remove('lightbox-open');
 }
 
 function openLightbox(index, items) {
@@ -903,7 +909,8 @@ function openLightbox(index, items) {
   currentLightboxIndex = index;
   updateLightbox();
   LIGHTBOX.classList.add('open');
-  document.body.style.overflow = 'hidden';
+  document.body.classList.add('modal-open');
+  document.body.classList.add('lightbox-open');
 }
 
 function openSoloLightbox(index, works) {
@@ -911,7 +918,8 @@ function openSoloLightbox(index, works) {
   currentLightboxIndex = index;
   updateLightbox();
   LIGHTBOX.classList.add('open');
-  document.body.style.overflow = 'hidden';
+  document.body.classList.add('modal-open');
+  document.body.classList.add('lightbox-open');
 }
 
 function updateLightbox() {
@@ -922,7 +930,7 @@ function updateLightbox() {
   if (item.zoom && item.standard) {
     LIGHTBOX_IMAGE.src = item.zoom;
     LIGHTBOX_IMAGE.alt = m === 'en' ? item.title_en : item.title_kr;
-    LIGHTBOX_CAPTION.innerHTML = `<div class="work-title">${escapeHtml(m === 'en' ? item.title_en : item.title_kr)}</div><div class="work-meta">${escapeHtml(m === 'en' ? item.material_en : item.material_kr)}<br>${escapeHtml(m === 'en' ? item.size_en : item.size_kr)}<br>${escapeHtml(item.year)}</div>`;
+    LIGHTBOX_CAPTION.innerHTML = `<div class="work-title">${escapeHtml(m === 'en' ? item.title_en : item.title_kr)}</div><div class="work-meta">${escapeHtml(m === 'en' ? item.material_en : item.material_kr)}<br>${escapeHtml(m === 'en' ? item.size_en : item.size_kr)}<br>${escapeHtml(item.year)}${item.caption_kr || item.caption_en ? `<br><br>${escapeHtml(m === 'en' ? (item.caption_en || '') : (item.caption_kr || ''))}` : ''}</div>`;
     return;
   }
 
@@ -933,7 +941,8 @@ function updateLightbox() {
 
 function closeLightbox() {
   LIGHTBOX.classList.remove('open');
-  document.body.style.overflow = '';
+  document.body.classList.remove('lightbox-open');
+  if (!EXHIBITION_MODAL.classList.contains('open')) document.body.classList.remove('modal-open');
 }
 
 function prevLightbox() {
