@@ -2,13 +2,23 @@
   "artists": [
     {
       "id": "dungzak",
-      "slug": "dungzak-cestlavie",
-
       "name_kr": "등작 燈酌",
       "name_en": "DUNGZAK CESTLAVIE",
-
       "bio_kr": "회화를 이미지가 아닌 사유의 구조로 확장하는 작가",
       "bio_en": "A painter who expands painting as a structure of thought beyond image",
+
+      "note_label_kr": "DCAR-12",
+      "note_label_en": "DCAR-12",
+
+      "note_title_kr": "수학과 세계 — 존재는 어떻게 발생하는가",
+      "note_title_en": "Mathematics and the World — How Does Being Occur?",
+
+      "note_summary_kr": "예술은 존재를 재현하지 않는다. 예술은 존재를 발생시킨다.",
+      "note_summary_en": "Art does not represent being. Art brings being into occurrence.",
+
+      "note_full_kr": "예술은 존재를 재현하지 않는다.\n예술은 존재를 발생시킨다.\n\n수학에서도 존재는 결과가 아니라\n발생의 방식이었다.\n\n피타고라스는 세계가\n수의 비율로 울린다고 들었다.\n\n유클리드는 선과 면으로\n측정 가능한 공간을 열었다.\n\n데카르트는 좌표를 통해\n감각을 기하학으로 번역했다.\n\n뉴턴과 라이프니츠는\n연속을 미분하고 시간을 적분했다.\n\n가우스와 푸앵카레는\n공간의 숨은 곡률을 의심했고,\n리만은 이를 기하학으로 만들었다.\n\n아인슈타인은 그 곡률을\n사건의 지형으로 읽었다.\n\n슈뢰딩거와 하이젠베르크는\n세계가 연속이 아니라\n불연속의 상태로 점멸함을 보였다.\n\n양자역학은 존재를\n확률과 중첩의 상태로 정의했고,\n\n보어는 관찰이 상태를 결정한다고 말했고,\n하이젠베르크는 측정이 가능성을 좁힌다고 말했다.\n\n파인먼은 세계를\n경로의 합으로 보았다.\n\n괴델과 튜링은\n완결된 세계가 없음을 증명했다.\n\n20세기 이후 수학은 결과보다\n조건과 관계를 다루기 시작했다.\n\n위상수학은 형태의 본질을,\n\n범주론은 관계의 본질을,\n\n정보이론은 의미의 본질을 다루었다.\n\n예술 역시 동일하다.\n예술은 세계를 설명하지 않고\n세계가 발생할 조건을 구성한다.\n\n존재는 예술가를 통해 말하지 않는다.\n존재는 예술을 통해 일어난다.\n\n관객은 존재를 해석하려 하지 않는다.\n존재의 발생을 경험한다.\n\n존재는 고귀하지 않고\n비밀스럽지도 않다.\n\n그저 세계가\n자신의 시간 속에서\n다시 일어설 뿐이다.",
+
+      "note_full_en": "Art does not represent being.\nArt brings being into occurrence.\n\nIn mathematics, being has never been a result\nbut a mode of becoming.\n\nPythagoras heard the world\nas ratios of number.\n\nEuclid opened measurable space\nthrough line and plane.\n\nDescartes translated sensation\ninto geometry through coordinates.\n\nNewton and Leibniz differentiated continuity\nand integrated time.\n\nGauss and Poincaré suspected hidden curvature,\nand Riemann rendered it geometric.\n\nEinstein read curvature\nas the topography of events.\n\nSchrödinger and Heisenberg revealed\nthe world as flickering states of discreteness.\n\nQuantum theory defined being\nas states of probability and superposition.\n\nBohr claimed observation determines state,\nand Heisenberg showed measurement narrows possibility.\n\nFeynman saw the world\nas the sum of paths.\n\nGödel and Turing demonstrated\nthere is no complete world.\n\nAfter the 20th century mathematics began handling\nconditions and relations rather than results.\n\nTopology addressed the essence of form,\n\nCategory theory addressed the essence of relation,\n\nInformation theory addressed the essence of meaning.\n\nArt likewise does not explain the world,\nbut organizes the conditions for its arising.\n\nBeing does not speak through the artist.\nIt occurs through art.\n\nThe audience does not interpret being.\nIt experiences its occurrence.\n\nBeing is neither noble\nnor secretive.\n\nThe world simply stands again,\nwithin its own time.",
 
       "image": "https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/artists/dungzak-cestlavie/profile.jpg",
 
