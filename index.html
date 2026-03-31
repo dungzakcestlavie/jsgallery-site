@@ -2,15 +2,45 @@
 <html lang="ko">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="color-scheme" content="light" />
   <meta name="theme-color" content="#eef3f4" />
   <meta name="format-detection" content="telephone=no,address=no,email=no" />
   <meta name="google" content="notranslate" />
   <meta name="googlebot" content="notranslate" />
   <title>KJS GALLERY | Kim Jung sook Gallery</title>
-  <meta name="description" content="KJS GALLERY | Kim Jung sook Gallery is a contemporary art gallery connecting artists, artworks, and space through exhibitions, archives, JS ART SPACE, and a curated shop structure." />
+  <meta name="description" content="Kim Jung sook Gallery is a contemporary art space centered on painting, connecting artists, works, and exhibitions as a unified structure." />
+  <link rel="canonical" href="https://jsgallery.art/" />
+  <meta name="robots" content="index, follow" />
+
+  <meta property="og:title" content="KJS GALLERY | Kim Jung sook Gallery" />
+  <meta property="og:description" content="A contemporary gallery connecting painting, artists, and exhibitions as a unified structure." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://jsgallery.art/" />
+  <meta property="og:image" content="https://jsgallery.art/preview.jpg" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="KJS GALLERY" />
+  <meta name="twitter:description" content="Contemporary painting-based gallery" />
+  <meta name="twitter:image" content="https://jsgallery.art/preview.jpg" />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ArtGallery",
+    "name": "KJS GALLERY",
+    "alternateName": "Kim Jung sook Gallery",
+    "url": "https://jsgallery.art/",
+    "image": "https://jsgallery.art/preview.jpg",
+    "description": "Kim Jung sook Gallery is a contemporary art space centered on painting, connecting artists, works, and exhibitions as a unified structure.",
+    "sameAs": [
+      "https://instagram.com/gallery_kimjungsook",
+      "https://www.youtube.com/@gallery6329"
+    ]
+  }
+  </script>
+
   <style>
     :root{
       --bg:#eef3f4; --panel:#ffffff; --panel-2:#edf4f6; --text:#102233; --muted:#607383;
@@ -37,6 +67,7 @@
     .solo-work-thumb{position:relative;z-index:1}
     a{color:inherit;text-decoration:none}
     img{display:block;max-width:100%;height:auto}
+    .sr-only{position:absolute !important;width:1px !important;height:1px !important;padding:0 !important;margin:-1px !important;overflow:hidden !important;clip:rect(0,0,0,0) !important;white-space:nowrap !important;border:0 !important}
     button{font:inherit;color:inherit;background:none;border:none;cursor:pointer;padding:0}
     .wrap{width:min(calc(100% - 24px), var(--maxw));margin:0 auto}
     .ko,.en{display:block}
@@ -79,8 +110,9 @@
 }
 
 main{display:block;min-height:calc(100vh - 110px)}
-section.page{display:none;padding:28px 0 62px}
-section.page.active{display:block}
+section.page{display:none;padding:28px 0 62px;touch-action:pan-y;will-change:transform,opacity}
+section.page.active,section.page.is-animating{display:block}
+main.page-swipe-active{position:relative;overflow:hidden}
 
 /* 🔥 핵심 변경 시작 */
 .hero-grid{
@@ -399,6 +431,7 @@ section.page.active{display:block}
     <div class="wrap">
       <div class="hero-grid">
         <div class="hero-copy">
+          <h1 class="sr-only">KJS GALLERY</h1>
           <div class="eyebrow"><span class="ko">현대 미술 갤러리</span><span class="en">Contemporary Art Gallery</span></div>
           <div class="hero-logo" aria-hidden="true">
             <div class="hero-logo-main">KJS GALLERY</div>
@@ -428,7 +461,7 @@ they emerge through relationships within the exhibition.</div>
         </div>
         <div class="hero-visual">
           <div class="hero-visual-frame" aria-hidden="true">
-            <img class="hero-visual-image" id="heroImage" src="" alt="" loading="eager" />
+            <img class="hero-visual-image" id="heroImage" src="" alt="Current exhibition preview at KJS GALLERY" loading="eager" />
             <div class="hero-visual-label"></div>
           </div>
         </div>
@@ -744,12 +777,205 @@ function escapeHtml(value) {
     .replaceAll("'", '&#39;');
 }
 
-function page(id) {
-  PAGES.forEach(p => p.classList.toggle('active', p.id === 'page-' + id));
-  NAV_BTNS.forEach(b => b.classList.toggle('active', b.dataset.page === id));
-  closeMenu();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+const PAGE_ORDER = ['home','about','exhibitions','artists','shop','contact'];
+const MAIN = document.querySelector('main');
+let pageSwipeState = null;
+let pageTransitionLock = false;
+
+function getCurrentPageId() {
+  const active = document.querySelector('section.page.active');
+  return active ? active.id.replace('page-','') : 'home';
 }
+
+function setNavState(id) {
+  NAV_BTNS.forEach(b => b.classList.toggle('active', b.dataset.page === id));
+}
+
+function cleanupAnimatedPages(currentEl, nextEl) {
+  [currentEl, nextEl].forEach(el => {
+    if (!el) return;
+    el.classList.remove('is-animating');
+    el.style.transition = '';
+    el.style.transform = '';
+    el.style.opacity = '';
+    el.style.position = '';
+    el.style.inset = '';
+    el.style.width = '';
+    el.style.zIndex = '';
+    el.style.pointerEvents = '';
+  });
+  if (MAIN) {
+    MAIN.classList.remove('page-swipe-active');
+    MAIN.style.minHeight = '';
+  }
+  pageSwipeState = null;
+}
+
+function animatePageTo(id, direction = 'next') {
+  const currentId = getCurrentPageId();
+  if (pageTransitionLock || !id || id === currentId) return;
+  const currentEl = document.getElementById('page-' + currentId);
+  const nextEl = document.getElementById('page-' + id);
+  if (!currentEl || !nextEl || !MAIN) return;
+
+  pageTransitionLock = true;
+  closeMenu();
+  window.scrollTo({ top: 0, behavior: 'auto' });
+
+  const width = MAIN.clientWidth || window.innerWidth;
+  const startOffset = direction === 'next' ? width * 0.24 : -width * 0.24;
+  const endOffset = direction === 'next' ? -width * 0.18 : width * 0.18;
+  const minHeight = Math.max(currentEl.offsetHeight, nextEl.offsetHeight);
+
+  MAIN.classList.add('page-swipe-active');
+  MAIN.style.minHeight = minHeight + 'px';
+
+  nextEl.classList.add('is-animating');
+  currentEl.classList.add('is-animating');
+
+  [currentEl, nextEl].forEach(el => {
+    el.style.position = 'absolute';
+    el.style.inset = '0';
+    el.style.width = '100%';
+    el.style.pointerEvents = 'none';
+  });
+
+  currentEl.style.zIndex = '2';
+  nextEl.style.zIndex = '3';
+  currentEl.style.transform = 'translateX(0px)';
+  currentEl.style.opacity = '1';
+  nextEl.style.transform = `translateX(${startOffset}px)`;
+  nextEl.style.opacity = '0.92';
+
+  requestAnimationFrame(() => {
+    currentEl.style.transition = 'transform .38s cubic-bezier(.22,.61,.36,1), opacity .38s ease';
+    nextEl.style.transition = 'transform .38s cubic-bezier(.22,.61,.36,1), opacity .38s ease';
+    currentEl.style.transform = `translateX(${endOffset}px)`;
+    currentEl.style.opacity = '0.18';
+    nextEl.style.transform = 'translateX(0px)';
+    nextEl.style.opacity = '1';
+  });
+
+  const finish = () => {
+    currentEl.classList.remove('active');
+    nextEl.classList.add('active');
+    setNavState(id);
+    cleanupAnimatedPages(currentEl, nextEl);
+    nextEl.style.pointerEvents = '';
+    pageTransitionLock = false;
+  };
+
+  nextEl.addEventListener('transitionend', function handler(e) {
+    if (e.propertyName !== 'transform') return;
+    nextEl.removeEventListener('transitionend', handler);
+    finish();
+  });
+}
+
+function page(id) {
+  const currentIndex = PAGE_ORDER.indexOf(getCurrentPageId());
+  const nextIndex = PAGE_ORDER.indexOf(id);
+  const direction = nextIndex >= currentIndex ? 'next' : 'prev';
+  animatePageTo(id, direction);
+}
+
+function canStartPageSwipe(target) {
+  if (pageTransitionLock) return false;
+  if (LIGHTBOX.classList.contains('open') || EXHIBITION_MODAL.classList.contains('open')) return false;
+  if (MENU_PANEL.classList.contains('open')) return false;
+  if (!target) return false;
+  if (target.closest('a, button, input, textarea, select, label')) return false;
+  if (target.closest('.artist-card, .work-thumb, .shop-thumb, .accordion-trigger, .artist-note-summary, .view-all, .contact-links, .menu-panel')) return false;
+  return true;
+}
+
+function beginPageSwipe(direction) {
+  const currentId = getCurrentPageId();
+  const currentIndex = PAGE_ORDER.indexOf(currentId);
+  const targetIndex = direction === 'next' ? currentIndex + 1 : currentIndex - 1;
+  const nextId = PAGE_ORDER[targetIndex];
+  if (!nextId || !MAIN) return false;
+
+  const currentEl = document.getElementById('page-' + currentId);
+  const nextEl = document.getElementById('page-' + nextId);
+  if (!currentEl || !nextEl) return false;
+
+  const width = MAIN.clientWidth || window.innerWidth;
+  const minHeight = Math.max(currentEl.offsetHeight, nextEl.offsetHeight);
+
+  MAIN.classList.add('page-swipe-active');
+  MAIN.style.minHeight = minHeight + 'px';
+
+  currentEl.classList.add('is-animating');
+  nextEl.classList.add('is-animating');
+
+  [currentEl, nextEl].forEach(el => {
+    el.style.position = 'absolute';
+    el.style.inset = '0';
+    el.style.width = '100%';
+    el.style.transition = 'none';
+    el.style.pointerEvents = 'none';
+  });
+
+  currentEl.style.zIndex = '2';
+  nextEl.style.zIndex = '3';
+  currentEl.style.transform = 'translateX(0px)';
+  currentEl.style.opacity = '1';
+  nextEl.style.transform = `translateX(${direction === 'next' ? width : -width}px)`;
+  nextEl.style.opacity = '1';
+
+  pageSwipeState = { direction, currentId, nextId, currentEl, nextEl, width };
+  return true;
+}
+
+function updatePageSwipe(deltaX) {
+  if (!pageSwipeState) return;
+  const { direction, currentEl, nextEl, width } = pageSwipeState;
+  const limited = direction === 'next'
+    ? Math.max(Math.min(deltaX, 0), -width)
+    : Math.min(Math.max(deltaX, 0), width);
+
+  currentEl.style.transform = `translateX(${limited}px)`;
+  currentEl.style.opacity = String(Math.max(0.18, 1 - Math.abs(limited) / (width * 0.95)));
+
+  const nextBase = direction === 'next' ? width : -width;
+  nextEl.style.transform = `translateX(${nextBase + limited}px)`;
+}
+
+function finishPageSwipe(commit) {
+  if (!pageSwipeState) return;
+  const { direction, currentId, nextId, currentEl, nextEl, width } = pageSwipeState;
+  const endCurrent = commit ? (direction === 'next' ? -width * 0.18 : width * 0.18) : 0;
+  const endNext = commit ? 0 : (direction === 'next' ? width : -width);
+
+  [currentEl, nextEl].forEach(el => {
+    el.style.transition = 'transform .32s cubic-bezier(.22,.61,.36,1), opacity .32s ease';
+  });
+
+  requestAnimationFrame(() => {
+    currentEl.style.transform = `translateX(${endCurrent}px)`;
+    currentEl.style.opacity = commit ? '0.18' : '1';
+    nextEl.style.transform = `translateX(${endNext}px)`;
+  });
+
+  const done = () => {
+    if (commit) {
+      currentEl.classList.remove('active');
+      nextEl.classList.add('active');
+      setNavState(nextId);
+      window.scrollTo({ top: 0, behavior: 'auto' });
+    }
+    cleanupAnimatedPages(currentEl, nextEl);
+    if (commit) nextEl.style.pointerEvents = '';
+  };
+
+  nextEl.addEventListener('transitionend', function handler(e) {
+    if (e.propertyName !== 'transform') return;
+    nextEl.removeEventListener('transitionend', handler);
+    done();
+  });
+}
+
 
 function setLang(lang) {
   BODY.classList.toggle('mode-en', lang === 'en');
@@ -1045,7 +1271,9 @@ function renderExhibitions() {
     card.addEventListener('click', () => openExhibitionModal(cards[idx].kind));
   });
 
-  document.getElementById('heroImage').src = GROUP_COVER;
+  const heroImage = document.getElementById('heroImage');
+  heroImage.src = GROUP_COVER;
+  heroImage.alt = m === 'en' ? `${DATA.group.title_en} exhibition preview at KJS GALLERY` : `KJS GALLERY 전시 미리보기 ${DATA.group.title_kr}`;
 }
 
 function openExhibitionModal(kind) {
@@ -1174,7 +1402,7 @@ function updateLightbox() {
 
   const src = item.zoom || item.standard || item.image || '';
   LIGHTBOX_IMAGE.src = src;
-  LIGHTBOX_IMAGE.alt = m === 'en' ? (item.title_en || '') : (item.title_kr || '');
+  LIGHTBOX_IMAGE.alt = m === 'en' ? (item.title_en || 'Artwork at KJS GALLERY') : (item.title_kr || 'KJS GALLERY 작품');
 }
 
 function closeLightbox() {
@@ -1197,6 +1425,78 @@ function nextLightbox() {
   currentLightboxIndex = (currentLightboxIndex + 1) % currentLightboxItems.length;
   updateLightbox();
 }
+
+
+function initPageSwipe() {
+  if (!MAIN) return;
+
+  let startX = 0;
+  let startY = 0;
+  let deltaX = 0;
+  let deltaY = 0;
+  let tracking = false;
+  let dragging = false;
+
+  MAIN.addEventListener('touchstart', e => {
+    const touch = e.touches[0];
+    if (!touch || !canStartPageSwipe(e.target)) {
+      tracking = false;
+      dragging = false;
+      return;
+    }
+    tracking = true;
+    dragging = false;
+    startX = touch.clientX;
+    startY = touch.clientY;
+    deltaX = 0;
+    deltaY = 0;
+  }, { passive: true });
+
+  MAIN.addEventListener('touchmove', e => {
+    if (!tracking) return;
+    const touch = e.touches[0];
+    if (!touch) return;
+
+    deltaX = touch.clientX - startX;
+    deltaY = touch.clientY - startY;
+
+    if (!dragging) {
+      if (Math.abs(deltaX) < 14) return;
+      if (Math.abs(deltaY) > Math.abs(deltaX) * 0.9) {
+        tracking = false;
+        return;
+      }
+      const direction = deltaX < 0 ? 'next' : 'prev';
+      if (!beginPageSwipe(direction)) {
+        tracking = false;
+        return;
+      }
+      dragging = true;
+    }
+
+    e.preventDefault();
+    updatePageSwipe(deltaX);
+  }, { passive: false });
+
+  MAIN.addEventListener('touchend', () => {
+    if (!tracking) return;
+    if (!dragging) {
+      tracking = false;
+      return;
+    }
+    const shouldCommit = Math.abs(deltaX) > 72 && Math.abs(deltaX) > Math.abs(deltaY) * 1.2;
+    finishPageSwipe(shouldCommit);
+    tracking = false;
+    dragging = false;
+  }, { passive: true });
+
+  MAIN.addEventListener('touchcancel', () => {
+    if (dragging) finishPageSwipe(false);
+    tracking = false;
+    dragging = false;
+  }, { passive: true });
+}
+
 
 function renderAll() {
   syncContact();
@@ -1290,6 +1590,7 @@ document.addEventListener('keydown', e => {
   try {
     await loadArtistWorksData();
     setLang('kr');
+    initPageSwipe();
     page('home');
   } catch (error) {
     console.error(error);
