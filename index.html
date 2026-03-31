@@ -348,8 +348,10 @@ section.page.active{display:block}
     .artist-note-summary:hover{border-color:rgba(31,78,117,.18)}
     .artist-note-full{margin-top:14px;padding:16px;border-radius:16px;background:rgba(31,78,117,.04);line-height:1.82;color:#244c70;white-space:pre-line}
 
-    .view-all{display:inline-flex;align-items:center;cursor:pointer;opacity:.74;font-size:13.5px;font-weight:600;letter-spacing:.02em;color:var(--cobalt-deep);transition:opacity .25s ease;text-decoration:none;white-space:nowrap}
+    .view-all{display:inline-flex;flex-direction:column;align-items:flex-start;gap:2px;cursor:pointer;opacity:.74;font-size:13.5px;font-weight:600;letter-spacing:.02em;color:var(--cobalt-deep);transition:opacity .25s ease;text-decoration:none;white-space:nowrap;margin-top:10px}
     .view-all:hover,.view-all:focus-visible{opacity:1;outline:none}
+    .view-all-sub{font-size:11px;font-weight:500;letter-spacing:.02em;opacity:.55}
+    .artist-note-full[hidden]{display:none !important}
     @media (max-width:820px){.artist-profile-layout{grid-template-columns:1fr}}
   </style>
 </head>
@@ -489,6 +491,14 @@ they emerge through relationships within the exhibition.</div>
                 <div class="artist-note-kicker" id="artistNoteLabel"></div>
                 <h4 class="artist-note-heading" id="artistNoteTitle"></h4>
                 <button type="button" class="artist-note-summary" id="artistNoteSummaryBtn"></button>
+                <span class="view-all" id="artistViewAll" role="button" tabindex="0">
+                  <span class="ko">전체보기 →</span>
+                  <span class="en">View All →</span>
+                  <span class="view-all-sub">
+                    <span class="ko">전체 텍스트 펼침</span>
+                    <span class="en">Expand full text</span>
+                  </span>
+                </span>
                 <div class="artist-note-full" id="artistNoteFull" hidden></div>
               </div>
             </div>
@@ -500,10 +510,6 @@ they emerge through relationships within the exhibition.</div>
             <span class="ko">작품</span>
             <span class="en">Works</span>
           </h3>
-          <span class="view-all" id="artistViewAll" role="button" tabindex="0">
-            <span class="ko">전체보기 →</span>
-            <span class="en">View All →</span>
-          </span>
         </div>
 
         <div class="works-grid" id="worksGrid"></div>
@@ -793,6 +799,18 @@ function renderArtistNote(artist) {
   ARTIST_NOTE_SUMMARY_BTN.textContent = noteSummary;
   ARTIST_NOTE_FULL.textContent = noteFull;
   ARTIST_NOTE_FULL.hidden = !artistNoteOpen;
+
+  if (ARTIST_VIEW_ALL) {
+    const koMain = ARTIST_VIEW_ALL.querySelector('.ko');
+    const enMain = ARTIST_VIEW_ALL.querySelector('.en');
+    const koSub = ARTIST_VIEW_ALL.querySelector('.view-all-sub .ko');
+    const enSub = ARTIST_VIEW_ALL.querySelector('.view-all-sub .en');
+
+    if (koMain) koMain.textContent = artistNoteOpen ? '접기 ↑' : '전체보기 →';
+    if (enMain) enMain.textContent = artistNoteOpen ? 'Collapse ↑' : 'View All →';
+    if (koSub) koSub.textContent = artistNoteOpen ? '요약으로 접기' : '전체 텍스트 펼침';
+    if (enSub) enSub.textContent = artistNoteOpen ? 'Back to summary' : 'Expand full text';
+  }
 }
 
 
@@ -1200,12 +1218,17 @@ LANG_BTNS.forEach(btn => btn.addEventListener('click', () => setLang(btn.dataset
 NAV_BTNS.forEach(btn => btn.addEventListener('click', () => page(btn.dataset.page)));
 
 if (ARTIST_VIEW_ALL) {
-  const goArtistViewAll = () => page('shop');
-  ARTIST_VIEW_ALL.addEventListener('click', goArtistViewAll);
+  const toggleArtistViewAll = () => {
+    artistNoteOpen = !artistNoteOpen;
+    const artist = artistsData[currentArtistIndex];
+    renderArtistNote(artist);
+  };
+
+  ARTIST_VIEW_ALL.addEventListener('click', toggleArtistViewAll);
   ARTIST_VIEW_ALL.addEventListener('keydown', e => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
-      goArtistViewAll();
+      toggleArtistViewAll();
     }
   });
 }
@@ -1220,6 +1243,35 @@ BRAND_HOME.addEventListener('click', e => { e.preventDefault(); page('home'); })
 LIGHTBOX.addEventListener('click', e => {
   if (!LIGHTBOX.classList.contains('open')) return;
   if (e.target === LIGHTBOX || e.target === LIGHTBOX_IMAGE) closeLightbox();
+});
+LIGHTBOX.addEventListener('touchstart', e => {
+  if (!LIGHTBOX.classList.contains('open')) return;
+  const touch = e.changedTouches[0];
+  lightboxTouchStartX = touch.screenX;
+  lightboxTouchCurrentX = touch.screenX;
+  lightboxTouchStartY = touch.screenY;
+  lightboxTouchCurrentY = touch.screenY;
+  lightboxTouchActive = true;
+}, { passive: true });
+LIGHTBOX.addEventListener('touchmove', e => {
+  if (!lightboxTouchActive) return;
+  const touch = e.changedTouches[0];
+  lightboxTouchCurrentX = touch.screenX;
+  lightboxTouchCurrentY = touch.screenY;
+}, { passive: true });
+LIGHTBOX.addEventListener('touchend', () => {
+  if (!lightboxTouchActive) return;
+  const diffX = lightboxTouchStartX - lightboxTouchCurrentX;
+  const diffY = lightboxTouchStartY - lightboxTouchCurrentY;
+  const absX = Math.abs(diffX);
+  const absY = Math.abs(diffY);
+
+  if (absX > LIGHTBOX_SWIPE_THRESHOLD && absY < LIGHTBOX_VERTICAL_TOLERANCE && absX > absY * 1.35) {
+    if (diffX > 0) nextLightbox();
+    else prevLightbox();
+  }
+
+  lightboxTouchActive = false;
 });
 EXHIBITION_MODAL_CLOSE.addEventListener('click', closeExhibitionModal);
 EXHIBITION_MODAL.addEventListener('click', e => { if (e.target === EXHIBITION_MODAL) closeExhibitionModal(); });
