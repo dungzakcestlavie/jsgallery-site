@@ -2,11 +2,28 @@
   "artists": [
     {
       "id": "dungzak",
+      "slug": "dungzak-cestlavie",
+
       "name_kr": "등작 燈酌",
       "name_en": "DUNGZAK CESTLAVIE",
+
       "bio_kr": "회화를 이미지가 아닌 사유의 구조로 확장하는 작가",
       "bio_en": "A painter who expands painting as a structure of thought beyond image",
-      "image": "https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/artists/dungzak-cestlavie/profile.jpg"
+
+      "image": "https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/artists/dungzak-cestlavie/profile.jpg",
+
+      "works_ids": [
+        "D-001",
+        "D-002",
+        "D-003",
+        "D-004",
+        "D-005",
+        "D-006",
+        "D-007",
+        "D-008",
+        "D-009",
+        "D-010"
+      ]
     }
   ]
 }
