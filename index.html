@@ -895,23 +895,26 @@ function renderArtistDetail() {
   `).join('');
 
   currentLightboxItems = works.map(work => ({
-    image: work.zoom || work.image || '',
+    standard: work.image || '',
+    zoom: work.zoom || work.image || '',
     title_kr: work.title_kr || '',
     title_en: work.title_en || '',
-    meta_kr: `${work.material_kr || ''}
-${work.size_kr || ''}
-${work.year || ''}
-${work.price || ''}
-${availabilityText(work, 'ko')}`,
-    meta_en: `${work.material_en || ''}
-${work.size_en || ''}
-${work.year || ''}
-${work.price || ''}
-${availabilityText(work, 'en')}`
+    material_kr: work.material_kr || '',
+    material_en: work.material_en || '',
+    size_kr: work.size_kr || '',
+    size_en: work.size_en || '',
+    year: work.year || '',
+    price: work.price || '',
+    status_kr: availabilityText(work, 'ko'),
+    status_en: availabilityText(work, 'en'),
+    caption_kr: work.caption_kr || '',
+    caption_en: work.caption_en || ''
   }));
 
   WORKS_GRID.querySelectorAll('.work-thumb').forEach(el => {
-    el.addEventListener('click', () => openLightbox(Number(el.dataset.index), currentLightboxItems));
+    el.addEventListener('click', () => {
+      openLightbox(Number(el.dataset.index), currentLightboxItems);
+    });
   });
 }
 
@@ -1159,15 +1162,15 @@ function updateLightbox() {
   const m = mode();
   if (!item) return;
 
-  if (item.zoom && item.standard) {
-    LIGHTBOX_IMAGE.src = item.zoom;
-    LIGHTBOX_IMAGE.alt = m === 'en' ? item.title_en : item.title_kr;
-    LIGHTBOX_CAPTION.innerHTML = `<div class="work-title">${escapeHtml(m === 'en' ? item.title_en : item.title_kr)}</div><div class="work-meta">${escapeHtml(m === 'en' ? item.material_en : item.material_kr)}<br>${escapeHtml(m === 'en' ? item.size_en : item.size_kr)}<br>${escapeHtml(item.year)}${item.caption_kr || item.caption_en ? `<br><br>${escapeHtml(m === 'en' ? (item.caption_en || '') : (item.caption_kr || ''))}` : ''}</div>`;
+  const src = item.zoom || item.standard || item.image || '';
+  LIGHTBOX_IMAGE.src = src;
+  LIGHTBOX_IMAGE.alt = m === 'en' ? item.title_en : item.title_kr;
+
+  if (item.zoom || item.standard) {
+    LIGHTBOX_CAPTION.innerHTML = `<div class="work-title">${escapeHtml(m === 'en' ? item.title_en : item.title_kr)}</div><div class="work-meta">${escapeHtml(m === 'en' ? item.material_en : item.material_kr)}<br>${escapeHtml(m === 'en' ? item.size_en : item.size_kr)}<br>${escapeHtml(item.year || '')}${item.price ? `<br>${escapeHtml(item.price)}` : ''}${(item.status_kr || item.status_en) ? `<br>${escapeHtml(m === 'en' ? (item.status_en || '') : (item.status_kr || ''))}` : ''}${item.caption_kr || item.caption_en ? `<br><br>${escapeHtml(m === 'en' ? (item.caption_en || '') : (item.caption_kr || ''))}` : ''}</div>`;
     return;
   }
 
-  LIGHTBOX_IMAGE.src = item.image;
-  LIGHTBOX_IMAGE.alt = m === 'en' ? item.title_en : item.title_kr;
   LIGHTBOX_CAPTION.innerHTML = `<div class="work-title">${escapeHtml(m === 'en' ? item.title_en : item.title_kr)}</div><div class="work-meta">${escapeHtml(m === 'en' ? item.meta_en : item.meta_kr)}</div>`;
 }
 
