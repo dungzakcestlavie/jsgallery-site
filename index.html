@@ -347,6 +347,9 @@ section.page.active{display:block}
     .artist-note-summary{width:100%;border:1px solid rgba(31,78,117,.08);border-radius:16px;background:#fff;padding:14px 16px;text-align:left;font:inherit;line-height:1.7;color:#244c70;cursor:pointer}
     .artist-note-summary:hover{border-color:rgba(31,78,117,.18)}
     .artist-note-full{margin-top:14px;padding:16px;border-radius:16px;background:rgba(31,78,117,.04);line-height:1.82;color:#244c70;white-space:pre-line}
+
+    .view-all{display:inline-flex;align-items:center;cursor:pointer;opacity:.74;font-size:13.5px;font-weight:600;letter-spacing:.02em;color:var(--cobalt-deep);transition:opacity .25s ease;text-decoration:none;white-space:nowrap}
+    .view-all:hover,.view-all:focus-visible{opacity:1;outline:none}
     @media (max-width:820px){.artist-profile-layout{grid-template-columns:1fr}}
   </style>
 </head>
@@ -497,6 +500,10 @@ they emerge through relationships within the exhibition.</div>
             <span class="ko">작품</span>
             <span class="en">Works</span>
           </h3>
+          <span class="view-all" id="artistViewAll" role="button" tabindex="0">
+            <span class="ko">전체보기 →</span>
+            <span class="en">View All →</span>
+          </span>
         </div>
 
         <div class="works-grid" id="worksGrid"></div>
@@ -522,7 +529,7 @@ they emerge through relationships within the exhibition.</div>
     <div class="wrap">
       <div class="section-head">
         <h2 class="section-title"><span class="ko">아트샵</span><span class="en">Art Shop</span></h2>
-        </div>
+        <div class="section-note"><div class="ko">작품 이미지와 캡션이 연결되는 기본 구조입니다.</div><div class="en">A base structure where artwork images and captions are connected.</div></div>
       </div>
       <div class="shop-grid" id="shopGrid"></div>
     </div>
@@ -591,6 +598,7 @@ const ARTIST_NOTE_SUMMARY_BTN = document.getElementById('artistNoteSummaryBtn');
 const ARTIST_NOTE_FULL = document.getElementById('artistNoteFull');
 const WORKS_GRID = document.getElementById('worksGrid');
 const SHOP_GRID = document.getElementById('shopGrid');
+const ARTIST_VIEW_ALL = document.getElementById('artistViewAll');
 const LIGHTBOX = document.getElementById('lightbox');
 const LIGHTBOX_IMAGE = document.getElementById('lightboxImage');
 const EXHIBITIONS_CARDS = document.getElementById('exhibitionsCards');
@@ -1190,6 +1198,18 @@ if (ARTIST_NOTE_SUMMARY_BTN) {
 
 LANG_BTNS.forEach(btn => btn.addEventListener('click', () => setLang(btn.dataset.lang)));
 NAV_BTNS.forEach(btn => btn.addEventListener('click', () => page(btn.dataset.page)));
+
+if (ARTIST_VIEW_ALL) {
+  const goArtistViewAll = () => page('shop');
+  ARTIST_VIEW_ALL.addEventListener('click', goArtistViewAll);
+  ARTIST_VIEW_ALL.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      goArtistViewAll();
+    }
+  });
+}
+
 document.querySelectorAll('[data-page-jump]').forEach(btn => btn.addEventListener('click', () => page(btn.dataset.pageJump)));
 document.querySelectorAll('.menu-link[data-page]').forEach(btn => btn.addEventListener('click', () => page(btn.dataset.page)));
 MENU_BTN.addEventListener('click', () => MENU_PANEL.classList.contains('open') ? closeMenu() : openMenu());
