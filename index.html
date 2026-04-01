@@ -766,11 +766,14 @@ let lightboxTouchLastTime = 0;
 let lightboxVelocityX = 0;
 let lightboxTouchActive = false;
 let lightboxDidSwipe = false;
+let lightboxSwipeTriggered = false;
+let lightboxHorizontalIntent = false;
 let lightboxSuppressTapCloseUntil = 0;
-const LIGHTBOX_SWIPE_THRESHOLD = 34;
-const LIGHTBOX_FLICK_DISTANCE = 20;
-const LIGHTBOX_FLICK_VELOCITY = 0.42;
-const LIGHTBOX_VERTICAL_TOLERANCE = 56;
+const LIGHTBOX_SWIPE_THRESHOLD = 24;
+const LIGHTBOX_FLICK_DISTANCE = 12;
+const LIGHTBOX_FLICK_VELOCITY = 0.22;
+const LIGHTBOX_VERTICAL_TOLERANCE = 72;
+const LIGHTBOX_INTENT_THRESHOLD = 8;
 
 function mode() {
   return BODY.classList.contains('mode-en') ? 'en' : 'ko';
@@ -1620,24 +1623,56 @@ LIGHTBOX.addEventListener('touchstart', e => {
   lightboxTouchLastTime = now;
   lightboxVelocityX = 0;
   lightboxDidSwipe = false;
+  lightboxSwipeTriggered = false;
+  lightboxHorizontalIntent = false;
   lightboxTouchActive = true;
 }, { passive: true });
 LIGHTBOX.addEventListener('touchmove', e => {
-  if (!lightboxTouchActive) return;
+  if (!lightboxTouchActive || lightboxSwipeTriggered) return;
   const touch = e.touches[0];
   if (!touch) return;
 
   lightboxTouchCurrentX = touch.clientX;
   lightboxTouchCurrentY = touch.clientY;
 
+  const totalX = touch.clientX - lightboxTouchStartX;
+  const totalY = touch.clientY - lightboxTouchStartY;
+  const absX = Math.abs(totalX);
+  const absY = Math.abs(totalY);
+
+  if (!lightboxHorizontalIntent && absX >= LIGHTBOX_INTENT_THRESHOLD && absX > absY * 1.02) {
+    lightboxHorizontalIntent = true;
+  }
+
   const now = performance.now();
   const dt = Math.max(1, now - lightboxTouchLastTime);
   lightboxVelocityX = (touch.clientX - lightboxTouchLastX) / dt;
   lightboxTouchLastX = touch.clientX;
   lightboxTouchLastTime = now;
+
+  if (!lightboxHorizontalIntent) return;
+  if (absY > LIGHTBOX_VERTICAL_TOLERANCE) return;
+
+  const fastEnough = Math.abs(lightboxVelocityX) >= LIGHTBOX_FLICK_VELOCITY && absX >= LIGHTBOX_FLICK_DISTANCE;
+  const farEnough = absX >= LIGHTBOX_SWIPE_THRESHOLD;
+
+  if (farEnough || fastEnough) {
+    lightboxSwipeTriggered = true;
+    lightboxDidSwipe = true;
+    lightboxSuppressTapCloseUntil = performance.now() + 420;
+    lightboxTouchActive = false;
+    if (totalX < 0) nextLightbox();
+    else prevLightbox();
+  }
 }, { passive: true });
 LIGHTBOX.addEventListener('touchend', e => {
-  if (!lightboxTouchActive) return;
+  if (!lightboxTouchActive) {
+    lightboxTouchActive = false;
+    lightboxVelocityX = 0;
+    lightboxHorizontalIntent = false;
+    lightboxSwipeTriggered = false;
+    return;
+  }
 
   const touch = e.changedTouches[0];
   const endX = touch ? touch.clientX : lightboxTouchCurrentX;
@@ -1647,27 +1682,30 @@ LIGHTBOX.addEventListener('touchend', e => {
   const diffY = lightboxTouchStartY - endY;
   const absX = Math.abs(diffX);
   const absY = Math.abs(diffY);
-  const elapsed = Math.max(1, performance.now() - lightboxTouchStartTime);
-  const flick = Math.abs(lightboxVelocityX) > LIGHTBOX_FLICK_VELOCITY && absX >= LIGHTBOX_FLICK_DISTANCE;
+  const flick = Math.abs(lightboxVelocityX) >= LIGHTBOX_FLICK_VELOCITY && absX >= LIGHTBOX_FLICK_DISTANCE;
   const distanceEnough = absX >= LIGHTBOX_SWIPE_THRESHOLD;
-  const isHorizontal = absX > absY * 1.08 && absY < LIGHTBOX_VERTICAL_TOLERANCE;
+  const isHorizontal = absX > absY * 1.02 && absY < LIGHTBOX_VERTICAL_TOLERANCE;
 
   if (isHorizontal && (distanceEnough || flick)) {
     lightboxDidSwipe = true;
-    lightboxSuppressTapCloseUntil = performance.now() + 320;
+    lightboxSuppressTapCloseUntil = performance.now() + 420;
     if (diffX > 0) nextLightbox();
     else prevLightbox();
-  } else if (absX > 8 || absY > 8 || elapsed > 280) {
+  } else {
     lightboxDidSwipe = false;
   }
 
   lightboxTouchActive = false;
   lightboxVelocityX = 0;
+  lightboxHorizontalIntent = false;
+  lightboxSwipeTriggered = false;
 }, { passive: true });
 LIGHTBOX.addEventListener('touchcancel', () => {
   lightboxTouchActive = false;
   lightboxVelocityX = 0;
   lightboxDidSwipe = false;
+  lightboxHorizontalIntent = false;
+  lightboxSwipeTriggered = false;
 }, { passive: true });
 EXHIBITION_MODAL_CLOSE.addEventListener('click', closeExhibitionModal);
 EXHIBITION_MODAL.addEventListener('click', e => { if (e.target === EXHIBITION_MODAL) closeExhibitionModal(); });
