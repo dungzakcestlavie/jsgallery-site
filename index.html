@@ -1918,7 +1918,15 @@ function openLightbox(index, items) {
   currentLightboxItems = items;
   currentLightboxIndex = index;
   lightboxZoom.lastTapAt = 0;
+  lightboxTouchActive = false;
+  lightboxTouchMoved = false;
+  lightboxSwipeLocked = false;
+  lightboxDragOffsetX = 0;
+  LIGHTBOX_IMAGE.style.transition = 'none';
   updateLightbox();
+  requestAnimationFrame(() => {
+    LIGHTBOX_IMAGE.style.transition = 'transform .34s cubic-bezier(.22,.78,.2,1), opacity .34s ease';
+  });
   LIGHTBOX.classList.add('open');
   LIGHTBOX.setAttribute('aria-hidden', 'false');
   document.body.classList.add('modal-open');
@@ -1929,7 +1937,15 @@ function openSoloLightbox(index, works) {
   currentLightboxItems = works;
   currentLightboxIndex = index;
   lightboxZoom.lastTapAt = 0;
+  lightboxTouchActive = false;
+  lightboxTouchMoved = false;
+  lightboxSwipeLocked = false;
+  lightboxDragOffsetX = 0;
+  LIGHTBOX_IMAGE.style.transition = 'none';
   updateLightbox();
+  requestAnimationFrame(() => {
+    LIGHTBOX_IMAGE.style.transition = 'transform .34s cubic-bezier(.22,.78,.2,1), opacity .34s ease';
+  });
   LIGHTBOX.classList.add('open');
   LIGHTBOX.setAttribute('aria-hidden', 'false');
   document.body.classList.add('modal-open');
@@ -2295,6 +2311,8 @@ LIGHTBOX.addEventListener('click', e => {
 });
 
 LIGHTBOX_IMAGE.addEventListener('load', () => {
+  if (!LIGHTBOX.classList.contains('open')) return;
+  if (lightboxAnimating || lightboxTouchActive || lightboxSwipeLocked || lightboxTouchMoved || lightboxZoom.dragging) return;
   resetLightboxZoom(false);
 });
 
@@ -2423,6 +2441,7 @@ LIGHTBOX.addEventListener('touchstart', e => {
   lightboxSwipeLocked = false;
   lightboxDragOffsetX = 0;
   LIGHTBOX_IMAGE.style.transition = 'none';
+  LIGHTBOX_IMAGE.style.opacity = '1';
 
   if (lightboxZoom.scale > 1.01) {
     lightboxZoom.dragging = true;
@@ -2457,6 +2476,7 @@ LIGHTBOX.addEventListener('touchmove', e => {
   }
 
   const touch = e.touches[0];
+
   if (lightboxZoom.scale > 1.01 && lightboxZoom.dragging) {
     e.preventDefault();
     lightboxZoom.x = touch.clientX - lightboxZoom.startDragX;
@@ -2473,28 +2493,33 @@ LIGHTBOX.addEventListener('touchmove', e => {
   const absX = Math.abs(diffX);
   const absY = Math.abs(diffY);
 
-  if (absX > 2 || absY > 2) {
+  if (absX > 1 || absY > 1) {
     lightboxTouchMoved = true;
   }
 
   if (!lightboxSwipeLocked) {
-    if (absY > 8 && absY > absX * 1.05) {
+    if (absX < 3 && absY < 3) return;
+
+    if (absX > absY * 0.72) {
+      lightboxSwipeLocked = true;
+      LIGHTBOX.classList.add('swiping');
+    } else if (absY > absX * 1.05) {
       lightboxTouchActive = false;
+      lightboxTouchMoved = false;
+      lightboxSwipeLocked = false;
       resetLightboxImagePosition();
       return;
-    }
-    if (absX > 2 && absX > absY * 0.9) {
-      lightboxSwipeLocked = true;
+    } else {
+      return;
     }
   }
 
-  if (!lightboxSwipeLocked) return;
-
   e.preventDefault();
   const width = Math.max(LIGHTBOX.clientWidth || 0, window.innerWidth || 0, 320);
-  const resistance = 1 - Math.min(absX / width, 0.35) * 0.18;
-  lightboxDragOffsetX = diffX * resistance;
+  const limit = width * 0.35;
+  lightboxDragOffsetX = clamp(diffX, -limit, limit);
   LIGHTBOX_IMAGE.style.transform = lightboxTransform(lightboxDragOffsetX, 0, 1);
+  LIGHTBOX_IMAGE.style.opacity = '1';
 }, { passive: false });
 
 LIGHTBOX.addEventListener('touchend', e => {
@@ -2510,19 +2535,21 @@ LIGHTBOX.addEventListener('touchend', e => {
 
   if (lightboxZoom.scale > 1.01) {
     lightboxZoom.dragging = false;
-    if (!e.touches || e.touches.length === 0) {
-      renderLightboxZoom();
-    }
+    if (!e.touches || e.touches.length === 0) renderLightboxZoom();
     return;
   }
 
-  if (!lightboxTouchActive) return;
+  if (!lightboxTouchActive) {
+    resetLightboxImagePosition();
+    return;
+  }
   lightboxTouchActive = false;
 
   if (!e.changedTouches || !e.changedTouches.length) {
     resetLightboxImagePosition();
     return;
   }
+
   const touch = e.changedTouches[0];
   const diffX = lightboxTouchStartX - touch.clientX;
   const diffY = lightboxTouchStartY - touch.clientY;
@@ -2533,16 +2560,12 @@ LIGHTBOX.addEventListener('touchend', e => {
     resetLightboxImagePosition();
     return;
   }
-  if (absY > LIGHTBOX_VERTICAL_TOLERANCE) {
-    resetLightboxImagePosition();
-    return;
-  }
-  if (absX <= absY) {
+  if (absY > LIGHTBOX_VERTICAL_TOLERANCE && absY > absX) {
     resetLightboxImagePosition();
     return;
   }
   if (absX < LIGHTBOX_SWIPE_THRESHOLD) {
-    LIGHTBOX_IMAGE.style.transition = 'transform .20s ease';
+    LIGHTBOX_IMAGE.style.transition = 'transform .20s ease, opacity .20s ease';
     LIGHTBOX_IMAGE.style.transform = lightboxTransform(0, 0, 1);
     LIGHTBOX_IMAGE.style.opacity = '1';
     const rebound = () => {
