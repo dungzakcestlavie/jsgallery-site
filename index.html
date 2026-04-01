@@ -110,7 +110,7 @@
 }
 
 main{display:block;min-height:calc(100vh - 110px)}
-section.page{display:none;padding:28px 0 62px;touch-action:pan-y;will-change:transform,opacity}
+section.page{display:none;padding:28px 0 62px;touch-action:pan-y;will-change:transform,opacity;transform:translateZ(0);backface-visibility:hidden;-webkit-backface-visibility:hidden}
 section.page.active,section.page.is-animating{display:block}
 main.page-swipe-active{position:relative;overflow:hidden}
 
@@ -323,6 +323,10 @@ main.page-swipe-active{position:relative;overflow:hidden}
     .lightbox{position:fixed;inset:0;z-index:1400;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.92);padding:20px}
     .lightbox.open{display:flex}
     .lightbox img{display:block;max-width:92vw;max-height:92vh;width:auto;height:auto;object-fit:contain;border:none;box-shadow:none}
+    .lightbox-caption{display:none !important;position:fixed;left:20px;right:20px;bottom:20px;z-index:1401;max-width:min(760px, calc(100vw - 40px));margin:0 auto;padding:14px 16px 15px;border-radius:18px;background:rgba(10,16,24,.62);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.10);color:rgba(255,255,255,.96)}
+    .lightbox-caption[hidden]{display:none !important}
+    .lightbox-caption-title{font-size:15px;font-weight:700;line-height:1.35;color:#fff}
+    .lightbox-caption-meta{margin-top:6px;font-size:13px;line-height:1.65;color:rgba(255,255,255,.84);white-space:pre-line}
     .exhibition-modal{display:none;position:fixed;inset:0;background:rgba(7,14,20,.56);z-index:999;align-items:center;justify-content:center;padding:20px}
     .exhibition-modal.open{display:flex}
     .exhibition-modal-panel{background:rgba(255,255,255,.98);width:min(960px,100%);max-height:88vh;overflow:auto;border-radius:28px;padding:24px;box-shadow:0 28px 70px rgba(16,34,51,.18);position:relative}
@@ -600,6 +604,10 @@ they emerge through relationships within the exhibition.</div>
 
 <div class="lightbox" id="lightbox" aria-hidden="true">
   <img id="lightboxImage" src="" alt="" />
+  <div class="lightbox-caption" id="lightboxCaption" hidden>
+    <div class="lightbox-caption-title" id="lightboxCaptionTitle"></div>
+    <div class="lightbox-caption-meta" id="lightboxCaptionMeta"></div>
+  </div>
 </div>
 
 <div class="exhibition-modal" id="exhibitionModal" aria-hidden="true">
@@ -640,6 +648,9 @@ const SHOP_GRID = document.getElementById('shopGrid');
 const ARTIST_VIEW_ALL = document.getElementById('artistViewAll');
 const LIGHTBOX = document.getElementById('lightbox');
 const LIGHTBOX_IMAGE = document.getElementById('lightboxImage');
+const LIGHTBOX_CAPTION = document.getElementById('lightboxCaption');
+const LIGHTBOX_CAPTION_TITLE = document.getElementById('lightboxCaptionTitle');
+const LIGHTBOX_CAPTION_META = document.getElementById('lightboxCaptionMeta');
 const EXHIBITIONS_CARDS = document.getElementById('exhibitionsCards');
 const EXHIBITION_MODAL = document.getElementById('exhibitionModal');
 const EXHIBITION_MODAL_CONTENT = document.getElementById('exhibitionModalContent');
@@ -781,6 +792,8 @@ const PAGE_ORDER = ['home','about','exhibitions','artists','shop','contact'];
 const MAIN = document.querySelector('main');
 let pageSwipeState = null;
 let pageTransitionLock = false;
+let swipeRafId = 0;
+let swipePendingX = 0;
 
 function getCurrentPageId() {
   const active = document.querySelector('section.page.active');
@@ -792,6 +805,10 @@ function setNavState(id) {
 }
 
 function cleanupAnimatedPages(currentEl, nextEl) {
+  if (swipeRafId) {
+    cancelAnimationFrame(swipeRafId);
+    swipeRafId = 0;
+  }
   [currentEl, nextEl].forEach(el => {
     if (!el) return;
     el.classList.remove('is-animating');
@@ -803,11 +820,13 @@ function cleanupAnimatedPages(currentEl, nextEl) {
     el.style.width = '';
     el.style.zIndex = '';
     el.style.pointerEvents = '';
+    el.style.willChange = '';
   });
   if (MAIN) {
     MAIN.classList.remove('page-swipe-active');
     MAIN.style.minHeight = '';
   }
+  swipePendingX = 0;
   pageSwipeState = null;
 }
 
@@ -838,6 +857,7 @@ function animatePageTo(id, direction = 'next') {
     el.style.inset = '0';
     el.style.width = '100%';
     el.style.pointerEvents = 'none';
+    el.style.willChange = 'transform, opacity';
   });
 
   currentEl.style.zIndex = '2';
@@ -915,6 +935,7 @@ function beginPageSwipe(direction) {
     el.style.width = '100%';
     el.style.transition = 'none';
     el.style.pointerEvents = 'none';
+    el.style.willChange = 'transform, opacity';
   });
 
   currentEl.style.zIndex = '2';
@@ -930,32 +951,57 @@ function beginPageSwipe(direction) {
 
 function updatePageSwipe(deltaX) {
   if (!pageSwipeState) return;
-  const { direction, currentEl, nextEl, width } = pageSwipeState;
-  const limited = direction === 'next'
-    ? Math.max(Math.min(deltaX, 0), -width)
-    : Math.min(Math.max(deltaX, 0), width);
+  swipePendingX = deltaX;
+  if (swipeRafId) return;
 
-  currentEl.style.transform = `translateX(${limited}px)`;
-  currentEl.style.opacity = String(Math.max(0.18, 1 - Math.abs(limited) / (width * 0.95)));
+  swipeRafId = requestAnimationFrame(() => {
+    swipeRafId = 0;
+    if (!pageSwipeState) return;
 
-  const nextBase = direction === 'next' ? width : -width;
-  nextEl.style.transform = `translateX(${nextBase + limited}px)`;
+    const { direction, currentEl, nextEl, width } = pageSwipeState;
+    const edge = width * 0.08;
+    let limited = direction === 'next'
+      ? Math.max(Math.min(swipePendingX, edge), -width - edge)
+      : Math.min(Math.max(swipePendingX, -edge), width + edge);
+
+    if (Math.abs(limited) > width) {
+      const overflow = Math.abs(limited) - width;
+      const easedOverflow = Math.min(edge, overflow * 0.28);
+      limited = (limited < 0 ? -1 : 1) * (width + easedOverflow);
+    }
+
+    const progress = Math.min(1, Math.abs(limited) / width);
+    const currentOffset = limited * 0.96;
+    const nextBase = direction === 'next' ? width : -width;
+    const nextOffset = nextBase + limited * 0.92;
+
+    currentEl.style.transform = `translate3d(${currentOffset}px,0,0)`;
+    currentEl.style.opacity = String(Math.max(0.28, 1 - progress * 0.62));
+    nextEl.style.transform = `translate3d(${nextOffset}px,0,0)`;
+    nextEl.style.opacity = String(Math.min(1, 0.78 + progress * 0.22));
+  });
 }
 
 function finishPageSwipe(commit) {
   if (!pageSwipeState) return;
-  const { direction, currentId, nextId, currentEl, nextEl, width } = pageSwipeState;
-  const endCurrent = commit ? (direction === 'next' ? -width * 0.18 : width * 0.18) : 0;
+  const { direction, nextId, currentEl, nextEl, width } = pageSwipeState;
+  const endCurrent = commit ? (direction === 'next' ? -width * 0.12 : width * 0.12) : 0;
   const endNext = commit ? 0 : (direction === 'next' ? width : -width);
 
+  if (swipeRafId) {
+    cancelAnimationFrame(swipeRafId);
+    swipeRafId = 0;
+  }
+
   [currentEl, nextEl].forEach(el => {
-    el.style.transition = 'transform .32s cubic-bezier(.22,.61,.36,1), opacity .32s ease';
+    el.style.transition = 'transform .42s cubic-bezier(.22,.8,.2,1), opacity .42s ease';
   });
 
   requestAnimationFrame(() => {
-    currentEl.style.transform = `translateX(${endCurrent}px)`;
-    currentEl.style.opacity = commit ? '0.18' : '1';
-    nextEl.style.transform = `translateX(${endNext}px)`;
+    currentEl.style.transform = `translate3d(${endCurrent}px,0,0)`;
+    currentEl.style.opacity = commit ? '0.22' : '1';
+    nextEl.style.transform = `translate3d(${endNext}px,0,0)`;
+    nextEl.style.opacity = '1';
   });
 
   const done = () => {
@@ -1127,8 +1173,6 @@ function renderArtistDetail() {
         <div class="work-line">${escapeHtml(workMaterial(work, lang))}</div>
         <div class="work-line">${escapeHtml(workSize(work, lang))}</div>
         <div class="work-line">${escapeHtml(work.year || '')}</div>
-        <div class="work-line">${escapeHtml(work.price || '')}</div>
-        <div class="work-line">${escapeHtml(availabilityText(work, lang))}</div>
       </div>
     </article>
   `).join('');
@@ -1138,14 +1182,16 @@ function renderArtistDetail() {
     zoom: work.zoom || work.image || '',
     title_kr: work.title_kr || '',
     title_en: work.title_en || '',
-    material_kr: work.material_kr || '',
-    material_en: work.material_en || '',
-    size_kr: work.size_kr || '',
-    size_en: work.size_en || '',
-    year: work.year || '',
-    price: work.price || '',
-    status_kr: availabilityText(work, 'ko'),
-    status_en: availabilityText(work, 'en'),
+    meta_kr: `${workMaterial(work, 'ko')}
+${workSize(work, 'ko')}
+${work.year || ''}${work.price ? `
+${work.price}` : ''}${availabilityText(work, 'ko') ? `
+${availabilityText(work, 'ko')}` : ''}`,
+    meta_en: `${workMaterial(work, 'en')}
+${workSize(work, 'en')}
+${work.year || ''}${work.price ? `
+${work.price}` : ''}${availabilityText(work, 'en') ? `
+${availabilityText(work, 'en')}` : ''}`,
     caption_kr: work.caption_kr || '',
     caption_en: work.caption_en || ''
   }));
@@ -1401,8 +1447,17 @@ function updateLightbox() {
   if (!item) return;
 
   const src = item.zoom || item.standard || item.image || '';
+  const title = m === 'en' ? (item.title_en || 'Artwork at KJS GALLERY') : (item.title_kr || 'KJS GALLERY 작품');
+  const meta = m === 'en' ? (item.meta_en || '') : (item.meta_kr || '');
+
   LIGHTBOX_IMAGE.src = src;
-  LIGHTBOX_IMAGE.alt = m === 'en' ? (item.title_en || 'Artwork at KJS GALLERY') : (item.title_kr || 'KJS GALLERY 작품');
+  LIGHTBOX_IMAGE.alt = title;
+
+  if (LIGHTBOX_CAPTION && LIGHTBOX_CAPTION_TITLE && LIGHTBOX_CAPTION_META) {
+    LIGHTBOX_CAPTION.hidden = true;
+    LIGHTBOX_CAPTION_TITLE.textContent = '';
+    LIGHTBOX_CAPTION_META.textContent = '';
+  }
 }
 
 function closeLightbox() {
@@ -1410,6 +1465,11 @@ function closeLightbox() {
   LIGHTBOX.setAttribute('aria-hidden', 'true');
   LIGHTBOX_IMAGE.src = '';
   LIGHTBOX_IMAGE.alt = '';
+  if (LIGHTBOX_CAPTION && LIGHTBOX_CAPTION_TITLE && LIGHTBOX_CAPTION_META) {
+    LIGHTBOX_CAPTION.hidden = true;
+    LIGHTBOX_CAPTION_TITLE.textContent = '';
+    LIGHTBOX_CAPTION_META.textContent = '';
+  }
   document.body.classList.remove('lightbox-open');
   if (!EXHIBITION_MODAL.classList.contains('open')) document.body.classList.remove('modal-open');
 }
@@ -1436,6 +1496,9 @@ function initPageSwipe() {
   let deltaY = 0;
   let tracking = false;
   let dragging = false;
+  let lastX = 0;
+  let lastTime = 0;
+  let velocityX = 0;
 
   MAIN.addEventListener('touchstart', e => {
     const touch = e.touches[0];
@@ -1448,6 +1511,9 @@ function initPageSwipe() {
     dragging = false;
     startX = touch.clientX;
     startY = touch.clientY;
+    lastX = touch.clientX;
+    lastTime = performance.now();
+    velocityX = 0;
     deltaX = 0;
     deltaY = 0;
   }, { passive: true });
@@ -1460,9 +1526,15 @@ function initPageSwipe() {
     deltaX = touch.clientX - startX;
     deltaY = touch.clientY - startY;
 
+    const now = performance.now();
+    const dt = Math.max(1, now - lastTime);
+    velocityX = (touch.clientX - lastX) / dt;
+    lastX = touch.clientX;
+    lastTime = now;
+
     if (!dragging) {
-      if (Math.abs(deltaX) < 14) return;
-      if (Math.abs(deltaY) > Math.abs(deltaX) * 0.9) {
+      if (Math.abs(deltaX) < 10) return;
+      if (Math.abs(deltaY) > Math.abs(deltaX) * 0.85) {
         tracking = false;
         return;
       }
@@ -1484,16 +1556,22 @@ function initPageSwipe() {
       tracking = false;
       return;
     }
-    const shouldCommit = Math.abs(deltaX) > 72 && Math.abs(deltaX) > Math.abs(deltaY) * 1.2;
+    const absX = Math.abs(deltaX);
+    const absY = Math.abs(deltaY);
+    const flick = Math.abs(velocityX) > 0.45 && absX > 26;
+    const distanceEnough = absX > Math.min(96, (MAIN.clientWidth || window.innerWidth) * 0.16);
+    const shouldCommit = (distanceEnough || flick) && absX > absY * 1.08;
     finishPageSwipe(shouldCommit);
     tracking = false;
     dragging = false;
+    velocityX = 0;
   }, { passive: true });
 
   MAIN.addEventListener('touchcancel', () => {
     if (dragging) finishPageSwipe(false);
     tracking = false;
     dragging = false;
+    velocityX = 0;
   }, { passive: true });
 }
 
