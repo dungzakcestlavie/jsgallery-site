@@ -1227,7 +1227,6 @@ let lightboxTouchActive = false;
 let lightboxTouchMoved = false;
 let lightboxSwipeLocked = false;
 let lightboxDragOffsetX = 0;
-let lightboxGestureAxis = '';
 let lightboxAnimating = false;
 const LIGHTBOX_SWIPE_THRESHOLD = 42;
 const LIGHTBOX_VERTICAL_TOLERANCE = 88;
@@ -1918,6 +1917,7 @@ function closeExhibitionModal() {
 function openLightbox(index, items) {
   currentLightboxItems = items;
   currentLightboxIndex = index;
+  lightboxZoom.lastTapAt = 0;
   updateLightbox();
   LIGHTBOX.classList.add('open');
   LIGHTBOX.setAttribute('aria-hidden', 'false');
@@ -1928,6 +1928,7 @@ function openLightbox(index, items) {
 function openSoloLightbox(index, works) {
   currentLightboxItems = works;
   currentLightboxIndex = index;
+  lightboxZoom.lastTapAt = 0;
   updateLightbox();
   LIGHTBOX.classList.add('open');
   LIGHTBOX.setAttribute('aria-hidden', 'false');
@@ -2126,6 +2127,7 @@ function closeLightbox() {
   lightboxTouchActive = false;
   lightboxTouchMoved = false;
   lightboxAnimating = false;
+  lightboxZoom.lastTapAt = 0;
   resetLightboxZoom(false);
   LIGHTBOX.classList.remove('open');
   LIGHTBOX.classList.remove('swiping');
@@ -2306,7 +2308,8 @@ LIGHTBOX.addEventListener('wheel', e => {
 
 LIGHTBOX.addEventListener('pointerdown', e => {
   if (!LIGHTBOX.classList.contains('open') || lightboxAnimating) return;
-  if (e.pointerType === 'touch' && lightboxZoom.scale <= 1.01) return;
+  if (e.pointerType === 'touch') return;
+
   LIGHTBOX.setPointerCapture?.(e.pointerId);
   lightboxZoom.pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
 
@@ -2340,7 +2343,7 @@ LIGHTBOX.addEventListener('pointerdown', e => {
 
 LIGHTBOX.addEventListener('pointermove', e => {
   if (!LIGHTBOX.classList.contains('open')) return;
-  if (e.pointerType === 'touch' && lightboxZoom.scale <= 1.01) return;
+  if (e.pointerType === 'touch') return;
   if (lightboxZoom.pointers.has(e.pointerId)) {
     lightboxZoom.pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
   }
@@ -2372,6 +2375,7 @@ LIGHTBOX.addEventListener('pointermove', e => {
 }, { passive: false });
 
 function endLightboxPointer(e) {
+  if (e.pointerType === 'touch') return;
   lightboxZoom.pointers.delete(e.pointerId);
   if (lightboxZoom.pointers.size < 2) {
     lightboxZoom.startDistance = 0;
@@ -2391,76 +2395,131 @@ LIGHTBOX.addEventListener('pointerup', endLightboxPointer);
 LIGHTBOX.addEventListener('pointercancel', endLightboxPointer);
 
 LIGHTBOX.addEventListener('touchstart', e => {
-  if (!LIGHTBOX.classList.contains('open') || lightboxAnimating || lightboxZoom.scale > 1.01) return;
-  if (!e.touches || e.touches.length !== 1) {
+  if (!LIGHTBOX.classList.contains('open') || lightboxAnimating) return;
+  if (!e.touches || !e.touches.length) return;
+
+  if (e.touches.length === 2) {
     lightboxTouchActive = false;
     lightboxSwipeLocked = false;
-    lightboxGestureAxis = '';
+    lightboxTouchMoved = false;
+    const [a, b] = e.touches;
+    lightboxZoom.startScale = lightboxZoom.scale;
+    lightboxZoom.startX = lightboxZoom.x;
+    lightboxZoom.startY = lightboxZoom.y;
+    lightboxZoom.startDistance = distanceBetween({ x: a.clientX, y: a.clientY }, { x: b.clientX, y: b.clientY }) || 1;
+    const mid = midpointBetween({ x: a.clientX, y: a.clientY }, { x: b.clientX, y: b.clientY });
+    lightboxZoom.startMidX = mid.x;
+    lightboxZoom.startMidY = mid.y;
+    lightboxZoom.dragging = false;
+    LIGHTBOX_IMAGE.style.transition = 'none';
     return;
   }
+
   const touch = e.touches[0];
   lightboxTouchStartX = touch.clientX;
   lightboxTouchStartY = touch.clientY;
   lightboxTouchActive = true;
   lightboxTouchMoved = false;
   lightboxSwipeLocked = false;
-  lightboxGestureAxis = '';
   lightboxDragOffsetX = 0;
-  LIGHTBOX.classList.add('swiping');
   LIGHTBOX_IMAGE.style.transition = 'none';
-  LIGHTBOX_IMAGE.style.opacity = '1';
+
+  if (lightboxZoom.scale > 1.01) {
+    lightboxZoom.dragging = true;
+    lightboxZoom.startDragX = touch.clientX - lightboxZoom.x;
+    lightboxZoom.startDragY = touch.clientY - lightboxZoom.y;
+    return;
+  }
+
+  LIGHTBOX.classList.add('swiping');
 }, { passive: true });
 
 LIGHTBOX.addEventListener('touchmove', e => {
-  if (!lightboxTouchActive || lightboxAnimating || lightboxZoom.scale > 1.01) return;
-  if (!e.touches || e.touches.length !== 1) {
-    lightboxTouchActive = false;
-    lightboxSwipeLocked = false;
-    lightboxGestureAxis = '';
-    resetLightboxImagePosition();
+  if (!LIGHTBOX.classList.contains('open') || lightboxAnimating) return;
+  if (!e.touches || !e.touches.length) return;
+
+  if (e.touches.length === 2) {
+    const [a, b] = e.touches;
+    const dist = distanceBetween({ x: a.clientX, y: a.clientY }, { x: b.clientX, y: b.clientY }) || 1;
+    const mid = midpointBetween({ x: a.clientX, y: a.clientY }, { x: b.clientX, y: b.clientY });
+    lightboxZoom.scale = clamp(lightboxZoom.startScale * (dist / lightboxZoom.startDistance), lightboxZoom.min, lightboxZoom.max);
+    lightboxZoom.x = lightboxZoom.startX + (mid.x - lightboxZoom.startMidX);
+    lightboxZoom.y = lightboxZoom.startY + (mid.y - lightboxZoom.startMidY);
+    if (lightboxZoom.scale <= 1.01) {
+      lightboxZoom.scale = 1;
+      lightboxZoom.x = 0;
+      lightboxZoom.y = 0;
+    }
+    e.preventDefault();
+    LIGHTBOX_IMAGE.style.transition = 'none';
+    renderLightboxZoom();
     return;
   }
 
   const touch = e.touches[0];
+  if (lightboxZoom.scale > 1.01 && lightboxZoom.dragging) {
+    e.preventDefault();
+    lightboxZoom.x = touch.clientX - lightboxZoom.startDragX;
+    lightboxZoom.y = touch.clientY - lightboxZoom.startDragY;
+    LIGHTBOX_IMAGE.style.transition = 'none';
+    renderLightboxZoom();
+    return;
+  }
+
+  if (!lightboxTouchActive) return;
+
   const diffX = touch.clientX - lightboxTouchStartX;
   const diffY = touch.clientY - lightboxTouchStartY;
   const absX = Math.abs(diffX);
   const absY = Math.abs(diffY);
 
-  if (absX > 1 || absY > 1) {
+  if (absX > 2 || absY > 2) {
     lightboxTouchMoved = true;
   }
 
-  if (!lightboxGestureAxis) {
-    if (absX < 2 && absY < 2) return;
-    lightboxGestureAxis = absX >= absY ? 'x' : 'y';
+  if (!lightboxSwipeLocked) {
+    if (absY > 8 && absY > absX * 1.05) {
+      lightboxTouchActive = false;
+      resetLightboxImagePosition();
+      return;
+    }
+    if (absX > 2 && absX > absY * 0.9) {
+      lightboxSwipeLocked = true;
+    }
   }
 
-  if (lightboxGestureAxis === 'y') {
-    lightboxTouchActive = false;
-    lightboxSwipeLocked = false;
-    lightboxGestureAxis = '';
-    resetLightboxImagePosition();
-    return;
-  }
+  if (!lightboxSwipeLocked) return;
 
-  lightboxSwipeLocked = true;
   e.preventDefault();
-
   const width = Math.max(LIGHTBOX.clientWidth || 0, window.innerWidth || 0, 320);
   const resistance = 1 - Math.min(absX / width, 0.35) * 0.18;
   lightboxDragOffsetX = diffX * resistance;
   LIGHTBOX_IMAGE.style.transform = lightboxTransform(lightboxDragOffsetX, 0, 1);
-  LIGHTBOX_IMAGE.style.opacity = '1';
 }, { passive: false });
 
 LIGHTBOX.addEventListener('touchend', e => {
+  if (e.touches && e.touches.length === 1 && lightboxZoom.scale > 1.01) {
+    const touch = e.touches[0];
+    lightboxZoom.dragging = true;
+    lightboxZoom.startDragX = touch.clientX - lightboxZoom.x;
+    lightboxZoom.startDragY = touch.clientY - lightboxZoom.y;
+    return;
+  }
+
+  if (e.touches && e.touches.length >= 2) return;
+
+  if (lightboxZoom.scale > 1.01) {
+    lightboxZoom.dragging = false;
+    if (!e.touches || e.touches.length === 0) {
+      renderLightboxZoom();
+    }
+    return;
+  }
+
   if (!lightboxTouchActive) return;
   lightboxTouchActive = false;
 
   if (!e.changedTouches || !e.changedTouches.length) {
-    lightboxSwipeLocked = false;
-    lightboxGestureAxis = '';
     resetLightboxImagePosition();
     return;
   }
@@ -2470,21 +2529,15 @@ LIGHTBOX.addEventListener('touchend', e => {
   const absX = Math.abs(diffX);
   const absY = Math.abs(diffY);
 
-  if (!lightboxTouchMoved || lightboxGestureAxis !== 'x' || !lightboxSwipeLocked) {
-    lightboxSwipeLocked = false;
-    lightboxGestureAxis = '';
+  if (!lightboxTouchMoved || !lightboxSwipeLocked) {
     resetLightboxImagePosition();
     return;
   }
-  if (lightboxZoom.scale > 1.01) {
-    lightboxSwipeLocked = false;
-    lightboxGestureAxis = '';
+  if (absY > LIGHTBOX_VERTICAL_TOLERANCE) {
     resetLightboxImagePosition();
     return;
   }
-  if (absY > LIGHTBOX_VERTICAL_TOLERANCE || absX <= absY) {
-    lightboxSwipeLocked = false;
-    lightboxGestureAxis = '';
+  if (absX <= absY) {
     resetLightboxImagePosition();
     return;
   }
@@ -2494,16 +2547,12 @@ LIGHTBOX.addEventListener('touchend', e => {
     LIGHTBOX_IMAGE.style.opacity = '1';
     const rebound = () => {
       LIGHTBOX_IMAGE.removeEventListener('transitionend', rebound);
-      lightboxSwipeLocked = false;
-      lightboxGestureAxis = '';
       resetLightboxImagePosition();
     };
     LIGHTBOX_IMAGE.addEventListener('transitionend', rebound);
     return;
   }
 
-  lightboxSwipeLocked = false;
-  lightboxGestureAxis = '';
   if (diffX > 0) nextLightbox();
   else prevLightbox();
 }, { passive: true });
@@ -2512,7 +2561,7 @@ LIGHTBOX.addEventListener('touchcancel', () => {
   lightboxTouchActive = false;
   lightboxTouchMoved = false;
   lightboxSwipeLocked = false;
-  lightboxGestureAxis = '';
+  lightboxZoom.dragging = false;
   resetLightboxImagePosition();
 });
 EXHIBITION_MODAL_CLOSE.addEventListener('click', closeExhibitionModal);
