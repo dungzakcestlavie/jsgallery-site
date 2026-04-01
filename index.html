@@ -320,10 +320,12 @@ main.page-swipe-active{position:relative;overflow:hidden}
     .contact-box p{margin:0 0 20px;color:rgba(255,255,255,.82);font-size:15px;white-space:pre-line}
     .contact-links{display:flex;flex-wrap:wrap;gap:12px}
     .contact-links a{display:inline-flex;align-items:center;min-height:46px;padding:0 16px;border-radius:999px;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.14);font-size:14px;font-weight:800}
-    .lightbox{position:fixed;inset:0;z-index:1400;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.92);padding:20px}
+    .lightbox{position:fixed;inset:0;z-index:1400;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.92);padding:20px;overflow:hidden;touch-action:none}
     .lightbox.open{display:flex}
-    .lightbox img{display:block;max-width:92vw;max-height:92vh;width:auto;height:auto;object-fit:contain;border:none;box-shadow:none;will-change:transform,opacity;touch-action:pan-y;user-select:none;-webkit-user-drag:none;transform:translate3d(0,0,0);transition:transform .34s cubic-bezier(.22,.78,.2,1), opacity .34s ease}
+    .lightbox img{display:block;position:absolute;left:50%;top:50%;max-width:92vw;max-height:92vh;width:auto;height:auto;object-fit:contain;border:none;box-shadow:none;will-change:transform,opacity;touch-action:none;user-select:none;-webkit-user-drag:none;transform:translate(-50%,-50%) translate3d(0,0,0) scale(1);transform-origin:center center;transition:transform .34s cubic-bezier(.22,.78,.2,1), opacity .34s ease}
     .lightbox.swiping img{pointer-events:none}
+    .lightbox.zoomed img{cursor:grab}
+    .lightbox.zoomed img:active{cursor:grabbing}
     .lightbox-caption{display:none !important;position:fixed;left:20px;right:20px;bottom:20px;z-index:1401;max-width:min(760px, calc(100vw - 40px));margin:0 auto;padding:14px 16px 15px;border-radius:18px;background:rgba(10,16,24,.62);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.10);color:rgba(255,255,255,.96)}
     .lightbox-caption[hidden]{display:none !important}
     .lightbox-caption-title{font-size:15px;font-weight:700;line-height:1.35;color:#fff}
@@ -1232,6 +1234,24 @@ let lightboxAnimating = false;
 const LIGHTBOX_SWIPE_THRESHOLD = 56;
 const LIGHTBOX_VERTICAL_TOLERANCE = 42;
 const LIGHTBOX_FLICK_VELOCITY = 0.42;
+const lightboxZoom = {
+  scale: 1,
+  min: 1,
+  max: 4,
+  x: 0,
+  y: 0,
+  pointers: new Map(),
+  dragging: false,
+  startDragX: 0,
+  startDragY: 0,
+  startScale: 1,
+  startX: 0,
+  startY: 0,
+  startDistance: 0,
+  startMidX: 0,
+  startMidY: 0,
+  lastTapAt: 0
+};
 
 function mode() {
   return BODY.classList.contains('mode-en') ? 'en' : 'ko';
@@ -1918,6 +1938,97 @@ function openSoloLightbox(index, works) {
   document.body.classList.add('lightbox-open');
 }
 
+function lightboxTransform(x = 0, y = 0, scale = 1) {
+  return `translate(-50%, -50%) translate3d(${x}px, ${y}px, 0) scale(${scale})`;
+}
+
+function clamp(value, min, max) {
+  return Math.min(max, Math.max(min, value));
+}
+
+function getLightboxMetrics() {
+  const vw = LIGHTBOX.clientWidth || window.innerWidth || 1;
+  const vh = LIGHTBOX.clientHeight || window.innerHeight || 1;
+  const iw = LIGHTBOX_IMAGE.naturalWidth || vw;
+  const ih = LIGHTBOX_IMAGE.naturalHeight || vh;
+  const fit = Math.min((vw * 0.92) / iw, (vh * 0.92) / ih);
+  const baseW = iw * fit;
+  const baseH = ih * fit;
+  return { vw, vh, iw, ih, fit, baseW, baseH };
+}
+
+function clampLightboxPan() {
+  const m = getLightboxMetrics();
+  if (!m) return;
+  const maxX = Math.max(0, (m.baseW * lightboxZoom.scale - m.vw * 0.92) / 2);
+  const maxY = Math.max(0, (m.baseH * lightboxZoom.scale - m.vh * 0.92) / 2);
+  lightboxZoom.x = clamp(lightboxZoom.x, -maxX, maxX);
+  lightboxZoom.y = clamp(lightboxZoom.y, -maxY, maxY);
+}
+
+function renderLightboxZoom(extraX = 0, extraY = 0, forceScale = null) {
+  const scale = forceScale == null ? lightboxZoom.scale : forceScale;
+  if (scale <= 1.01) {
+    lightboxZoom.x = 0;
+    lightboxZoom.y = 0;
+  } else {
+    clampLightboxPan();
+  }
+  const tx = (scale <= 1.01 ? 0 : lightboxZoom.x) + extraX;
+  const ty = (scale <= 1.01 ? 0 : lightboxZoom.y) + extraY;
+  LIGHTBOX_IMAGE.style.transform = lightboxTransform(tx, ty, scale);
+  LIGHTBOX.classList.toggle('zoomed', scale > 1.01);
+}
+
+function resetLightboxZoom(animated = false) {
+  lightboxZoom.scale = 1;
+  lightboxZoom.x = 0;
+  lightboxZoom.y = 0;
+  lightboxZoom.dragging = false;
+  lightboxZoom.startDistance = 0;
+  lightboxZoom.pointers.clear();
+  LIGHTBOX_IMAGE.style.transition = animated
+    ? 'transform .28s cubic-bezier(.22,.78,.2,1), opacity .28s ease'
+    : 'none';
+  renderLightboxZoom();
+  if (!animated) {
+    requestAnimationFrame(() => {
+      LIGHTBOX_IMAGE.style.transition = 'transform .34s cubic-bezier(.22,.78,.2,1), opacity .34s ease';
+    });
+  }
+}
+
+function zoomLightboxAroundPoint(nextScale, clientX, clientY) {
+  const rect = LIGHTBOX.getBoundingClientRect();
+  const m = getLightboxMetrics();
+  if (!m) return;
+  const cx = clientX - rect.left - rect.width / 2;
+  const cy = clientY - rect.top - rect.height / 2;
+  const prevScale = lightboxZoom.scale;
+  const clampedScale = clamp(nextScale, lightboxZoom.min, lightboxZoom.max);
+  if (clampedScale === prevScale) return;
+  lightboxZoom.x = lightboxZoom.x + cx * (1 - clampedScale / prevScale);
+  lightboxZoom.y = lightboxZoom.y + cy * (1 - clampedScale / prevScale);
+  lightboxZoom.scale = clampedScale;
+  if (lightboxZoom.scale <= 1.01) {
+    lightboxZoom.scale = 1;
+    lightboxZoom.x = 0;
+    lightboxZoom.y = 0;
+  }
+  LIGHTBOX_IMAGE.style.transition = 'transform .18s ease, opacity .18s ease';
+  renderLightboxZoom();
+}
+
+function distanceBetween(a, b) {
+  const dx = a.x - b.x;
+  const dy = a.y - b.y;
+  return Math.hypot(dx, dy);
+}
+
+function midpointBetween(a, b) {
+  return { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
+}
+
 function updateLightbox() {
   const item = currentLightboxItems[currentLightboxIndex];
   const m = mode();
@@ -1925,10 +2036,10 @@ function updateLightbox() {
 
   const src = resolveAssetUrl(item.zoom || item.standard || item.image || '');
   const title = m === 'en' ? (item.title_en || 'Artwork at KJS GALLERY') : (item.title_kr || 'KJS GALLERY 작품');
-  const meta = m === 'en' ? (item.meta_en || '') : (item.meta_kr || '');
 
   LIGHTBOX_IMAGE.src = src;
   LIGHTBOX_IMAGE.alt = title;
+  resetLightboxZoom(false);
 
   if (LIGHTBOX_CAPTION && LIGHTBOX_CAPTION_TITLE && LIGHTBOX_CAPTION_META) {
     LIGHTBOX_CAPTION.hidden = true;
@@ -1940,12 +2051,13 @@ function updateLightbox() {
 function resetLightboxImagePosition() {
   LIGHTBOX.classList.remove('swiping');
   LIGHTBOX_IMAGE.style.transition = 'transform .34s cubic-bezier(.22,.78,.2,1), opacity .34s ease';
-  LIGHTBOX_IMAGE.style.transform = 'translate3d(0,0,0)';
+  renderLightboxZoom();
   LIGHTBOX_IMAGE.style.opacity = '1';
 }
 
 function animateLightboxSlide(direction) {
   if (lightboxAnimating || !currentLightboxItems.length) return;
+  if (lightboxZoom.scale > 1.01) return;
   lightboxAnimating = true;
 
   const width = Math.max(LIGHTBOX.clientWidth || 0, window.innerWidth || 0, 320);
@@ -1953,12 +2065,13 @@ function animateLightboxSlide(direction) {
   const nextIndex = direction === 'next'
     ? (currentIndex + 1) % currentLightboxItems.length
     : (currentIndex - 1 + currentLightboxItems.length) % currentLightboxItems.length;
-  const outX = direction === 'next' ? -width * 0.22 : width * 0.22;
-  const inX = direction === 'next' ? width * 0.22 : -width * 0.22;
+  const outX = direction === 'next' ? -width * 0.24 : width * 0.24;
+  const inX = direction === 'next' ? width * 0.24 : -width * 0.24;
 
+  resetLightboxZoom(false);
   LIGHTBOX.classList.add('swiping');
-  LIGHTBOX_IMAGE.style.transition = 'transform .26s cubic-bezier(.22,.78,.2,1), opacity .26s ease';
-  LIGHTBOX_IMAGE.style.transform = `translate3d(${outX}px,0,0)`;
+  LIGHTBOX_IMAGE.style.transition = 'transform .28s cubic-bezier(.22,.78,.2,1), opacity .28s ease';
+  LIGHTBOX_IMAGE.style.transform = lightboxTransform(outX, 0, 1);
   LIGHTBOX_IMAGE.style.opacity = '0';
 
   const handleOut = (event) => {
@@ -1967,13 +2080,13 @@ function animateLightboxSlide(direction) {
     currentLightboxIndex = nextIndex;
     updateLightbox();
     LIGHTBOX_IMAGE.style.transition = 'none';
-    LIGHTBOX_IMAGE.style.transform = `translate3d(${inX}px,0,0)`;
+    LIGHTBOX_IMAGE.style.transform = lightboxTransform(inX, 0, 1);
     LIGHTBOX_IMAGE.style.opacity = '0';
 
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
-        LIGHTBOX_IMAGE.style.transition = 'transform .34s cubic-bezier(.22,.78,.2,1), opacity .34s ease';
-        LIGHTBOX_IMAGE.style.transform = 'translate3d(0,0,0)';
+        LIGHTBOX_IMAGE.style.transition = 'transform .38s cubic-bezier(.22,.61,.36,1), opacity .38s ease';
+        LIGHTBOX_IMAGE.style.transform = lightboxTransform(0, 0, 1);
         LIGHTBOX_IMAGE.style.opacity = '1';
       });
     });
@@ -1994,13 +2107,15 @@ function closeLightbox() {
   lightboxTouchActive = false;
   lightboxTouchDragging = false;
   lightboxAnimating = false;
+  resetLightboxZoom(false);
   LIGHTBOX.classList.remove('open');
   LIGHTBOX.classList.remove('swiping');
+  LIGHTBOX.classList.remove('zoomed');
   LIGHTBOX.setAttribute('aria-hidden', 'true');
   LIGHTBOX_IMAGE.src = '';
   LIGHTBOX_IMAGE.alt = '';
   LIGHTBOX_IMAGE.style.transition = 'transform .34s cubic-bezier(.22,.78,.2,1), opacity .34s ease';
-  LIGHTBOX_IMAGE.style.transform = 'translate3d(0,0,0)';
+  LIGHTBOX_IMAGE.style.transform = lightboxTransform(0, 0, 1);
   LIGHTBOX_IMAGE.style.opacity = '1';
   if (LIGHTBOX_CAPTION && LIGHTBOX_CAPTION_TITLE && LIGHTBOX_CAPTION_META) {
     LIGHTBOX_CAPTION.hidden = true;
@@ -2157,8 +2272,105 @@ LIGHTBOX.addEventListener('click', e => {
   if (!LIGHTBOX.classList.contains('open')) return;
   if (e.target === LIGHTBOX) closeLightbox();
 });
-LIGHTBOX.addEventListener('touchstart', e => {
+
+LIGHTBOX_IMAGE.addEventListener('load', () => {
+  resetLightboxZoom(false);
+});
+
+LIGHTBOX.addEventListener('wheel', e => {
+  if (!LIGHTBOX.classList.contains('open')) return;
+  e.preventDefault();
+  const delta = -e.deltaY;
+  const factor = delta > 0 ? 1.14 : 0.88;
+  zoomLightboxAroundPoint(lightboxZoom.scale * factor, e.clientX, e.clientY);
+}, { passive: false });
+
+LIGHTBOX.addEventListener('pointerdown', e => {
   if (!LIGHTBOX.classList.contains('open') || lightboxAnimating) return;
+  LIGHTBOX.setPointerCapture?.(e.pointerId);
+  lightboxZoom.pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+
+  const now = Date.now();
+  if (lightboxZoom.pointers.size === 1 && now - lightboxZoom.lastTapAt < 260) {
+    const targetScale = lightboxZoom.scale > 1.01 ? 1 : 2.2;
+    zoomLightboxAroundPoint(targetScale, e.clientX, e.clientY);
+    lightboxZoom.lastTapAt = 0;
+  } else if (lightboxZoom.pointers.size === 1) {
+    lightboxZoom.lastTapAt = now;
+  }
+
+  if (lightboxZoom.pointers.size === 1 && lightboxZoom.scale > 1.01) {
+    lightboxZoom.dragging = true;
+    lightboxZoom.startDragX = e.clientX - lightboxZoom.x;
+    lightboxZoom.startDragY = e.clientY - lightboxZoom.y;
+  }
+
+  if (lightboxZoom.pointers.size === 2) {
+    const [a, b] = [...lightboxZoom.pointers.values()];
+    lightboxZoom.startScale = lightboxZoom.scale;
+    lightboxZoom.startX = lightboxZoom.x;
+    lightboxZoom.startY = lightboxZoom.y;
+    lightboxZoom.startDistance = distanceBetween(a, b) || 1;
+    const mid = midpointBetween(a, b);
+    lightboxZoom.startMidX = mid.x;
+    lightboxZoom.startMidY = mid.y;
+    lightboxZoom.dragging = false;
+  }
+}, { passive: true });
+
+LIGHTBOX.addEventListener('pointermove', e => {
+  if (!LIGHTBOX.classList.contains('open')) return;
+  if (lightboxZoom.pointers.has(e.pointerId)) {
+    lightboxZoom.pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  }
+
+  if (lightboxZoom.pointers.size === 2) {
+    const [a, b] = [...lightboxZoom.pointers.values()];
+    const dist = distanceBetween(a, b) || 1;
+    const mid = midpointBetween(a, b);
+    lightboxZoom.scale = clamp(lightboxZoom.startScale * (dist / lightboxZoom.startDistance), lightboxZoom.min, lightboxZoom.max);
+    lightboxZoom.x = lightboxZoom.startX + (mid.x - lightboxZoom.startMidX);
+    lightboxZoom.y = lightboxZoom.startY + (mid.y - lightboxZoom.startMidY);
+    if (lightboxZoom.scale <= 1.01) {
+      lightboxZoom.scale = 1;
+      lightboxZoom.x = 0;
+      lightboxZoom.y = 0;
+    }
+    LIGHTBOX_IMAGE.style.transition = 'none';
+    renderLightboxZoom();
+    return;
+  }
+
+  if (lightboxZoom.dragging && lightboxZoom.scale > 1.01) {
+    e.preventDefault();
+    lightboxZoom.x = e.clientX - lightboxZoom.startDragX;
+    lightboxZoom.y = e.clientY - lightboxZoom.startDragY;
+    LIGHTBOX_IMAGE.style.transition = 'none';
+    renderLightboxZoom();
+  }
+}, { passive: false });
+
+function endLightboxPointer(e) {
+  lightboxZoom.pointers.delete(e.pointerId);
+  if (lightboxZoom.pointers.size < 2) {
+    lightboxZoom.startDistance = 0;
+  }
+  if (lightboxZoom.pointers.size === 0) {
+    lightboxZoom.dragging = false;
+    if (lightboxZoom.scale <= 1.01) resetLightboxZoom(false);
+  } else if (lightboxZoom.pointers.size === 1 && lightboxZoom.scale > 1.01) {
+    const p = [...lightboxZoom.pointers.values()][0];
+    lightboxZoom.dragging = true;
+    lightboxZoom.startDragX = p.x - lightboxZoom.x;
+    lightboxZoom.startDragY = p.y - lightboxZoom.y;
+  }
+}
+
+LIGHTBOX.addEventListener('pointerup', endLightboxPointer);
+LIGHTBOX.addEventListener('pointercancel', endLightboxPointer);
+
+LIGHTBOX.addEventListener('touchstart', e => {
+  if (!LIGHTBOX.classList.contains('open') || lightboxAnimating || lightboxZoom.scale > 1.01 || (e.touches && e.touches.length > 1)) return;
   const touch = e.changedTouches[0];
   if (!touch) return;
   lightboxTouchStartX = touch.screenX;
@@ -2174,7 +2386,7 @@ LIGHTBOX.addEventListener('touchstart', e => {
   LIGHTBOX_IMAGE.style.transition = 'none';
 }, { passive: true });
 LIGHTBOX.addEventListener('touchmove', e => {
-  if (!lightboxTouchActive || lightboxAnimating) return;
+  if (!lightboxTouchActive || lightboxAnimating || lightboxZoom.scale > 1.01 || (e.touches && e.touches.length > 1)) return;
   const touch = e.changedTouches[0];
   if (!touch) return;
   lightboxTouchCurrentX = touch.screenX;
@@ -2204,9 +2416,9 @@ LIGHTBOX.addEventListener('touchmove', e => {
   e.preventDefault();
   LIGHTBOX.classList.add('swiping');
   const width = Math.max(LIGHTBOX.clientWidth || 0, window.innerWidth || 0, 320);
-  const limitedX = Math.max(Math.min(moveX, width * 0.35), -width * 0.35);
-  const opacity = Math.max(0.72, 1 - Math.abs(limitedX) / width * 0.45);
-  LIGHTBOX_IMAGE.style.transform = `translate3d(${limitedX}px,0,0)`;
+  const limitedX = Math.max(Math.min(moveX, width * 0.42), -width * 0.42);
+  const opacity = Math.max(0.78, 1 - Math.abs(limitedX) / width * 0.32);
+  LIGHTBOX_IMAGE.style.transform = lightboxTransform(limitedX, 0, 1);
   LIGHTBOX_IMAGE.style.opacity = String(opacity);
 }, { passive: false });
 LIGHTBOX.addEventListener('touchend', () => {
