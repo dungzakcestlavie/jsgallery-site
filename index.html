@@ -1227,6 +1227,7 @@ let lightboxTouchActive = false;
 let lightboxTouchMoved = false;
 let lightboxSwipeLocked = false;
 let lightboxDragOffsetX = 0;
+let lightboxGestureAxis = '';
 let lightboxAnimating = false;
 const LIGHTBOX_SWIPE_THRESHOLD = 42;
 const LIGHTBOX_VERTICAL_TOLERANCE = 88;
@@ -2305,6 +2306,7 @@ LIGHTBOX.addEventListener('wheel', e => {
 
 LIGHTBOX.addEventListener('pointerdown', e => {
   if (!LIGHTBOX.classList.contains('open') || lightboxAnimating) return;
+  if (e.pointerType === 'touch' && lightboxZoom.scale <= 1.01) return;
   LIGHTBOX.setPointerCapture?.(e.pointerId);
   lightboxZoom.pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
 
@@ -2338,6 +2340,7 @@ LIGHTBOX.addEventListener('pointerdown', e => {
 
 LIGHTBOX.addEventListener('pointermove', e => {
   if (!LIGHTBOX.classList.contains('open')) return;
+  if (e.pointerType === 'touch' && lightboxZoom.scale <= 1.01) return;
   if (lightboxZoom.pointers.has(e.pointerId)) {
     lightboxZoom.pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
   }
@@ -2392,6 +2395,7 @@ LIGHTBOX.addEventListener('touchstart', e => {
   if (!e.touches || e.touches.length !== 1) {
     lightboxTouchActive = false;
     lightboxSwipeLocked = false;
+    lightboxGestureAxis = '';
     return;
   }
   const touch = e.touches[0];
@@ -2400,46 +2404,54 @@ LIGHTBOX.addEventListener('touchstart', e => {
   lightboxTouchActive = true;
   lightboxTouchMoved = false;
   lightboxSwipeLocked = false;
+  lightboxGestureAxis = '';
   lightboxDragOffsetX = 0;
   LIGHTBOX.classList.add('swiping');
   LIGHTBOX_IMAGE.style.transition = 'none';
+  LIGHTBOX_IMAGE.style.opacity = '1';
 }, { passive: true });
 
 LIGHTBOX.addEventListener('touchmove', e => {
   if (!lightboxTouchActive || lightboxAnimating || lightboxZoom.scale > 1.01) return;
   if (!e.touches || e.touches.length !== 1) {
     lightboxTouchActive = false;
+    lightboxSwipeLocked = false;
+    lightboxGestureAxis = '';
     resetLightboxImagePosition();
     return;
   }
+
   const touch = e.touches[0];
   const diffX = touch.clientX - lightboxTouchStartX;
   const diffY = touch.clientY - lightboxTouchStartY;
   const absX = Math.abs(diffX);
   const absY = Math.abs(diffY);
 
-  if (absX > 4 || absY > 4) {
+  if (absX > 1 || absY > 1) {
     lightboxTouchMoved = true;
   }
 
-  if (!lightboxSwipeLocked) {
-    if (absY > 12 && absY > absX * 1.15) {
-      lightboxTouchActive = false;
-      resetLightboxImagePosition();
-      return;
-    }
-    if (absX > 8 && absX > absY) {
-      lightboxSwipeLocked = true;
-    }
+  if (!lightboxGestureAxis) {
+    if (absX < 2 && absY < 2) return;
+    lightboxGestureAxis = absX >= absY ? 'x' : 'y';
   }
 
-  if (!lightboxSwipeLocked) return;
+  if (lightboxGestureAxis === 'y') {
+    lightboxTouchActive = false;
+    lightboxSwipeLocked = false;
+    lightboxGestureAxis = '';
+    resetLightboxImagePosition();
+    return;
+  }
 
+  lightboxSwipeLocked = true;
   e.preventDefault();
+
   const width = Math.max(LIGHTBOX.clientWidth || 0, window.innerWidth || 0, 320);
-  const resistance = 1 - Math.min(absX / width, 0.35) * 0.22;
+  const resistance = 1 - Math.min(absX / width, 0.35) * 0.18;
   lightboxDragOffsetX = diffX * resistance;
   LIGHTBOX_IMAGE.style.transform = lightboxTransform(lightboxDragOffsetX, 0, 1);
+  LIGHTBOX_IMAGE.style.opacity = '1';
 }, { passive: false });
 
 LIGHTBOX.addEventListener('touchend', e => {
@@ -2447,6 +2459,8 @@ LIGHTBOX.addEventListener('touchend', e => {
   lightboxTouchActive = false;
 
   if (!e.changedTouches || !e.changedTouches.length) {
+    lightboxSwipeLocked = false;
+    lightboxGestureAxis = '';
     resetLightboxImagePosition();
     return;
   }
@@ -2456,34 +2470,40 @@ LIGHTBOX.addEventListener('touchend', e => {
   const absX = Math.abs(diffX);
   const absY = Math.abs(diffY);
 
-  if (!lightboxTouchMoved || !lightboxSwipeLocked) {
+  if (!lightboxTouchMoved || lightboxGestureAxis !== 'x' || !lightboxSwipeLocked) {
+    lightboxSwipeLocked = false;
+    lightboxGestureAxis = '';
     resetLightboxImagePosition();
     return;
   }
   if (lightboxZoom.scale > 1.01) {
+    lightboxSwipeLocked = false;
+    lightboxGestureAxis = '';
     resetLightboxImagePosition();
     return;
   }
-  if (absY > LIGHTBOX_VERTICAL_TOLERANCE) {
-    resetLightboxImagePosition();
-    return;
-  }
-  if (absX <= absY) {
+  if (absY > LIGHTBOX_VERTICAL_TOLERANCE || absX <= absY) {
+    lightboxSwipeLocked = false;
+    lightboxGestureAxis = '';
     resetLightboxImagePosition();
     return;
   }
   if (absX < LIGHTBOX_SWIPE_THRESHOLD) {
-    LIGHTBOX_IMAGE.style.transition = 'transform .22s ease';
+    LIGHTBOX_IMAGE.style.transition = 'transform .20s ease';
     LIGHTBOX_IMAGE.style.transform = lightboxTransform(0, 0, 1);
     LIGHTBOX_IMAGE.style.opacity = '1';
     const rebound = () => {
       LIGHTBOX_IMAGE.removeEventListener('transitionend', rebound);
+      lightboxSwipeLocked = false;
+      lightboxGestureAxis = '';
       resetLightboxImagePosition();
     };
     LIGHTBOX_IMAGE.addEventListener('transitionend', rebound);
     return;
   }
 
+  lightboxSwipeLocked = false;
+  lightboxGestureAxis = '';
   if (diffX > 0) nextLightbox();
   else prevLightbox();
 }, { passive: true });
@@ -2491,6 +2511,8 @@ LIGHTBOX.addEventListener('touchend', e => {
 LIGHTBOX.addEventListener('touchcancel', () => {
   lightboxTouchActive = false;
   lightboxTouchMoved = false;
+  lightboxSwipeLocked = false;
+  lightboxGestureAxis = '';
   resetLightboxImagePosition();
 });
 EXHIBITION_MODAL_CLOSE.addEventListener('click', closeExhibitionModal);
