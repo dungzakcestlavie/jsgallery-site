@@ -1225,9 +1225,11 @@ let lightboxTouchStartX = 0;
 let lightboxTouchStartY = 0;
 let lightboxTouchActive = false;
 let lightboxTouchMoved = false;
+let lightboxSwipeLocked = false;
+let lightboxDragOffsetX = 0;
 let lightboxAnimating = false;
-const LIGHTBOX_SWIPE_THRESHOLD = 50;
-const LIGHTBOX_VERTICAL_TOLERANCE = 72;
+const LIGHTBOX_SWIPE_THRESHOLD = 42;
+const LIGHTBOX_VERTICAL_TOLERANCE = 88;
 const lightboxZoom = {
   scale: 1,
   min: 1,
@@ -2023,6 +2025,24 @@ function midpointBetween(a, b) {
   return { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
 }
 
+function preloadLightboxNeighbors() {
+  if (!currentLightboxItems.length) return;
+  const total = currentLightboxItems.length;
+  const indices = [
+    (currentLightboxIndex + 1) % total,
+    (currentLightboxIndex - 1 + total) % total
+  ];
+  indices.forEach(index => {
+    const item = currentLightboxItems[index];
+    if (!item) return;
+    const src = resolveAssetUrl(item.zoom || item.standard || item.image || '');
+    if (!src) return;
+    const img = new Image();
+    img.decoding = 'async';
+    img.src = src;
+  });
+}
+
 function updateLightbox() {
   const item = currentLightboxItems[currentLightboxIndex];
   const m = mode();
@@ -2031,9 +2051,11 @@ function updateLightbox() {
   const src = resolveAssetUrl(item.zoom || item.standard || item.image || '');
   const title = m === 'en' ? (item.title_en || 'Artwork at KJS GALLERY') : (item.title_kr || 'KJS GALLERY 작품');
 
+  LIGHTBOX_IMAGE.decoding = 'async';
   LIGHTBOX_IMAGE.src = src;
   LIGHTBOX_IMAGE.alt = title;
   resetLightboxZoom(false);
+  preloadLightboxNeighbors();
 
   if (LIGHTBOX_CAPTION && LIGHTBOX_CAPTION_TITLE && LIGHTBOX_CAPTION_META) {
     LIGHTBOX_CAPTION.hidden = true;
@@ -2043,6 +2065,8 @@ function updateLightbox() {
 }
 
 function resetLightboxImagePosition() {
+  lightboxDragOffsetX = 0;
+  lightboxSwipeLocked = false;
   LIGHTBOX.classList.remove('swiping');
   LIGHTBOX_IMAGE.style.transition = 'transform .34s cubic-bezier(.22,.78,.2,1), opacity .34s ease';
   renderLightboxZoom();
@@ -2367,6 +2391,7 @@ LIGHTBOX.addEventListener('touchstart', e => {
   if (!LIGHTBOX.classList.contains('open') || lightboxAnimating || lightboxZoom.scale > 1.01) return;
   if (!e.touches || e.touches.length !== 1) {
     lightboxTouchActive = false;
+    lightboxSwipeLocked = false;
     return;
   }
   const touch = e.touches[0];
@@ -2374,41 +2399,90 @@ LIGHTBOX.addEventListener('touchstart', e => {
   lightboxTouchStartY = touch.clientY;
   lightboxTouchActive = true;
   lightboxTouchMoved = false;
+  lightboxSwipeLocked = false;
+  lightboxDragOffsetX = 0;
+  LIGHTBOX.classList.add('swiping');
+  LIGHTBOX_IMAGE.style.transition = 'none';
 }, { passive: true });
 
 LIGHTBOX.addEventListener('touchmove', e => {
   if (!lightboxTouchActive || lightboxAnimating || lightboxZoom.scale > 1.01) return;
   if (!e.touches || e.touches.length !== 1) {
     lightboxTouchActive = false;
+    resetLightboxImagePosition();
     return;
   }
   const touch = e.touches[0];
   const diffX = touch.clientX - lightboxTouchStartX;
   const diffY = touch.clientY - lightboxTouchStartY;
-  if (Math.abs(diffX) > 6 || Math.abs(diffY) > 6) {
+  const absX = Math.abs(diffX);
+  const absY = Math.abs(diffY);
+
+  if (absX > 4 || absY > 4) {
     lightboxTouchMoved = true;
   }
-  if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 10) {
-    e.preventDefault();
+
+  if (!lightboxSwipeLocked) {
+    if (absY > 12 && absY > absX * 1.15) {
+      lightboxTouchActive = false;
+      resetLightboxImagePosition();
+      return;
+    }
+    if (absX > 8 && absX > absY) {
+      lightboxSwipeLocked = true;
+    }
   }
+
+  if (!lightboxSwipeLocked) return;
+
+  e.preventDefault();
+  const width = Math.max(LIGHTBOX.clientWidth || 0, window.innerWidth || 0, 320);
+  const resistance = 1 - Math.min(absX / width, 0.35) * 0.22;
+  lightboxDragOffsetX = diffX * resistance;
+  LIGHTBOX_IMAGE.style.transform = lightboxTransform(lightboxDragOffsetX, 0, 1);
 }, { passive: false });
 
 LIGHTBOX.addEventListener('touchend', e => {
   if (!lightboxTouchActive) return;
   lightboxTouchActive = false;
 
-  if (!e.changedTouches || !e.changedTouches.length) return;
+  if (!e.changedTouches || !e.changedTouches.length) {
+    resetLightboxImagePosition();
+    return;
+  }
   const touch = e.changedTouches[0];
   const diffX = lightboxTouchStartX - touch.clientX;
   const diffY = lightboxTouchStartY - touch.clientY;
   const absX = Math.abs(diffX);
   const absY = Math.abs(diffY);
 
-  if (!lightboxTouchMoved) return;
-  if (lightboxZoom.scale > 1.01) return;
-  if (absY > LIGHTBOX_VERTICAL_TOLERANCE) return;
-  if (absX < LIGHTBOX_SWIPE_THRESHOLD) return;
-  if (absX <= absY) return;
+  if (!lightboxTouchMoved || !lightboxSwipeLocked) {
+    resetLightboxImagePosition();
+    return;
+  }
+  if (lightboxZoom.scale > 1.01) {
+    resetLightboxImagePosition();
+    return;
+  }
+  if (absY > LIGHTBOX_VERTICAL_TOLERANCE) {
+    resetLightboxImagePosition();
+    return;
+  }
+  if (absX <= absY) {
+    resetLightboxImagePosition();
+    return;
+  }
+  if (absX < LIGHTBOX_SWIPE_THRESHOLD) {
+    LIGHTBOX_IMAGE.style.transition = 'transform .22s ease';
+    LIGHTBOX_IMAGE.style.transform = lightboxTransform(0, 0, 1);
+    LIGHTBOX_IMAGE.style.opacity = '1';
+    const rebound = () => {
+      LIGHTBOX_IMAGE.removeEventListener('transitionend', rebound);
+      resetLightboxImagePosition();
+    };
+    LIGHTBOX_IMAGE.addEventListener('transitionend', rebound);
+    return;
+  }
 
   if (diffX > 0) nextLightbox();
   else prevLightbox();
@@ -2417,6 +2491,7 @@ LIGHTBOX.addEventListener('touchend', e => {
 LIGHTBOX.addEventListener('touchcancel', () => {
   lightboxTouchActive = false;
   lightboxTouchMoved = false;
+  resetLightboxImagePosition();
 });
 EXHIBITION_MODAL_CLOSE.addEventListener('click', closeExhibitionModal);
 EXHIBITION_MODAL.addEventListener('click', e => { if (e.target === EXHIBITION_MODAL) closeExhibitionModal(); });
