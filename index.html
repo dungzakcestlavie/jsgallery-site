@@ -1651,7 +1651,7 @@ function renderArtistDetail() {
     </article>
   `).join('');
 
-  currentLightboxItems = works.map(work => ({
+  const lightboxItems = works.map(work => ({
     standard: resolveAssetUrl(work.image || ''),
     zoom: resolveAssetUrl(work.zoom || work.image || ''),
     title_kr: work.title_kr || '',
@@ -1670,9 +1670,11 @@ ${availabilityText(work, 'en')}` : ''}`,
     caption_en: work.caption_en || ''
   }));
 
+  currentLightboxItems = lightboxItems;
+
   WORKS_GRID.querySelectorAll('.work-thumb').forEach(el => {
     el.addEventListener('click', () => {
-      openLightbox(Number(el.dataset.index), currentLightboxItems);
+      openLightbox(Number(el.dataset.index), lightboxItems);
     });
   });
 }
