@@ -320,16 +320,9 @@ main.page-swipe-active{position:relative;overflow:hidden}
     .contact-box p{margin:0 0 20px;color:rgba(255,255,255,.82);font-size:15px;white-space:pre-line}
     .contact-links{display:flex;flex-wrap:wrap;gap:12px}
     .contact-links a{display:inline-flex;align-items:center;min-height:46px;padding:0 16px;border-radius:999px;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.14);font-size:14px;font-weight:800}
-    .lightbox{position:fixed;inset:0;z-index:1400;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.92);padding:20px;overflow:hidden;touch-action:none}
+    .lightbox{position:fixed;inset:0;z-index:1400;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.92);padding:20px}
     .lightbox.open{display:flex}
-    .lightbox img{display:block;position:absolute;left:50%;top:50%;max-width:92vw;max-height:92vh;width:auto;height:auto;object-fit:contain;border:none;box-shadow:none;will-change:transform,opacity;touch-action:none;user-select:none;-webkit-user-drag:none;transform:translate(-50%,-50%) translate3d(0,0,0) scale(1);transform-origin:center center;transition:transform .34s cubic-bezier(.22,.78,.2,1), opacity .34s ease}
-    .lightbox.swiping img{pointer-events:none}
-    .lightbox.zoomed img{cursor:grab}
-    .lightbox.zoomed img:active{cursor:grabbing}
-    .lightbox-caption{display:none !important;position:fixed;left:20px;right:20px;bottom:20px;z-index:1401;max-width:min(760px, calc(100vw - 40px));margin:0 auto;padding:14px 16px 15px;border-radius:18px;background:rgba(10,16,24,.62);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.10);color:rgba(255,255,255,.96)}
-    .lightbox-caption[hidden]{display:none !important}
-    .lightbox-caption-title{font-size:15px;font-weight:700;line-height:1.35;color:#fff}
-    .lightbox-caption-meta{margin-top:6px;font-size:13px;line-height:1.65;color:rgba(255,255,255,.84);white-space:pre-line}
+    .lightbox img{display:block;max-width:92vw;max-height:92vh;width:auto;height:auto;object-fit:contain;border:none;box-shadow:none}
     .exhibition-modal{display:none;position:fixed;inset:0;background:rgba(7,14,20,.56);z-index:999;align-items:center;justify-content:center;padding:20px}
     .exhibition-modal.open{display:flex}
     .exhibition-modal-panel{background:rgba(255,255,255,.98);width:min(960px,100%);max-height:88vh;overflow:auto;border-radius:28px;padding:24px;box-shadow:0 28px 70px rgba(16,34,51,.18);position:relative}
@@ -607,10 +600,6 @@ they emerge through relationships within the exhibition.</div>
 
 <div class="lightbox" id="lightbox" aria-hidden="true">
   <img id="lightboxImage" src="" alt="" />
-  <div class="lightbox-caption" id="lightboxCaption" hidden>
-    <div class="lightbox-caption-title" id="lightboxCaptionTitle"></div>
-    <div class="lightbox-caption-meta" id="lightboxCaptionMeta"></div>
-  </div>
 </div>
 
 <div class="exhibition-modal" id="exhibitionModal" aria-hidden="true">
@@ -622,447 +611,7 @@ they emerge through relationships within the exhibition.</div>
 
 <footer><div class="wrap footer-inner"><div class="footer-brand">© KJS GALLERY</div></div></footer>
 
-<script id="jsgallery-data-inline" type="application/json">{
-  "contact": {
-    "gallery_title_kr": "김정숙 갤러리",
-    "gallery_title_en": "Kim Jung sook Gallery",
-    "director_kr": "대표 김정숙",
-    "director_en": "Director Kim Jung sook",
-    "address_kr": "인천광역시 중구 월미로 266, 2층",
-    "address_en": "2F, 266 Wolmi-ro, Jung-gu, Incheon, Republic of Korea",
-    "phone_mobile_kr": "010-5230-4149",
-    "phone_mobile_en": "+82-10-5230-4149",
-    "phone_gallery_kr": "032-773-0713",
-    "phone_gallery_en": "+82-32-773-0713",
-    "email": "jsgallery22@naver.com",
-    "website": "https://jsgallery.art",
-    "instagram": "https://instagram.com/gallery_kimjungsook",
-    "youtube": "https://www.youtube.com/@gallery6329",
-    "display_kr": "김정숙 갤러리\n인천광역시 중구 월미로 266, 2층\n\nT. 010-5230-4149\nE. jsgallery22@naver.com",
-    "display_en": "Kim Jung sook Gallery\n2F, 266 Wolmi-ro, Jung-gu, Incheon, Republic of Korea\n\nT. +82-10-5230-4149\nE. jsgallery22@naver.com"
-  },
-  "js_art_space": {
-    "title_kr": "제이에스아트스페이스",
-    "title_en": "JS ART SPACE",
-    "address_kr": "인천광역시 중구 월미로260번길 7-13",
-    "address_en": "7-13, Wolmi-ro 260beon-gil, Jung-gu, Incheon, Republic of Korea",
-    "phone_kr": "032-773-0713",
-    "phone_en": "+82-32-773-0713"
-  },
-  "group": {
-    "title_kr": "CONNECTION : IN PROGRESS",
-    "title_en": "CONNECTION : IN PROGRESS",
-    "type_kr": "그룹전",
-    "type_en": "Group Exhibition",
-    "date_kr": "2026.03.18 — 2026.03.30 · 김정숙 갤러리 · JS ART SPACE",
-    "date_en": "2026.03.18 — 2026.03.30 · Kim Jung sook Gallery · JS ART SPACE",
-    "intro_kr": "연결이라는 개념을 하나의 완결된 상태가 아닌, 진행중인 과정으로 바라본다.",
-    "intro_en": "Connection is approached not as a completed state, but as an ongoing process.",
-    "image": "images/exhibitions/group-cover.jpg"
-  },
-  "solo": {
-    "title_kr": "사유는 삶을 빚는다 — 어디에서",
-    "title_en": "Thought Shapes Life — Where",
-    "type_kr": "개인전",
-    "type_en": "Solo Exhibition",
-    "date_kr": "2026.03.04 — 2026.03.16 · 김정숙 갤러리",
-    "date_en": "2026.03.04 — 2026.03.16 · Kim Jung sook Gallery",
-    "intro_kr": "사유와 회화가 하나의 사건으로 읽히도록 구성된 초대전입니다.",
-    "intro_en": "An invited exhibition structured so that thought and painting are read as a single event."
-  },
-  "group_artists": [
-    {
-      "name_kr": "권희선",
-      "name_en": "Hee Sun Kwon",
-      "note_summary_kr": "찰나의 감정과 시간의 잔여를 포착한다.",
-      "note_summary_en": "Captures fleeting emotion and the residue of time.",
-      "note_kr": "‘찰나’는 불교에서 시간의 최소 단위를 뜻한다고 한다.\n존재는 그 미세한 순간 속에서 생겨나고 사라지며, 삶은 그렇게 짧은 찰나들의 겹침으로 이어진다. 영원하지 않고 매 순간 사라져가는 시간 위에서, 지나간 시간을 온전히 보내고 다가올 시간을 정성스럽게 맞이하기 위해 나만의 작은 의식을 치른다.\n\n만끽하고 싶은 여운과 끈적하게 남아 쉽게 지워지지 않는 감정의 잔여. 흘려보내기엔 어딘가 미련이 남는 그 감각을 붙들어 화면에 옮기며, 당연한 듯 주어지지만 결코 당연하지 않은 일상 속 ‘찰나’를 포착한다.\n\n그 과정은 단순한 재현이 아니라 스스로를 마주하는 시간이 된다. 어떤 날에는 위로가 되고, 또 어떤 날에는 기쁨이나 슬픔으로 머물며 감정의 순환을 이룬다.\n\n지극히 사적인 나의 찰나가 이를 마주하는 이들에게도 잠시 멈춰 설 수 있는 작은 틈이 되기를 바란다",
-      "note_en": "“Chalna,” a fleeting moment, is said to be the smallest unit of time in Buddhism.\nExistence arises and disappears within these infinitesimal moments, and life continues as an accumulation of such fleeting instants. Upon time that is never permanent and constantly fading, I perform my own small ritual—fully sending off what has passed and carefully welcoming what is to come.\n\nThe lingering aftertaste I wish to savor, and the residue of emotions that cling, stubborn and not easily erased. Holding onto sensations that feel too reluctant to simply let go, I translate them onto the surface, capturing these fleeting moments within everyday life—so naturally given, yet never truly ordinary.\n\nThis process is not mere representation, but a time of confronting myself. On some days, it becomes comfort; on others, it remains as joy or sorrow, forming a cycle of emotion.\n\nI hope that my deeply personal fleeting moments may offer those who encounter them a small space—a pause, however brief, in which they too can momentarily stand still.",
-      "works": [
-        {
-          "title_kr": "구름의 함성",
-          "title_en": "Roar of Clouds",
-          "meta_kr": "53.0x40.7cm · oil on canvas · 2023",
-          "meta_en": "53.0x40.7cm · oil on canvas · 2023",
-          "image": "images/group/standard/kwon-heesun-01.jpg",
-          "zoom": "images/group/zoom/kwon-heesun-01.jpg"
-        },
-        {
-          "title_kr": "좋아하는 시간으로 가는 길",
-          "title_en": "Road to a Beloved Time",
-          "meta_kr": "116.8x91.0cm · oil on canvas · 2023",
-          "meta_en": "116.8x91.0cm · oil on canvas · 2023",
-          "image": "images/group/standard/kwon-heesun-02.jpg",
-          "zoom": "images/group/zoom/kwon-heesun-02.jpg"
-        }
-      ]
-    },
-    {
-      "name_kr": "김선혜",
-      "name_en": "Sunhye Kim",
-      "note_summary_kr": "무의식과 의식이 교차하는 추상 회화.",
-      "note_summary_en": "Abstract painting where the unconscious meets the conscious.",
-      "note_kr": "나의 작업은 무의식적 제스처와 의식적 선택이 교차하는 지점에서 형상화된다. 단순한 조형적 형태는 기억 속에서 체화된 순간을 끌어와 재해석되며, 반복되는 수행적 행위를 통해 우연성과 필연성이 공존하는 이미지를 창조한다. 이러한 과정에서 중첩된 색층과 물성은 단순한 시각적 효과를 넘어서 내면과 마주하는 현상학적 경험으로 확장된다.\n\n우연히 드러난 형상은 단순한 흔적에 머무르지 않고 상징적 기호로 승화된다. 외부에서는 식별하기 어려울 수 있지만, 나에게는 독자적인 의미망(Semantic Network)을 형성하며, 이는 작업의 존재론적 원동력이 된다. \n시간이 켜켜이 쌓여 만들어진 상징적 흔적은 표면상 명확하지 않을 수 있으나, 나에게는 깊은 의미를 지니며 작업을 지속시키는 힘이 된다. 점 찍기, 흘리기, 지우기, 덮어내기 등의 반복 행위는 단순한 기술적 절차를 넘어 수행(Performance)이자 시간의 축적이다.\n하이데거(M. Heidegger)의 ‘존재의 드러남(Aletheia)’처럼, 화면 속 무의식적 흔적은 은폐와 드러남을 오가며 추상의 정신적 힘을 구현한다. 특히 색채 농도와 물성의 조율은 작품의 핵심 미학 장치이다. 농도의 변화는 화면에 긴장감과 무게감을 부여하며, 중첩된 층위는 ‘보이는 나’와 ‘보이지 않는 나’를 잇는 심리적 장치로 작용한다. 이는 단순한 재료 실험을 넘어서 진정성(Authenticity)을 향한 내적 탐구이자, 자아와 세계가 교차하는 시각적 실존의 기록이다.\n색채는 내 작업에서 가장 중요한 감각적 요소다. 높은 채도의 색은 강렬한 시각적 힘과 함께 정화(catharsis)의 감정을 불러일으킨다. 보색 대비가 남기는 잔상은 자연의 무한성과 순환성을 떠올리게 하며, 관람자에게 심리적 깊이를 선사한다. 이러한 색채 경험은 시골 풍경과 일상에서 얻은 관찰을 바탕으로 단순한 재현을 넘어 자연의 본질적 힘을 구현하는 여정이다.\n\n결국 나의 회화는 무의식과 의식, 우연과 수행, 자연과 내면이 서로 교직(交織)되며 생성되는 추상 공간의 미학이다. 이 과정은 단순한 시각적 결과물이 아니라, 순수한 감정과 정신적 에너지가 드러나는 존재론적 사건으로 자리 잡는다.",
-      "note_en": "My work takes form at the intersection where unconscious gesture and conscious choice converge. Simple formal elements draw forth embodied moments from memory and are reinterpreted, while repeated performative actions generate images in which chance and inevitability coexist. In this process, layered colors and materiality extend beyond mere visual effect, unfolding into a phenomenological experience of confronting the inner self.\n\nForms that emerge by chance do not remain as mere traces but are sublimated into symbolic signs. Though they may be difficult to identify externally, for me they construct a unique semantic network, becoming the ontological driving force of the work. Symbolic traces, built up through layers of time, may not appear immediately clear on the surface, yet they carry profound meaning and sustain the continuity of my practice. Repetitive acts—dotting, pouring, erasing, and covering—transcend technical procedure, becoming performance and an accumulation of time.\n\nAs in Martin Heidegger’s concept of Aletheia, the unconscious traces within the image move between concealment and revelation, embodying the spiritual force of abstraction. The modulation of color density and materiality is a central aesthetic device in my work. Variations in density introduce tension and weight to the surface, while layered strata function as a psychological apparatus that connects the “visible self” and the “invisible self.” This extends beyond material experimentation into an inner inquiry toward authenticity, a visual record of existential presence where the self and the world intersect.\n\nColor is the most essential sensory element in my work. Highly saturated hues evoke a powerful visual force alongside a sense of catharsis. The afterimage produced by complementary contrasts recalls the infinity and cyclicality of nature, offering the viewer a sense of psychological depth. Rooted in observations of rural landscapes and everyday life, this chromatic experience moves beyond simple representation toward embodying the essential force of nature.\n\nUltimately, my painting is an aesthetic of abstract space generated through the interweaving of unconscious and conscious, chance and performance, nature and inner being. This process is not merely a visual outcome, but an ontological event in which pure emotion and spiritual energy are revealed.",
-      "works": [
-        {
-          "title_kr": "Micro Utopia",
-          "title_en": "Micro Utopia",
-          "meta_kr": "53.0x40.9cm · Acrylic canvas · 2025",
-          "meta_en": "53.0x40.9cm · Acrylic canvas · 2025",
-          "image": "images/group/standard/kim-sunhye-01.jpg",
-          "zoom": "images/group/zoom/kim-sunhye-01.jpg"
-        },
-        {
-          "title_kr": "Micro Utopia",
-          "title_en": "Micro Utopia",
-          "meta_kr": "72.7x60.6cm · Acrylic canvas · 2025",
-          "meta_en": "72.7x60.6cm · Acrylic canvas · 2025",
-          "image": "images/group/standard/kim-sunhye-02.jpg",
-          "zoom": "images/group/zoom/kim-sunhye-02.jpg"
-        }
-      ]
-    },
-    {
-      "name_kr": "김혜리",
-      "name_en": "Kim Hye Ri",
-      "note_summary_kr": "기억 속과 무의식에서 떠오른 환상적 공간.",
-      "note_summary_en": "Fantastical spaces drawn from memory and the unconscious.",
-      "note_kr": "기억 속과 무의식에서 떠올린 공간에, 자연의 생물과 공간의 무생물들이 뜻밖에 만난다.\n혼재된 장면 속 잃어버린 대상을 찾아 헤매는 여정을 너무 무겁진 않게, 때론 아름다워 보이도록 하나의 환상적 이미지로 표출한다.",
-      "note_en": "In a space drawn from memory and the unconscious, living elements of nature and inanimate objects of space encounter one another unexpectedly.\nWithin these layered scenes, the journey of searching for what has been lost is expressed not as something heavy, but as a single fantastical image—at times appearing beautiful.",
-      "works": [
-        {
-          "title_kr": "조우",
-          "title_en": "Encounter",
-          "meta_kr": "91x116.8cm · Acrylic on canvas · 2024",
-          "meta_en": "91x116.8cm · Acrylic on canvas · 2024",
-          "image": "images/group/standard/kim-hyeri-01.jpg",
-          "zoom": "images/group/zoom/kim-hyeri-01.jpg"
-        },
-        {
-          "title_kr": "조우",
-          "title_en": "Encounter",
-          "meta_kr": "53x40.9cm · Acrylic on canvas · 2025",
-          "meta_en": "53x40.9cm · Acrylic on canvas · 2025",
-          "image": "images/group/standard/kim-hyeri-02.jpg",
-          "zoom": "images/group/zoom/kim-hyeri-02.jpg"
-        }
-      ]
-    },
-    {
-      "name_kr": "김홍구",
-      "name_en": "Kim HongGu",
-      "note_summary_kr": "자연과 인간의 공존.",
-      "note_summary_en": "The coexistence of nature and humanity.",
-      "note_kr": "共 存 < 공 존 >\n 자연에서 태어난 우리는 우리의 생존과 번영을 위해 많은 발전과 번영을 이룩하며 태어난 곳에서부터 독립해 왔다. 그로 인해 우리 인간은 자연과 상호작용하며 영향력을 가지기 시작하였다. 그동안 자연이 만들어 내는 분위기와 환경에 인간처럼 많은 영향을 가진 존재는 찾아보기 힘들다고 생각한다.\n\n인간의 생명력 앞에 자연은 깎이고, 변형되며, 쓰러진다. 하지만 자연은 그 위에 생명을 뿌린다. 이러한 환경은 우리는 주변에서 쉽게 마주칠 수 있다. 길가에 보도블록 사이에서 피어나는 잡초들과 꽃들처럼, 혹은 갈라진 건물 틈에서 자라나는 새싹들과 이끼들처럼 자연은 이처럼 조금의 틈만 있어도 생명력을 불어 넣는다. 그 생명력 앞에 인간의 구조물과 손길은 영원하지 못하다. 인간이 새로운 구조물을 만들면 자연은 그 위에 생명력을 쌓아올린다. \n\n이처럼 자연과 인간이 서로에게 영향을 주며 나타나는 결과들을 작가는 경험과 상상을 조합하여 조금 더 넓은 공간에 펼쳐 놓는다. 그로인해 나타나는 인간과 자연의 대비, 직선과 곡선의 대비는 완전히 하나가 되지 못하는 이질감을 보여준다. 이러한 이질감은 몽환적인 분위기를 느끼게 하며, 특유의 분위기로 공간을 만든다. 작가는 이러한 공간이 두 생명력의 공존(共存) 이라고 표현한다.",
-      "note_en": "Coexistence\n\nBorn from nature, we have achieved continuous development and prosperity in pursuit of survival and growth, gradually becoming independent from the place of our origin. In doing so, humanity has begun to interact with nature while exerting its own influence. It is difficult to find any other existence that affects the atmosphere and environment created by nature as profoundly as humans do.\n\nBefore human vitality, nature is cut, transformed, and brought down. Yet nature, in turn, sows life upon it. Such scenes are easily encountered around us—like weeds and flowers growing between cracks in the pavement, or sprouts and moss emerging from the fissures of buildings. Even the smallest gap allows nature to breathe life into its surroundings. In the face of this vitality, human structures and interventions cannot remain permanent. When humans build something new, nature once again accumulates life upon it.\n\nThrough a combination of experience and imagination, the artist expands these outcomes—born from the mutual influence between nature and humanity—into a broader spatial field. The contrasts that arise, between human and nature, between straight lines and curves, reveal a sense of dissonance, an inability to fully merge into one. This dissonance evokes a dreamlike atmosphere, shaping a distinct spatial presence. The artist refers to this space as the coexistence of two vital forces.",
-      "works": [
-        {
-          "title_kr": "공존 (共存)",
-          "title_en": "Coexistence",
-          "meta_kr": "65.1 X 53.0 cm · Acrylic · 2025",
-          "meta_en": "65.1 X 53.0 cm · Acrylic · 2025",
-          "image": "images/group/standard/kim-honggu-01.jpg",
-          "zoom": "images/group/zoom/kim-honggu-01.jpg"
-        },
-        {
-          "title_kr": "공존 (共存)",
-          "title_en": "Coexistence",
-          "meta_kr": "65.1 X 53.0 cm · Acrylic · 2025",
-          "meta_en": "65.1 X 53.0 cm · Acrylic · 2025",
-          "image": "images/group/standard/kim-honggu-02.jpg",
-          "zoom": "images/group/zoom/kim-honggu-02.jpg"
-        }
-      ]
-    },
-    {
-      "name_kr": "박민경",
-      "name_en": "Park Min Kyung",
-      "note_summary_kr": "꽃을 통해 감정을 이야기한다.",
-      "note_summary_en": "Speaks of emotion through flowers.",
-      "note_kr": "작고 소소하지만 때로는 깊은 울림이 되는 소중한 감정을 꽃을 통해 이야기하고자 한다. 조심스럽게 움트기도, 한 순간에 활짝 터지듯 피어나기도 한다.이러한 감정의 흐름을 다채로운 색감과 흐드러지게 일렁이는 표현으로 담아냈다.\n나와 그대의 다면적인 감정들이, 그것이 때로는 연약한 속살을 드러낸다 해도 온전히 피어나고 자유롭게 \n혼들릴 수 있기를.",
-      "note_en": "I seek to speak of small and humble, yet at times deeply resonant emotions through flowers. They may emerge gently and cautiously, or burst into full bloom in a single moment. These flows of emotion are expressed through rich colors and softly undulating forms.\n\nI hope that the many facets of emotion within you and me— even when they reveal their most tender and vulnerable layers—may fully bloom and sway freely.",
-      "works": [
-        {
-          "title_kr": "추락",
-          "title_en": "Fall",
-          "meta_kr": "91x72.7cm · oil on canvas · 2026",
-          "meta_en": "91x72.7cm · oil on canvas · 2026",
-          "image": "images/group/standard/park-minkyung-01.jpg",
-          "zoom": "images/group/zoom/park-minkyung-01.jpg"
-        },
-        {
-          "title_kr": "운명",
-          "title_en": "Destiny",
-          "meta_kr": "116.7x91cm · oil on canvas · 2026",
-          "meta_en": "116.7x91cm · oil on canvas · 2026",
-          "image": "images/group/standard/park-minkyung-02.jpg",
-          "zoom": "images/group/zoom/park-minkyung-02.jpg"
-        }
-      ]
-    },
-    {
-      "name_kr": "박유하",
-      "name_en": "Park U Ha",
-      "note_summary_kr": "하트로 사랑과 동심을 표현한다.",
-      "note_summary_en": "Expresses love and innocence through hearts.",
-      "note_kr": "하트를 매개로 동심과 사랑을 표현하는 작가 박유하입니다. 하트는 그 자체로도 아름다움을 지니고 있지만, 그 안에는 수많은 감정과 이야기가 숨겨져 있습니다.\n\n작품 속 하트는 단순한 이미지에 그치지 않고, 변화의 상징으로 자리 잡고 있습니다. \n\n작가에게 사랑은 베풀수록 고갈되는 것이 아니라 더욱 풍성해지고 증폭된다는 믿음이 있습니다. 작가는 마주하는 모든 존재, 살아있기에 매일 죽어가는 애뜻한 존재들에게 사랑을 나누고자 합니다. ",
-      "note_en": "I am artist Park U Ha, expressing innocence and love through the motif of the heart. While the heart is beautiful in itself, it holds within it countless emotions and stories.\n\nIn my work, the heart is not merely an image, but a symbol of transformation.\n\nFor me, love does not diminish when given—it grows richer and expands. I seek to share this love with all beings I encounter, with those tender existences that, by living, are also slowly fading each day.",
-      "works": [
-        {
-          "title_kr": "Love 시리즈 1",
-          "title_en": "Love Series 1",
-          "meta_kr": "40.9×31.8cm · mixed media · 2025",
-          "meta_en": "40.9×31.8cm · mixed media · 2025",
-          "image": "images/group/standard/park-uha-01.jpg",
-          "zoom": "images/group/zoom/park-uha-01.jpg"
-        },
-        {
-          "title_kr": "Crazy Love",
-          "title_en": "Crazy Love",
-          "meta_kr": "130×97.0cm · mixed media · 2025",
-          "meta_en": "130×97.0cm · mixed media · 2025",
-          "image": "images/group/standard/park-uha-02.jpg",
-          "zoom": "images/group/zoom/park-uha-02.jpg"
-        }
-      ]
-    },
-    {
-      "name_kr": "박혜정",
-      "name_en": "Park Hea Jung",
-      "note_summary_kr": "전통민화를 동시대 회화 언어로 만든다.",
-      "note_summary_en": "Turns traditional Minhwa into a contemporary painterly language.",
-      "note_kr": "‘익숙한 옛 것이 주는 따뜻한 위로와 응원’을 주제로, 한국의 전통민화를 감각적 변주를 통해 동시대의 회화\n언어로 만들어 간다. 나의 민화는 단순한 복(福)의 상징이 아니라 ‘응원’이라는 감정을 시각화 한 K-emotion으로, 전통이 유물이 아닌 하나의 에너지이자 가능성이 될 수 있다는 사실을 보여주고자 한다. \n“행복과 안녕을 바라며. 오늘의 우리를 응원합니다.”",
-      "note_en": "Under the theme of “the warm comfort and encouragement offered by familiar things of the past,” I reinterpret traditional Korean Minhwa through a sensorial transformation, translating it into a contemporary painterly language.\n\nMy Minhwa is not merely a symbol of fortune, but a visualization of “encouragement”—a form of K-emotion that reveals tradition not as a relic, but as a living energy and possibility.\n\n“Wishing for happiness and well-being.\nCheering for who we are today.”",
-      "works": [
-        {
-          "title_kr": "흐르고 피우며",
-          "title_en": "Flowing and Blooming",
-          "meta_kr": "50 x 50 cm · 장지에 수간채색 · 2024",
-          "meta_en": "50 x 50 cm · 장지에 수간채색 · 2024",
-          "image": "images/group/standard/park-heajung-01.jpg",
-          "zoom": "images/group/zoom/park-heajung-01.jpg"
-        },
-        {
-          "title_kr": "Flow",
-          "title_en": "Flow",
-          "meta_kr": "91x72.7 cm · 장지에 수간채색 · 2025",
-          "meta_en": "91x72.7 cm · 장지에 수간채색 · 2025",
-          "image": "images/group/standard/park-heajung-02.jpg",
-          "zoom": "images/group/zoom/park-heajung-02.jpg"
-        }
-      ]
-    },
-    {
-      "name_kr": "안세진",
-      "name_en": "Ahn Se Jin",
-      "note_summary_kr": "불안에서 평안으로 가는 과정을 담는다.",
-      "note_summary_en": "Captures the movement from anxiety to peace.",
-      "note_kr": "불안은 언제나 예고 없이 찾아왔고, 그 감정 속에서 나는 스스로의 가치관이 흔들리고 있음을 느꼈다. \n오랜 고민 끝에 불안을 이겨내게 했던 것을 기도와 믿음이었다. 불안한 마음을 밀어내고 평안을 가져다준 그 경험은 나에게 가장 분명한 신념으로 남았다.\n어둠속에서 서서히 드러나는 한 줄기 빛을 통해, 불안에서 평안으로 나아가는 과정을 담고자 했다. 어둠은 불안을, 얇은 선으로 번져 나오는 색의 빛은 기도를 통해 찾아오는 희망을 상징한다.",
-      "note_en": "Anxiety always arrived without warning, and within that feeling I sensed my own values beginning to waver. After a long period of reflection, what ultimately allowed me to overcome that anxiety was prayer and faith. The experience of pushing away unease and finding peace became the clearest conviction I carry within me.\n\nThrough a single line of light slowly emerging from darkness, I sought to capture the passage from anxiety to tranquility. The darkness represents anxiety, while the thin, spreading line of colored light symbolizes the hope that arrives through prayer.",
-      "works": [
-        {
-          "title_kr": "251030",
-          "title_en": "251030",
-          "meta_kr": "10.5x7.5cm · oil pastel, poster color on paper · 2025",
-          "meta_en": "10.5x7.5cm · oil pastel, poster color on paper · 2025",
-          "image": "images/group/standard/ahn-sejin-01.jpg",
-          "zoom": "images/group/zoom/ahn-sejin-01.jpg"
-        },
-        {
-          "title_kr": "빛과어둠중 어둠",
-          "title_en": "Darkness Among Light and Darkness",
-          "meta_kr": "107x75cm · oil pastel, acrylic on paper · 2024",
-          "meta_en": "107x75cm · oil pastel, acrylic on paper · 2024",
-          "image": "images/group/standard/ahn-sejin-02.jpg",
-          "zoom": "images/group/zoom/ahn-sejin-02.jpg"
-        }
-      ]
-    },
-    {
-      "name_kr": "조준재",
-      "name_en": "Jo Jun Jae",
-      "note_summary_kr": "미생물과 태아의 형상에서 시작하는 생명의 추상.",
-      "note_summary_en": "An abstraction of life beginning from microorganisms and fetal forms.",
-      "note_kr": "모든 생명체들은 땅과 물에서 시작을 한다. 이번 신작에서는 자연에서 태어나 환경과 사회의 문제들이 태어나기 시작했던 처음의 출발점인 눈에 보이지 않는 미생물의 형태에서 시작하려    \n고 한다. 전체적인 형태는 다채롭게 생긴 미생물의 형태와 태아의 모습을 추상적  형태로 풀어내었고 ,또한 도면에서 표현하는 방법인 등고선을 이용하여, 땅에서 시작하면 지면의 모습과 하늘에서 올려다본 모습처럼 땅과 하늘이 하나됨과 그 빈 공간을 색상의 유리들을 사용하여 생명체들이 살아있는 듯한 유기적인 형태로 표현하여, 모든 미생물, 생명체들이 감정의 출발점을 색상과 다채로운 형태로서 자연과 의도치않은 상황에서 시작한다는 모습을 보여주고자 한다.",
-      "note_en": "All living beings begin from the earth and water. In this new body of work, I start from the invisible origin—the form of microorganisms—where both life and the conditions of environment and society first emerge.\n\nThe overall composition unfolds these microorganisms alongside the form of a fetus in abstract terms. Using contour lines—an approach often found in drawing and mapping—the work evokes both the surface of the land and a view from above, suggesting a unity between earth and sky. The empty spaces are filled with colored, glass-like tones, forming organic shapes that appear alive.\n\nThrough this, I seek to convey that all microorganisms and living beings originate from emotional beginnings—emerging through color and diverse forms within nature, and often from unintended circumstances.",
-      "works": [
-        {
-          "title_kr": "박동",
-          "title_en": "Heartbeat",
-          "meta_kr": "400 x 530mm · glass on wood · 2025",
-          "meta_en": "400 x 530mm · glass on wood · 2025",
-          "image": "images/group/standard/jo-junjae-01.jpg",
-          "zoom": "images/group/zoom/jo-junjae-01.jpg"
-        },
-        {
-          "title_kr": "박동",
-          "title_en": "Heartbeat",
-          "meta_kr": "400 x 530mm · glass on wood · 2025",
-          "meta_en": "400 x 530mm · glass on wood · 2025",
-          "image": "images/group/standard/jo-junjae-02.jpg",
-          "zoom": "images/group/zoom/jo-junjae-02.jpg"
-        }
-      ]
-    },
-    {
-      "name_kr": "최성민",
-      "name_en": "Choi Seongmin",
-      "note_summary_kr": "경계 앞에서의 갈망과 확장.",
-      "note_summary_en": "Longing and expansion before the boundary.",
-      "note_kr": "나는 늘 ‘경계’라는 보이지 않는 선 앞에 서 있다. 그곳에서 멈추려 애쓰기도 하지만, 동시에 그 너머를 향한 동경은 마음속에 자리한다. 경계는 단순한 막힘이나 단절이 아니라, 새로운 세계로 나아가기 위한 문턱일 수 있다. 나는 그 문턱 앞에서 머뭇거리면서도, 색과 형태를 통해 그 너머를 향한 갈망을 드러내고자 한다.\n화면 속 겹겹의 색채는 경계와 충돌하며 흔들리고, 결국 확장되어 또 다른 공간을 열어간다. 경계는 나를 가두는 벽이 아니라, 오히려 회화가 태어나는 긴장과 희망의 자리이다.\n짙은 청색의 화면은 경계의 단단함과 깊이를 상징한다. 그 위로 번져 나가는 색들은 경계를 넘어 확장하려는 에너지와 갈망을 담고 있다. 화면 속 유기적인 형태들은 경계와 경계 사이를 흔들며, 마침내 새로운 공간을 열어가는 움직임으로 이어진다.",
-      "note_en": "I am always standing before an invisible line called “the boundary.” At times, I try to remain still at that threshold, yet at the same time, a longing for what lies beyond takes root within me. A boundary is not simply a barrier or a rupture, but a threshold that may lead toward a new world. Though I hesitate before it, I seek to reveal my desire for what lies beyond through color and form.\n\nLayers of color within the canvas collide with and tremble against the boundary, eventually expanding to open another space. The boundary is not a wall that confines me, but rather a site of tension and hope where painting itself comes into being.\n\nThe deep blue surface symbolizes the solidity and depth of the boundary. The colors spreading across it carry the energy and yearning to move beyond it. The organic forms within the image sway between boundaries, ultimately unfolding into a movement that opens a new space.",
-      "works": [
-        {
-          "title_kr": "Untitled 시리즈",
-          "title_en": "Untitled Series",
-          "meta_kr": "22x22cm · Acrylic canvas · 2024",
-          "meta_en": "22x22cm · Acrylic canvas · 2024",
-          "image": "images/group/standard/choi-seongmin-01.jpg",
-          "zoom": "images/group/zoom/choi-seongmin-01.jpg"
-        },
-        {
-          "title_kr": "Untitled 시리즈",
-          "title_en": "Untitled Series",
-          "meta_kr": "22x22cm · Acrylic canvas · 2024",
-          "meta_en": "22x22cm · Acrylic canvas · 2024",
-          "image": "images/group/standard/choi-seongmin-02.jpg",
-          "zoom": "images/group/zoom/choi-seongmin-02.jpg"
-        }
-      ]
-    },
-    {
-      "name_kr": "최지영",
-      "name_en": "Choi JIi Young",
-      "note_summary_kr": "삶을 여행처럼 바라보며 기억과 현재를 담는다.",
-      "note_summary_en": "Looks at life as travel and holds memory with the present.",
-      "note_kr": "저는 여행을 특별한 장소가 아닌 일상과 삶 그 자체로 바라보며 작업합니다.\n\n알 수 없는 미래를 향해 살아가는 삶은 미지의 세계로 떠나는 여행과 같고, 그 과정에서 겪는 다양한\n경험과 감정들을 작품에 담고 있습니다.\n평범한 일상에 관심을 두고 바라볼수록 지나치던 순간들이 특별해지고, 삶 자체도 더욱 소중하게 느껴집니다.\n시처럼 일상에 의미를 부여하며 기억과 현재, 상상이 공존하는 세계를 따뜻하게 표현하고자 합니다.\n밝고 긍정적인 작품을 통해 관람자들이 평온함과 삶의 설렘을 느끼기를 바랍니다.",
-      "note_en": "I approach travel not as a journey to a special place, but as everyday life itself.\n\nLiving toward an unknown future is like setting out on a journey into the unknown, and I capture the various experiences and emotions encountered along the way in my work. The more attentively I look at ordinary daily life, the more the moments I once passed by become meaningful, and life itself feels more precious.\n\nLike poetry, I seek to give meaning to the everyday, gently expressing a world where memory, the present, and imagination coexist. Through bright and positive works, I hope viewers can feel a sense of calm and the quiet excitement of life.",
-      "works": [
-        {
-          "title_kr": "닿기를",
-          "title_en": "May It Reach",
-          "meta_kr": "45.5x27.3cm · Acrylic on canvas · 2026",
-          "meta_en": "45.5x27.3cm · Acrylic on canvas · 2026",
-          "image": "images/group/standard/choi-jiyoung-01.jpg",
-          "zoom": "images/group/zoom/choi-jiyoung-01.jpg"
-        },
-        {
-          "title_kr": "어느겨울에",
-          "title_en": "In a Certain Winter",
-          "meta_kr": "45.5x27.3cm · Acrylic on canvas · 2026",
-          "meta_en": "45.5x27.3cm · Acrylic on canvas · 2026",
-          "image": "images/group/standard/choi-jiyoung-02.jpg",
-          "zoom": "images/group/zoom/choi-jiyoung-02.jpg"
-        }
-      ]
-    },
-    {
-      "name_kr": "추성임",
-      "name_en": "Choo Sungim",
-      "note_summary_kr": "보이지 않는 사치를 내면의 풍요로 번역한다.",
-      "note_summary_en": "Translates invisible luxury into inner richness.",
-      "note_kr": "사치라고 하면 흔히 외적인 것, 즉 물질의 과잉이나 눈에 띄는 소비를 떠올린다. 그러나 사치를 외면에서 내면으로 끌어들여, 보이지 않는 사치를 외부의 화려함이나 시각적 충격을 넘어서, 감정의 미묘한 결, 생각의 여운, 기억의 투명한 겹들을...  즉 보이는 것을 너머 정신적, 감각적, 정서적 풍요를 만든다.\n\n내적 사치는 화려함의 반대편에 있다. 격렬하거나 요란하지 않지만, 결코 빈곤하지도 않다. \n그것은 조용히 쌓이는 시간, 사소한 감정의 떨림, 경제적 조건이나 사회적 지위와 무관하게 발현될 수 있는 인간의 고유한 능력이다. 누군가에게는 무의미해 보일 예술적 사유, 혹은 반복되는 일상 속에서 스스로에게 허락한 작은 여백들.. 그것을 색과 질감, 여백과 밀도로 번역해 나간다.\n\n작업 과정은 과묵한 색채로 겉으로는 차분하고 절제되어 있지만 색의 겹을 통해 깊이를 형성한다. 이는 내면의 복잡성과 감정의 무게를 상징한다. 비워진 공간은 보는 이가 스스로 감정을 투사할 수 있는 틈을 마련한다. 사치는 본래 여유에서 비롯된다는 점에서 여백은 내적 사치의 또 하나의 조형 요소이다. 질감에서 보여 지는 붓질이나 섬세한 드로잉은 감각의 축척을 시도했다. 어떤 표면은 반짝이고, 어떤 표면은 단순하고 무디다. 이는 감정과 기억의 시각적 은유이다.\n이러한 개념을 시각적, 언어적, 물질적 매체를 통해 구성해 나간다. 때로는 최소한의 형식으로, 때로는 과잉된 감각으로 미의 기준이 외부가 아닌 내면에서 형성될 수 있다는 믿음에서 출발한다. 단순히 대상을 재현하는 도구가 아니라, 감각과 사유의 흐름을 직조해 나가는 행위이다. 외면적 과시대신 감각의 세밀함으로 밀도 있게 구성하고자 했다. 삶의 깊이에 대한 성찰을 가능하게 하는 감각적 풍요로움을 바깥이 아닌 안쪽을 향한 시선, 그것이 내가 생각하는 미학적인 사치다.\n\n이처럼 내적인 아름다움은 삶의 여정 속에서 발견되며, 외부의 화려함과는 다른 방식으로 세상을 비추며, 우리가 끊임없이 변하고 성장하는 동안, 그 고유의 미적 가치로 우리의 존재를 풍요롭게 만든다.",
-      "note_en": "When we speak of luxury, we often think of the external—material excess or visible consumption. Yet I draw luxury inward, shifting it from the exterior to the interior. Invisible luxury goes beyond outward splendor or visual impact; it resides in the subtle textures of emotion, the lingering traces of thought, and the transparent layers of memory. In other words, it creates a spiritual, sensory, and emotional richness that transcends what is seen.\n\nInner luxury exists on the opposite side of extravagance. It is neither intense nor ostentatious, yet it is never impoverished. It is the quiet accumulation of time, the delicate tremor of minor emotions, and a uniquely human capacity that can manifest regardless of economic conditions or social status. What may appear meaningless to others—artistic contemplation, or small pauses one grants oneself within repetitive daily life—are translated into color and texture, into space and density.\n\nThe working process is restrained, composed of muted colors that appear calm and controlled on the surface, yet build depth through layers of pigment. This reflects the complexity of the inner self and the weight of emotion. Empty spaces create room for the viewer to project their own feelings. Since luxury originates from a sense of allowance, emptiness itself becomes another formal element of inner luxury. The brushstrokes and delicate drawing visible in the textures attempt an accumulation of sensation. Some surfaces shimmer, while others remain simple and subdued—visual metaphors for emotion and memory.\n\nThese ideas are constructed through visual, linguistic, and material media. At times through minimal forms, at others through heightened sensory intensity, the work begins from the belief that standards of beauty can arise from within rather than from the outside. It is not merely a tool for representation, but an act of weaving the flow of sensation and thought. Instead of outward display, I seek to build density through the precision of sensation. A sensory richness that allows reflection on the depth of life—directed not outward, but inward—this is what I consider aesthetic luxury.\n\nIn this way, inner beauty is discovered along the journey of life. It illuminates the world in a manner distinct from external splendor, and as we continuously change and grow, it enriches our existence with its own inherent aesthetic value.",
-      "works": [
-        {
-          "title_kr": "지적사치 시리즈",
-          "title_en": "Intellectual Luxury Series",
-          "meta_kr": "65.1×53.0 cm · Acrylic, oil on canvas · 2024",
-          "meta_en": "65.1×53.0 cm · Acrylic, oil on canvas · 2024",
-          "image": "images/group/standard/choo-sungim-01.jpg",
-          "zoom": "images/group/zoom/choo-sungim-01.jpg"
-        },
-        {
-          "title_kr": "지적사치 시리즈",
-          "title_en": "Intellectual Luxury Series",
-          "meta_kr": "65.1×53.0 cm · Acrylic, oil on canvas · 2024",
-          "meta_en": "65.1×53.0 cm · Acrylic, oil on canvas · 2024",
-          "image": "images/group/standard/choo-sungim-02.jpg",
-          "zoom": "images/group/zoom/choo-sungim-02.jpg"
-        }
-      ]
-    },
-    {
-      "name_kr": "한혜령",
-      "name_en": "HyeRyoung Han",
-      "note_summary_kr": "감정과 소통의 구조를 전자부품으로 드러낸다.",
-      "note_summary_en": "Reveals the structures of emotion and communication through electronic components.",
-      "note_kr": "우리는 소통을 원하고 관계의 확장을 바란다. 그러나 현실은 뒤엉킨 실타래처럼 쉽게 풀리지 않는 문제들로 가득하다. 감정의 기복과 모순된 반응이 얽힌 수많은 대화는 관계 소통의 소용돌이를 만들어낸다. 그 소용돌이 속에서 남겨진 흔적은 단순한 색과 선이 아니라, 말과 관계가 남긴 파편이다. 나는 그 파편을 모아 구조를 만들고, 전자부품과 혼합재료를 통해 소통의 메커니즘을 드러낸다. 빛과 그림자가 교차하는 순간, 감정은 해부된 구조이자 살아 있는 존재로 드러난다. 전자부품과 회로는 감정의 결을 드러내며, 빛과 그림자는 그 여운을 공간에 남긴다. 관객은 작품 속 구조에 개입하거나 반응하며, 소통의 일부가 된다.\n\n나는 예술과 기술, 인간성과 구조가 교차하는 지점에서 새로운 언어를 찾는다. 작업은 단순한 표현을 넘어, 감정과 관계, 소통의 구조를 해석하는 장치로 기능한다. 가능하게 하는 감각적 풍요로움을 바깥이 아닌 안쪽을 향한 시선, 그것이 내가 생각하는 미학적인 사치다.\n\n이처럼 내적인 아름다움은 삶의 여정 속에서 발견되며, 외부의 화려함과는 다른 방식으로 세상을 비추며, 우리가 끊임없이 변하고 성장하는 동안, 그 고유의 미적 가치로 우리의 존재를 풍요롭게 만든다.",
-      "note_en": "We seek communication and long for the expansion of relationships. Yet reality is filled with problems that do not easily unravel, like a tangled skein of thread. Countless conversations—woven with emotional fluctuations and contradictory responses—create a vortex of relational communication. What remains within that vortex are not merely colors and lines, but fragments left behind by words and relationships. I gather these fragments to construct a structure, revealing the mechanisms of communication through electronic components and mixed media. In the moment where light and shadow intersect, emotion appears both as a dissected structure and as a living presence. Electronic parts and circuits expose the texture of emotion, while light and shadow leave its resonance within the space. The viewer engages with or responds to the structure within the work, becoming part of the act of communication.\n\nI seek a new language at the intersection of art and technology, humanity and structure. My work moves beyond simple expression, functioning as a device that interprets the structures of emotion, relationships, and communication. The sensory richness that enables reflection on the depth of life—directed not outward but inward—is what I consider aesthetic luxury.\n\nIn this way, inner beauty is discovered along the journey of life. It illuminates the world in a manner distinct from external splendor, and as we continuously change and grow, it enriches our existence with its own inherent aesthetic value.",
-      "works": [
-        {
-          "title_kr": "거울 속 주장",
-          "title_en": "Assertion in the Mirror",
-          "meta_kr": "전자부품, 구리, 와이어, 납 · 30x30x5cm · 2026",
-          "meta_en": "Electronic parts, copper, wire, solder · 30x30x5cm · 2026",
-          "image": "images/group/standard/han-hyeryoung-01.jpg",
-          "zoom": "images/group/zoom/han-hyeryoung-01.jpg"
-        },
-        {
-          "title_kr": "순환 언어",
-          "title_en": "Circulating Language",
-          "meta_kr": "전자부품, 구리, 와이어, 납 · 30x30x5cm · 2026",
-          "meta_en": "Electronic parts, copper, wire, solder · 30x30x5cm · 2026",
-          "image": "images/group/standard/han-hyeryoung-02.jpg",
-          "zoom": "images/group/zoom/han-hyeryoung-02.jpg"
-        }
-      ]
-    },
-    {
-      "name_kr": "홍예화",
-      "name_en": "Hong Yehwa",
-      "note_summary_kr": "전통 한지를 통해 보이지 않는 감정을 시각화한다.",
-      "note_summary_en": "Visualizes unseen emotions through traditional hanji.",
-      "note_kr": "나는 전통 한지를 매개로 보이지 않는 감정의 형태를 시각화한다.\n무형문화재 신현세 한지장님의 한지는 시간과 손의 기억을 품은 재료이자, 나의 작업이 시작되는 자리이다.\n설화와 꽃말에서 출발한 이야기는 사랑과 행복이라는 감정의 상징으로 확장된다. 모빌이라는 형식은 감정이 \n고정되지 않고 관계 속에서 흔들리며 살아 있음을 드러낸다.\n나는 이 작업을 통해, 누군가의 공간에 조용히 머물다 가는 축복 같은 순간을 만들고자 한다.",
-      "note_en": "I visualize the forms of unseen emotions through the medium of traditional Korean hanji.\n\nThe hanji crafted by intangible cultural heritage artisan Shin Hyun-se is not only a material imbued with the memory of time and hands, but also the point where my work begins. Narratives that originate from folktales and the symbolic language of flowers expand into representations of love and happiness. The form of the mobile reveals that emotions are not fixed, but remain alive—swaying within relationships.\n\nThrough this work, I seek to create moments that quietly dwell within someone’s space, like a passing blessing.",
-      "works": [
-        {
-          "title_kr": "사랑의 즐거움",
-          "title_en": "The Joy of Love",
-          "meta_kr": "15cm x 35cm x 15cm · 한지에 복합재료 · 2025",
-          "meta_en": "15cm x 35cm x 15cm · mixed media on hanji · 2025",
-          "image": "images/group/standard/hong-yehwa-01.jpg",
-          "zoom": "images/group/zoom/hong-yehwa-01.jpg"
-        },
-        {
-          "title_kr": "틀림없이 행복해진",
-          "title_en": "Surely Becoming Happy",
-          "meta_kr": "25cm x 45cm x 25cm · 한지에 복합재료 · 2025",
-          "meta_en": "25cm x 45cm x 25cm · mixed media on hanji · 2025",
-          "image": "images/group/standard/hong-yehwa-02.jpg",
-          "zoom": "images/group/zoom/hong-yehwa-02.jpg"
-        }
-      ]
-    },
-    {
-      "name_kr": "홍지연",
-      "name_en": "Hong Ji Yeon",
-      "note_summary_kr": "실의 숲으로 안식처를 만든다.",
-      "note_summary_en": "Creates a refuge through forests of thread.",
-      "note_kr": "아스팔트의 견고한 질서 속에서 상실된 안식처를 되찾기 위해, 수천가닥의 실을 심으며 부드러운 숲을 만듭니다. \n이 ‘녹색의 심연’은 작가 개인의 도피처를 넘어, 타인의 고립된 마음들이 잠시 머물 수 있는 공유된 숲입니다. \n딱딱하게 굳어버린 일상의 감각들이 이 질감의 숲 안에서 긴장을 내려놓고, 끝내 시각적 촉각적 평온의 감각으로 다가올수있기를 제안한다.",
-      "note_en": "Within the rigid order of asphalt, I plant thousands of threads to create a soft forest, in an effort to reclaim a lost refuge.\n\nThis “green abyss” extends beyond a personal sanctuary, becoming a shared forest where the isolated minds of others may pause and rest. I propose that the senses, hardened by the routines of daily life, may release their tension within this textured forest, and ultimately arrive at a state of visual and tactile tranquility.",
-      "works": [
-        {
-          "title_kr": "For;rest 푸른 숲에서의 휴식",
-          "title_en": "For;rest — Rest in the Blue Forest",
-          "meta_kr": "70x150cm · 천에실(아크릴사,울사,특수사) · 2023",
-          "meta_en": "70x150cm · thread on fabric · 2023",
-          "image": "images/group/standard/hong-jiyeon-01.jpg",
-          "zoom": "images/group/zoom/hong-jiyeon-01.jpg"
-        },
-        {
-          "title_kr": "그리움의 창가Ⅰ,Ⅱ",
-          "title_en": "Longing by the window",
-          "meta_kr": "38x106cm · 천에실(아크릴사,특수사) · 2025",
-          "meta_en": "38x106cm · thread on fabric · 2025",
-          "image": "images/group/standard/hong-jiyeon-02.jpg",
-          "zoom": "images/group/zoom/hong-jiyeon-02.jpg"
-        }
-      ]
-    }
-  ]
-}</script>
+<script id="jsgallery-data-inline" type="application/json">{"contact": {"gallery_title_kr": "김정숙 갤러리", "gallery_title_en": "Kim Jung sook Gallery", "director_kr": "대표 김정숙", "director_en": "Director Kim Jung sook", "address_kr": "인천광역시 중구 월미로 266, 2층", "address_en": "2F, 266 Wolmi-ro, Jung-gu, Incheon, Republic of Korea", "phone_mobile_kr": "010-5230-4149", "phone_mobile_en": "+82-10-5230-4149", "phone_gallery_kr": "032-773-0713", "phone_gallery_en": "+82-32-773-0713", "email": "jsgallery22@naver.com", "website": "https://jsgallery.art", "instagram": "https://instagram.com/gallery_kimjungsook", "youtube": "https://www.youtube.com/@gallery6329", "display_kr": "김정숙 갤러리\n인천광역시 중구 월미로 266, 2층\n\nT. 010-5230-4149\nE. jsgallery22@naver.com", "display_en": "Kim Jung sook Gallery\n2F, 266 Wolmi-ro, Jung-gu, Incheon, Republic of Korea\n\nT. +82-10-5230-4149\nE. jsgallery22@naver.com"}, "js_art_space": {"title_kr": "제이에스아트스페이스", "title_en": "JS ART SPACE", "address_kr": "인천광역시 중구 월미로260번길 7-13", "address_en": "7-13, Wolmi-ro 260beon-gil, Jung-gu, Incheon, Republic of Korea", "phone_kr": "032-773-0713", "phone_en": "+82-32-773-0713"}, "group": {"title_kr": "CONNECTION : IN PROGRESS", "title_en": "CONNECTION : IN PROGRESS", "type_kr": "그룹전", "type_en": "Group Exhibition", "date_kr": "2026.03.18 — 2026.03.30 · 김정숙 갤러리 · JS ART SPACE", "date_en": "March 18 — March 30, 2026 · Kim Jung sook Gallery · JS ART SPACE", "intro_kr": "연결이라는 개념을 하나의 완결된 상태가 아닌, 진행중인 과정으로 바라본다.", "intro_en": "Connection is approached not as a completed state, but as an ongoing process.", "image": "images/exhibitions/group-cover.jpg"}, "solo": {"title_kr": "사유는 삶을 빚는다 — 어디에서", "title_en": "Thought Shapes Life — Where", "type_kr": "개인전", "type_en": "Solo Exhibition", "date_kr": "2026.03.04 — 2026.03.16 · 김정숙 갤러리 · JS ART SPACE", "date_en": "March 4 — March 16, 2026 · Kim Jung sook Gallery · JS ART SPACE", "intro_kr": "사유와 회화가 하나의 사건으로 읽히도록 구성된 초대전입니다.", "intro_en": "An invited exhibition structured so that thought and painting are read as a single event."}, "group_artists": [{"name_kr": "권희선", "name_en": "Hee Sun Kwon", "note_summary_kr": "찰나의 감정과 시간의 잔여를 포착한다.", "note_summary_en": "Captures fleeting emotion and the residue of time.", "note_kr": "‘찰나’는 불교에서 시간의 최소 단위를 뜻한다고 한다.\n존재는 그 미세한 순간 속에서 생겨나고 사라지며, 삶은 그렇게 짧은 찰나들의 겹침으로 이어진다. 영원하지 않고 매 순간 사라져가는 시간 위에서, 지나간 시간을 온전히 보내고 다가올 시간을 정성스럽게 맞이하기 위해 나만의 작은 의식을 치른다.\n\n만끽하고 싶은 여운과 끈적하게 남아 쉽게 지워지지 않는 감정의 잔여. 흘려보내기엔 어딘가 미련이 남는 그 감각을 붙들어 화면에 옮기며, 당연한 듯 주어지지만 결코 당연하지 않은 일상 속 ‘찰나’를 포착한다.\n\n그 과정은 단순한 재현이 아니라 스스로를 마주하는 시간이 된다. 어떤 날에는 위로가 되고, 또 어떤 날에는 기쁨이나 슬픔으로 머물며 감정의 순환을 이룬다.\n\n지극히 사적인 나의 찰나가 이를 마주하는 이들에게도 잠시 멈춰 설 수 있는 작은 틈이 되기를 바란다", "note_en": "“Chalna,” a fleeting moment, is said to be the smallest unit of time in Buddhism.\nExistence arises and disappears within these infinitesimal moments, and life continues as an accumulation of such fleeting instants. Upon time that is never permanent and constantly fading, I perform my own small ritual—fully sending off what has passed and carefully welcoming what is to come.\n\nThe lingering aftertaste I wish to savor, and the residue of emotions that cling, stubborn and not easily erased. Holding onto sensations that feel too reluctant to simply let go, I translate them onto the surface, capturing these fleeting moments within everyday life—so naturally given, yet never truly ordinary.\n\nThis process is not mere representation, but a time of confronting myself. On some days, it becomes comfort; on others, it remains as joy or sorrow, forming a cycle of emotion.\n\nI hope that my deeply personal fleeting moments may offer those who encounter them a small space—a pause, however brief, in which they too can momentarily stand still.", "works": [{"title_kr": "구름의 함성", "title_en": "Roar of Clouds", "meta_kr": "53.0x40.7cm · oil on canvas · 2023", "meta_en": "53.0x40.7cm · oil on canvas · 2023", "image": "images/group/kwon-1.jpg"}, {"title_kr": "좋아하는 시간으로 가는 길", "title_en": "Road to a Beloved Time", "meta_kr": "116.8x91.0cm · oil on canvas · 2023", "meta_en": "116.8x91.0cm · oil on canvas · 2023", "image": "images/group/kwon-2.jpg"}]}, {"name_kr": "김선혜", "name_en": "Sunhye Kim", "note_summary_kr": "무의식과 의식이 교차하는 추상 회화.", "note_summary_en": "Abstract painting where the unconscious meets the conscious.", "note_kr": "나의 작업은 무의식적 제스처와 의식적 선택이 교차하는 지점에서 형상화된다. 단순한 조형적 형태는 기억 속에서 체화된 순간을 끌어와 재해석되며, 반복되는 수행적 행위를 통해 우연성과 필연성이 공존하는 이미지를 창조한다. 이러한 과정에서 중첩된 색층과 물성은 단순한 시각적 효과를 넘어서 내면과 마주하는 현상학적 경험으로 확장된다.\n\n우연히 드러난 형상은 단순한 흔적에 머무르지 않고 상징적 기호로 승화된다. 외부에서는 식별하기 어려울 수 있지만, 나에게는 독자적인 의미망(Semantic Network)을 형성하며, 이는 작업의 존재론적 원동력이 된다. \n시간이 켜켜이 쌓여 만들어진 상징적 흔적은 표면상 명확하지 않을 수 있으나, 나에게는 깊은 의미를 지니며 작업을 지속시키는 힘이 된다. 점 찍기, 흘리기, 지우기, 덮어내기 등의 반복 행위는 단순한 기술적 절차를 넘어 수행(Performance)이자 시간의 축적이다.\n하이데거(M. Heidegger)의 ‘존재의 드러남(Aletheia)’처럼, 화면 속 무의식적 흔적은 은폐와 드러남을 오가며 추상의 정신적 힘을 구현한다. 특히 색채 농도와 물성의 조율은 작품의 핵심 미학 장치이다. 농도의 변화는 화면에 긴장감과 무게감을 부여하며, 중첩된 층위는 ‘보이는 나’와 ‘보이지 않는 나’를 잇는 심리적 장치로 작용한다. 이는 단순한 재료 실험을 넘어서 진정성(Authenticity)을 향한 내적 탐구이자, 자아와 세계가 교차하는 시각적 실존의 기록이다.\n색채는 내 작업에서 가장 중요한 감각적 요소다. 높은 채도의 색은 강렬한 시각적 힘과 함께 정화(catharsis)의 감정을 불러일으킨다. 보색 대비가 남기는 잔상은 자연의 무한성과 순환성을 떠올리게 하며, 관람자에게 심리적 깊이를 선사한다. 이러한 색채 경험은 시골 풍경과 일상에서 얻은 관찰을 바탕으로 단순한 재현을 넘어 자연의 본질적 힘을 구현하는 여정이다.\n\n결국 나의 회화는 무의식과 의식, 우연과 수행, 자연과 내면이 서로 교직(交織)되며 생성되는 추상 공간의 미학이다. 이 과정은 단순한 시각적 결과물이 아니라, 순수한 감정과 정신적 에너지가 드러나는 존재론적 사건으로 자리 잡는다.", "note_en": "My work takes form at the intersection where unconscious gesture and conscious choice converge. Simple formal elements draw forth embodied moments from memory and are reinterpreted, while repeated performative actions generate images in which chance and inevitability coexist. In this process, layered colors and materiality extend beyond mere visual effect, unfolding into a phenomenological experience of confronting the inner self.\n\nForms that emerge by chance do not remain as mere traces but are sublimated into symbolic signs. Though they may be difficult to identify externally, for me they construct a unique semantic network, becoming the ontological driving force of the work. Symbolic traces, built up through layers of time, may not appear immediately clear on the surface, yet they carry profound meaning and sustain the continuity of my practice. Repetitive acts—dotting, pouring, erasing, and covering—transcend technical procedure, becoming performance and an accumulation of time.\n\nAs in Martin Heidegger’s concept of Aletheia, the unconscious traces within the image move between concealment and revelation, embodying the spiritual force of abstraction. The modulation of color density and materiality is a central aesthetic device in my work. Variations in density introduce tension and weight to the surface, while layered strata function as a psychological apparatus that connects the “visible self” and the “invisible self.” This extends beyond material experimentation into an inner inquiry toward authenticity, a visual record of existential presence where the self and the world intersect.\n\nColor is the most essential sensory element in my work. Highly saturated hues evoke a powerful visual force alongside a sense of catharsis. The afterimage produced by complementary contrasts recalls the infinity and cyclicality of nature, offering the viewer a sense of psychological depth. Rooted in observations of rural landscapes and everyday life, this chromatic experience moves beyond simple representation toward embodying the essential force of nature.\n\nUltimately, my painting is an aesthetic of abstract space generated through the interweaving of unconscious and conscious, chance and performance, nature and inner being. This process is not merely a visual outcome, but an ontological event in which pure emotion and spiritual energy are revealed.", "works": [{"title_kr": "Micro Utopia", "title_en": "Micro Utopia", "meta_kr": "53.0x40.9cm · Acrylic canvas · 2025", "meta_en": "53.0x40.9cm · Acrylic canvas · 2025", "image": "images/group/kim-sunhye-1.jpg"}, {"title_kr": "Micro Utopia", "title_en": "Micro Utopia", "meta_kr": "72.7x60.6cm · Acrylic canvas · 2025", "meta_en": "72.7x60.6cm · Acrylic canvas · 2025", "image": "images/group/kim-sunhye-2.jpg"}]}, {"name_kr": "김혜리", "name_en": "Kim Hye Ri", "note_summary_kr": "기억 속과 무의식에서 떠오른 환상적 공간.", "note_summary_en": "Fantastical spaces drawn from memory and the unconscious.", "note_kr": "기억 속과 무의식에서 떠올린 공간에, 자연의 생물과 공간의 무생물들이 뜻밖에 만난다.\n혼재된 장면 속 잃어버린 대상을 찾아 헤매는 여정을 너무 무겁진 않게, 때론 아름다워 보이도록 하나의 환상적 이미지로 표출한다.", "note_en": "In a space drawn from memory and the unconscious, living elements of nature and inanimate objects of space encounter one another unexpectedly.\nWithin these layered scenes, the journey of searching for what has been lost is expressed not as something heavy, but as a single fantastical image—at times appearing beautiful.", "works": [{"title_kr": "조우", "title_en": "Encounter", "meta_kr": "91x116.8cm · Acrylic on canvas · 2024", "meta_en": "91x116.8cm · Acrylic on canvas · 2024", "image": "images/group/kim-hyeri-1.jpg"}, {"title_kr": "조우", "title_en": "Encounter", "meta_kr": "53x40.9cm · Acrylic on canvas · 2025", "meta_en": "53x40.9cm · Acrylic on canvas · 2025", "image": "images/group/kim-hyeri-2.jpg"}]}, {"name_kr": "김홍구", "name_en": "Kim HongGu", "note_summary_kr": "자연과 인간의 공존.", "note_summary_en": "The coexistence of nature and humanity.", "note_kr": "共 存 < 공 존 >\n 자연에서 태어난 우리는 우리의 생존과 번영을 위해 많은 발전과 번영을 이룩하며 태어난 곳에서부터 독립해 왔다. 그로 인해 우리 인간은 자연과 상호작용하며 영향력을 가지기 시작하였다. 그동안 자연이 만들어 내는 분위기와 환경에 인간처럼 많은 영향을 가진 존재는 찾아보기 힘들다고 생각한다.\n\n인간의 생명력 앞에 자연은 깎이고, 변형되며, 쓰러진다. 하지만 자연은 그 위에 생명을 뿌린다. 이러한 환경은 우리는 주변에서 쉽게 마주칠 수 있다. 길가에 보도블록 사이에서 피어나는 잡초들과 꽃들처럼, 혹은 갈라진 건물 틈에서 자라나는 새싹들과 이끼들처럼 자연은 이처럼 조금의 틈만 있어도 생명력을 불어 넣는다. 그 생명력 앞에 인간의 구조물과 손길은 영원하지 못하다. 인간이 새로운 구조물을 만들면 자연은 그 위에 생명력을 쌓아올린다. \n\n이처럼 자연과 인간이 서로에게 영향을 주며 나타나는 결과들을 작가는 경험과 상상을 조합하여 조금 더 넓은 공간에 펼쳐 놓는다. 그로인해 나타나는 인간과 자연의 대비, 직선과 곡선의 대비는 완전히 하나가 되지 못하는 이질감을 보여준다. 이러한 이질감은 몽환적인 분위기를 느끼게 하며, 특유의 분위기로 공간을 만든다. 작가는 이러한 공간이 두 생명력의 공존(共存) 이라고 표현한다.", "note_en": "Coexistence\n\nBorn from nature, we have achieved continuous development and prosperity in pursuit of survival and growth, gradually becoming independent from the place of our origin. In doing so, humanity has begun to interact with nature while exerting its own influence. It is difficult to find any other existence that affects the atmosphere and environment created by nature as profoundly as humans do.\n\nBefore human vitality, nature is cut, transformed, and brought down. Yet nature, in turn, sows life upon it. Such scenes are easily encountered around us—like weeds and flowers growing between cracks in the pavement, or sprouts and moss emerging from the fissures of buildings. Even the smallest gap allows nature to breathe life into its surroundings. In the face of this vitality, human structures and interventions cannot remain permanent. When humans build something new, nature once again accumulates life upon it.\n\nThrough a combination of experience and imagination, the artist expands these outcomes—born from the mutual influence between nature and humanity—into a broader spatial field. The contrasts that arise, between human and nature, between straight lines and curves, reveal a sense of dissonance, an inability to fully merge into one. This dissonance evokes a dreamlike atmosphere, shaping a distinct spatial presence. The artist refers to this space as the coexistence of two vital forces.", "works": [{"title_kr": "공존 (共存)", "title_en": "Coexistence", "meta_kr": "65.1 X 53.0 cm · Acrylic · 2025", "meta_en": "65.1 X 53.0 cm · Acrylic · 2025", "image": "images/group/kim-honggu-1.jpg"}, {"title_kr": "공존 (共存)", "title_en": "Coexistence", "meta_kr": "65.1 X 53.0 cm · Acrylic · 2025", "meta_en": "65.1 X 53.0 cm · Acrylic · 2025", "image": "images/group/kim-honggu-2.jpg"}]}, {"name_kr": "박민경", "name_en": "Park Min Kyung", "note_summary_kr": "꽃을 통해 감정을 이야기한다.", "note_summary_en": "Speaks of emotion through flowers.", "note_kr": "작고 소소하지만 때로는 깊은 울림이 되는 소중한 감정을 꽃을 통해 이야기하고자 한다. 조심스럽게 움트기도, 한 순간에 활짝 터지듯 피어나기도 한다.이러한 감정의 흐름을 다채로운 색감과 흐드러지게 일렁이는 표현으로 담아냈다.\n나와 그대의 다면적인 감정들이, 그것이 때로는 연약한 속살을 드러낸다 해도 온전히 피어나고 자유롭게 \n혼들릴 수 있기를.", "note_en": "I seek to speak of small and humble, yet at times deeply resonant emotions through flowers. They may emerge gently and cautiously, or burst into full bloom in a single moment. These flows of emotion are expressed through rich colors and softly undulating forms.\n\nI hope that the many facets of emotion within you and me— even when they reveal their most tender and vulnerable layers—may fully bloom and sway freely.", "works": [{"title_kr": "추락", "title_en": "Fall", "meta_kr": "91x72.7cm · oil on canvas · 2026", "meta_en": "91x72.7cm · oil on canvas · 2026", "image": "images/group/park-minkyung-1.jpg"}, {"title_kr": "운명", "title_en": "Destiny", "meta_kr": "116.7x91cm · oil on canvas · 2026", "meta_en": "116.7x91cm · oil on canvas · 2026", "image": "images/group/park-minkyung-2.jpg"}]}, {"name_kr": "박유하", "name_en": "Park U Ha", "note_summary_kr": "하트로 사랑과 동심을 표현한다.", "note_summary_en": "Expresses love and innocence through hearts.", "note_kr": "하트를 매개로 동심과 사랑을 표현하는 작가 박유하입니다. 하트는 그 자체로도 아름다움을 지니고 있지만, 그 안에는 수많은 감정과 이야기가 숨겨져 있습니다.\n\n작품 속 하트는 단순한 이미지에 그치지 않고, 변화의 상징으로 자리 잡고 있습니다. \n\n작가에게 사랑은 베풀수록 고갈되는 것이 아니라 더욱 풍성해지고 증폭된다는 믿음이 있습니다. 작가는 마주하는 모든 존재, 살아있기에 매일 죽어가는 애뜻한 존재들에게 사랑을 나누고자 합니다. ", "note_en": "I am artist Park U Ha, expressing innocence and love through the motif of the heart. While the heart is beautiful in itself, it holds within it countless emotions and stories.\n\nIn my work, the heart is not merely an image, but a symbol of transformation.\n\nFor me, love does not diminish when given—it grows richer and expands. I seek to share this love with all beings I encounter, with those tender existences that, by living, are also slowly fading each day.", "works": [{"title_kr": "Love 시리즈 1", "title_en": "Love Series 1", "meta_kr": "40.9×31.8cm · mixed media · 2025", "meta_en": "40.9×31.8cm · mixed media · 2025", "image": "images/group/park-uha-1.jpg"}, {"title_kr": "Crazy Love", "title_en": "Crazy Love", "meta_kr": "130×97.0cm · mixed media · 2025", "meta_en": "130×97.0cm · mixed media · 2025", "image": "images/group/park-uha-2.jpg"}]}, {"name_kr": "박혜정", "name_en": "Park Hea Jung", "note_summary_kr": "전통민화를 동시대 회화 언어로 만든다.", "note_summary_en": "Turns traditional Minhwa into a contemporary painterly language.", "note_kr": "‘익숙한 옛 것이 주는 따뜻한 위로와 응원’을 주제로, 한국의 전통민화를 감각적 변주를 통해 동시대의 회화\n언어로 만들어 간다. 나의 민화는 단순한 복(福)의 상징이 아니라 ‘응원’이라는 감정을 시각화 한 K-emotion으로, 전통이 유물이 아닌 하나의 에너지이자 가능성이 될 수 있다는 사실을 보여주고자 한다. \n“행복과 안녕을 바라며. 오늘의 우리를 응원합니다.”", "note_en": "Under the theme of “the warm comfort and encouragement offered by familiar things of the past,” I reinterpret traditional Korean Minhwa through a sensorial transformation, translating it into a contemporary painterly language.\n\nMy Minhwa is not merely a symbol of fortune, but a visualization of “encouragement”—a form of K-emotion that reveals tradition not as a relic, but as a living energy and possibility.\n\n“Wishing for happiness and well-being.\nCheering for who we are today.”", "works": [{"title_kr": "흐르고 피우며", "title_en": "Flowing and Blooming", "meta_kr": "50 x 50 cm · 장지에 수간채색 · 2024", "meta_en": "50 x 50 cm · 장지에 수간채색 · 2024", "image": "images/group/park-heajung-1.jpg"}, {"title_kr": "Flow", "title_en": "Flow", "meta_kr": "91x72.7 cm · 장지에 수간채색 · 2025", "meta_en": "91x72.7 cm · 장지에 수간채색 · 2025", "image": "images/group/park-heajung-2.jpg"}]}, {"name_kr": "안세진", "name_en": "Ahn Se Jin", "note_summary_kr": "불안에서 평안으로 가는 과정을 담는다.", "note_summary_en": "Captures the movement from anxiety to peace.", "note_kr": "불안은 언제나 예고 없이 찾아왔고, 그 감정 속에서 나는 스스로의 가치관이 흔들리고 있음을 느꼈다. \n오랜 고민 끝에 불안을 이겨내게 했던 것을 기도와 믿음이었다. 불안한 마음을 밀어내고 평안을 가져다준 그 경험은 나에게 가장 분명한 신념으로 남았다.\n어둠속에서 서서히 드러나는 한 줄기 빛을 통해, 불안에서 평안으로 나아가는 과정을 담고자 했다. 어둠은 불안을, 얇은 선으로 번져 나오는 색의 빛은 기도를 통해 찾아오는 희망을 상징한다.", "note_en": "Anxiety always arrived without warning, and within that feeling I sensed my own values beginning to waver. After a long period of reflection, what ultimately allowed me to overcome that anxiety was prayer and faith. The experience of pushing away unease and finding peace became the clearest conviction I carry within me.\n\nThrough a single line of light slowly emerging from darkness, I sought to capture the passage from anxiety to tranquility. The darkness represents anxiety, while the thin, spreading line of colored light symbolizes the hope that arrives through prayer.", "works": [{"title_kr": "251030", "title_en": "251030", "meta_kr": "10.5x7.5cm · oil pastel, poster color on paper · 2025", "meta_en": "10.5x7.5cm · oil pastel, poster color on paper · 2025", "image": "images/group/ahn-sejin-1.jpg"}, {"title_kr": "빛과어둠중 어둠", "title_en": "Darkness Among Light and Darkness", "meta_kr": "107x75cm · oil pastel, acrylic on paper · 2024", "meta_en": "107x75cm · oil pastel, acrylic on paper · 2024", "image": "images/group/ahn-sejin-2.jpg"}]}, {"name_kr": "조준재", "name_en": "Jo Jun Jae", "note_summary_kr": "미생물과 태아의 형상에서 시작하는 생명의 추상.", "note_summary_en": "An abstraction of life beginning from microorganisms and fetal forms.", "note_kr": "모든 생명체들은 땅과 물에서 시작을 한다. 이번 신작에서는 자연에서 태어나 환경과 사회의 문제들이 태어나기 시작했던 처음의 출발점인 눈에 보이지 않는 미생물의 형태에서 시작하려    \n고 한다. 전체적인 형태는 다채롭게 생긴 미생물의 형태와 태아의 모습을 추상적  형태로 풀어내었고 ,또한 도면에서 표현하는 방법인 등고선을 이용하여, 땅에서 시작하면 지면의 모습과 하늘에서 올려다본 모습처럼 땅과 하늘이 하나됨과 그 빈 공간을 색상의 유리들을 사용하여 생명체들이 살아있는 듯한 유기적인 형태로 표현하여, 모든 미생물, 생명체들이 감정의 출발점을 색상과 다채로운 형태로서 자연과 의도치않은 상황에서 시작한다는 모습을 보여주고자 한다.", "note_en": "All living beings begin from the earth and water. In this new body of work, I start from the invisible origin—the form of microorganisms—where both life and the conditions of environment and society first emerge.\n\nThe overall composition unfolds these microorganisms alongside the form of a fetus in abstract terms. Using contour lines—an approach often found in drawing and mapping—the work evokes both the surface of the land and a view from above, suggesting a unity between earth and sky. The empty spaces are filled with colored, glass-like tones, forming organic shapes that appear alive.\n\nThrough this, I seek to convey that all microorganisms and living beings originate from emotional beginnings—emerging through color and diverse forms within nature, and often from unintended circumstances.", "works": [{"title_kr": "박동", "title_en": "Heartbeat", "meta_kr": "400 x 530mm · glass on wood · 2025", "meta_en": "400 x 530mm · glass on wood · 2025", "image": "images/group/jo-junjae-1.jpg"}, {"title_kr": "박동", "title_en": "Heartbeat", "meta_kr": "400 x 530mm · glass on wood · 2025", "meta_en": "400 x 530mm · glass on wood · 2025", "image": "images/group/jo-junjae-2.jpg"}]}, {"name_kr": "최성민", "name_en": "Choi Seongmin", "note_summary_kr": "경계 앞에서의 갈망과 확장.", "note_summary_en": "Longing and expansion before the boundary.", "note_kr": "나는 늘 ‘경계’라는 보이지 않는 선 앞에 서 있다. 그곳에서 멈추려 애쓰기도 하지만, 동시에 그 너머를 향한 동경은 마음속에 자리한다. 경계는 단순한 막힘이나 단절이 아니라, 새로운 세계로 나아가기 위한 문턱일 수 있다. 나는 그 문턱 앞에서 머뭇거리면서도, 색과 형태를 통해 그 너머를 향한 갈망을 드러내고자 한다.\n화면 속 겹겹의 색채는 경계와 충돌하며 흔들리고, 결국 확장되어 또 다른 공간을 열어간다. 경계는 나를 가두는 벽이 아니라, 오히려 회화가 태어나는 긴장과 희망의 자리이다.\n짙은 청색의 화면은 경계의 단단함과 깊이를 상징한다. 그 위로 번져 나가는 색들은 경계를 넘어 확장하려는 에너지와 갈망을 담고 있다. 화면 속 유기적인 형태들은 경계와 경계 사이를 흔들며, 마침내 새로운 공간을 열어가는 움직임으로 이어진다.", "note_en": "I am always standing before an invisible line called “the boundary.” At times, I try to remain still at that threshold, yet at the same time, a longing for what lies beyond takes root within me. A boundary is not simply a barrier or a rupture, but a threshold that may lead toward a new world. Though I hesitate before it, I seek to reveal my desire for what lies beyond through color and form.\n\nLayers of color within the canvas collide with and tremble against the boundary, eventually expanding to open another space. The boundary is not a wall that confines me, but rather a site of tension and hope where painting itself comes into being.\n\nThe deep blue surface symbolizes the solidity and depth of the boundary. The colors spreading across it carry the energy and yearning to move beyond it. The organic forms within the image sway between boundaries, ultimately unfolding into a movement that opens a new space.", "works": [{"title_kr": "Untitled 시리즈", "title_en": "Untitled Series", "meta_kr": "22x22cm · Acrylic canvas · 2024", "meta_en": "22x22cm · Acrylic canvas · 2024", "image": "images/group/choi-seongmin-1.jpg"}, {"title_kr": "Untitled 시리즈", "title_en": "Untitled Series", "meta_kr": "22x22cm · Acrylic canvas · 2024", "meta_en": "22x22cm · Acrylic canvas · 2024", "image": "images/group/choi-seongmin-2.jpg"}]}, {"name_kr": "최지영", "name_en": "Choi JIi Young", "note_summary_kr": "삶을 여행처럼 바라보며 기억과 현재를 담는다.", "note_summary_en": "Looks at life as travel and holds memory with the present.", "note_kr": "저는 여행을 특별한 장소가 아닌 일상과 삶 그 자체로 바라보며 작업합니다.\n\n알 수 없는 미래를 향해 살아가는 삶은 미지의 세계로 떠나는 여행과 같고, 그 과정에서 겪는 다양한\n경험과 감정들을 작품에 담고 있습니다.\n평범한 일상에 관심을 두고 바라볼수록 지나치던 순간들이 특별해지고, 삶 자체도 더욱 소중하게 느껴집니다.\n시처럼 일상에 의미를 부여하며 기억과 현재, 상상이 공존하는 세계를 따뜻하게 표현하고자 합니다.\n밝고 긍정적인 작품을 통해 관람자들이 평온함과 삶의 설렘을 느끼기를 바랍니다.", "note_en": "I approach travel not as a journey to a special place, but as everyday life itself.\n\nLiving toward an unknown future is like setting out on a journey into the unknown, and I capture the various experiences and emotions encountered along the way in my work. The more attentively I look at ordinary daily life, the more the moments I once passed by become meaningful, and life itself feels more precious.\n\nLike poetry, I seek to give meaning to the everyday, gently expressing a world where memory, the present, and imagination coexist. Through bright and positive works, I hope viewers can feel a sense of calm and the quiet excitement of life.", "works": [{"title_kr": "닿기를", "title_en": "May It Reach", "meta_kr": "45.5x27.3cm · Acrylic on canvas · 2026", "meta_en": "45.5x27.3cm · Acrylic on canvas · 2026", "image": "images/group/choi-jiyoung-1.jpg"}, {"title_kr": "어느겨울에", "title_en": "In a Certain Winter", "meta_kr": "45.5x27.3cm · Acrylic on canvas · 2026", "meta_en": "45.5x27.3cm · Acrylic on canvas · 2026", "image": "images/group/choi-jiyoung-2.jpg"}]}, {"name_kr": "추성임", "name_en": "Choo Sungim", "note_summary_kr": "보이지 않는 사치를 내면의 풍요로 번역한다.", "note_summary_en": "Translates invisible luxury into inner richness.", "note_kr": "사치라고 하면 흔히 외적인 것, 즉 물질의 과잉이나 눈에 띄는 소비를 떠올린다. 그러나 사치를 외면에서 내면으로 끌어들여, 보이지 않는 사치를 외부의 화려함이나 시각적 충격을 넘어서, 감정의 미묘한 결, 생각의 여운, 기억의 투명한 겹들을...  즉 보이는 것을 너머 정신적, 감각적, 정서적 풍요를 만든다.\n\n내적 사치는 화려함의 반대편에 있다. 격렬하거나 요란하지 않지만, 결코 빈곤하지도 않다. \n그것은 조용히 쌓이는 시간, 사소한 감정의 떨림, 경제적 조건이나 사회적 지위와 무관하게 발현될 수 있는 인간의 고유한 능력이다. 누군가에게는 무의미해 보일 예술적 사유, 혹은 반복되는 일상 속에서 스스로에게 허락한 작은 여백들.. 그것을 색과 질감, 여백과 밀도로 번역해 나간다.\n\n작업 과정은 과묵한 색채로 겉으로는 차분하고 절제되어 있지만 색의 겹을 통해 깊이를 형성한다. 이는 내면의 복잡성과 감정의 무게를 상징한다. 비워진 공간은 보는 이가 스스로 감정을 투사할 수 있는 틈을 마련한다. 사치는 본래 여유에서 비롯된다는 점에서 여백은 내적 사치의 또 하나의 조형 요소이다. 질감에서 보여 지는 붓질이나 섬세한 드로잉은 감각의 축척을 시도했다. 어떤 표면은 반짝이고, 어떤 표면은 단순하고 무디다. 이는 감정과 기억의 시각적 은유이다.\n이러한 개념을 시각적, 언어적, 물질적 매체를 통해 구성해 나간다. 때로는 최소한의 형식으로, 때로는 과잉된 감각으로 미의 기준이 외부가 아닌 내면에서 형성될 수 있다는 믿음에서 출발한다. 단순히 대상을 재현하는 도구가 아니라, 감각과 사유의 흐름을 직조해 나가는 행위이다. 외면적 과시대신 감각의 세밀함으로 밀도 있게 구성하고자 했다. 삶의 깊이에 대한 성찰을 가능하게 하는 감각적 풍요로움을 바깥이 아닌 안쪽을 향한 시선, 그것이 내가 생각하는 미학적인 사치다.\n\n이처럼 내적인 아름다움은 삶의 여정 속에서 발견되며, 외부의 화려함과는 다른 방식으로 세상을 비추며, 우리가 끊임없이 변하고 성장하는 동안, 그 고유의 미적 가치로 우리의 존재를 풍요롭게 만든다.", "note_en": "When we speak of luxury, we often think of the external—material excess or visible consumption. Yet I draw luxury inward, shifting it from the exterior to the interior. Invisible luxury goes beyond outward splendor or visual impact; it resides in the subtle textures of emotion, the lingering traces of thought, and the transparent layers of memory. In other words, it creates a spiritual, sensory, and emotional richness that transcends what is seen.\n\nInner luxury exists on the opposite side of extravagance. It is neither intense nor ostentatious, yet it is never impoverished. It is the quiet accumulation of time, the delicate tremor of minor emotions, and a uniquely human capacity that can manifest regardless of economic conditions or social status. What may appear meaningless to others—artistic contemplation, or small pauses one grants oneself within repetitive daily life—are translated into color and texture, into space and density.\n\nThe working process is restrained, composed of muted colors that appear calm and controlled on the surface, yet build depth through layers of pigment. This reflects the complexity of the inner self and the weight of emotion. Empty spaces create room for the viewer to project their own feelings. Since luxury originates from a sense of allowance, emptiness itself becomes another formal element of inner luxury. The brushstrokes and delicate drawing visible in the textures attempt an accumulation of sensation. Some surfaces shimmer, while others remain simple and subdued—visual metaphors for emotion and memory.\n\nThese ideas are constructed through visual, linguistic, and material media. At times through minimal forms, at others through heightened sensory intensity, the work begins from the belief that standards of beauty can arise from within rather than from the outside. It is not merely a tool for representation, but an act of weaving the flow of sensation and thought. Instead of outward display, I seek to build density through the precision of sensation. A sensory richness that allows reflection on the depth of life—directed not outward, but inward—this is what I consider aesthetic luxury.\n\nIn this way, inner beauty is discovered along the journey of life. It illuminates the world in a manner distinct from external splendor, and as we continuously change and grow, it enriches our existence with its own inherent aesthetic value.", "works": [{"title_kr": "지적사치 시리즈", "title_en": "Intellectual Luxury Series", "meta_kr": "65.1×53.0 cm · Acrylic, oil on canvas · 2024", "meta_en": "65.1×53.0 cm · Acrylic, oil on canvas · 2024", "image": "images/group/choo-sungim-1.jpg"}, {"title_kr": "지적사치 시리즈", "title_en": "Intellectual Luxury Series", "meta_kr": "65.1×53.0 cm · Acrylic, oil on canvas · 2024", "meta_en": "65.1×53.0 cm · Acrylic, oil on canvas · 2024", "image": "images/group/choo-sungim-2.jpg"}]}, {"name_kr": "한혜령", "name_en": "HyeRyoung Han", "note_summary_kr": "감정과 소통의 구조를 전자부품으로 드러낸다.", "note_summary_en": "Reveals the structures of emotion and communication through electronic components.", "note_kr": "우리는 소통을 원하고 관계의 확장을 바란다. 그러나 현실은 뒤엉킨 실타래처럼 쉽게 풀리지 않는 문제들로 가득하다. 감정의 기복과 모순된 반응이 얽힌 수많은 대화는 관계 소통의 소용돌이를 만들어낸다. 그 소용돌이 속에서 남겨진 흔적은 단순한 색과 선이 아니라, 말과 관계가 남긴 파편이다. 나는 그 파편을 모아 구조를 만들고, 전자부품과 혼합재료를 통해 소통의 메커니즘을 드러낸다. 빛과 그림자가 교차하는 순간, 감정은 해부된 구조이자 살아 있는 존재로 드러난다. 전자부품과 회로는 감정의 결을 드러내며, 빛과 그림자는 그 여운을 공간에 남긴다. 관객은 작품 속 구조에 개입하거나 반응하며, 소통의 일부가 된다.\n\n나는 예술과 기술, 인간성과 구조가 교차하는 지점에서 새로운 언어를 찾는다. 작업은 단순한 표현을 넘어, 감정과 관계, 소통의 구조를 해석하는 장치로 기능한다. 가능하게 하는 감각적 풍요로움을 바깥이 아닌 안쪽을 향한 시선, 그것이 내가 생각하는 미학적인 사치다.\n\n이처럼 내적인 아름다움은 삶의 여정 속에서 발견되며, 외부의 화려함과는 다른 방식으로 세상을 비추며, 우리가 끊임없이 변하고 성장하는 동안, 그 고유의 미적 가치로 우리의 존재를 풍요롭게 만든다.", "note_en": "We seek communication and long for the expansion of relationships. Yet reality is filled with problems that do not easily unravel, like a tangled skein of thread. Countless conversations—woven with emotional fluctuations and contradictory responses—create a vortex of relational communication. What remains within that vortex are not merely colors and lines, but fragments left behind by words and relationships. I gather these fragments to construct a structure, revealing the mechanisms of communication through electronic components and mixed media. In the moment where light and shadow intersect, emotion appears both as a dissected structure and as a living presence. Electronic parts and circuits expose the texture of emotion, while light and shadow leave its resonance within the space. The viewer engages with or responds to the structure within the work, becoming part of the act of communication.\n\nI seek a new language at the intersection of art and technology, humanity and structure. My work moves beyond simple expression, functioning as a device that interprets the structures of emotion, relationships, and communication. The sensory richness that enables reflection on the depth of life—directed not outward but inward—is what I consider aesthetic luxury.\n\nIn this way, inner beauty is discovered along the journey of life. It illuminates the world in a manner distinct from external splendor, and as we continuously change and grow, it enriches our existence with its own inherent aesthetic value.", "works": [{"title_kr": "거울 속 주장", "title_en": "Assertion in the Mirror", "meta_kr": "전자부품, 구리, 와이어, 납 · 30x30x5cm · 2026", "meta_en": "Electronic parts, copper, wire, solder · 30x30x5cm · 2026", "image": "images/group/han-hyeryoung-1.jpg"}, {"title_kr": "순환 언어", "title_en": "Circulating Language", "meta_kr": "전자부품, 구리, 와이어, 납 · 30x30x5cm · 2026", "meta_en": "Electronic parts, copper, wire, solder · 30x30x5cm · 2026", "image": "images/group/han-hyeryoung-2.jpg"}]}, {"name_kr": "홍예화", "name_en": "Hong Yehwa", "note_summary_kr": "전통 한지를 통해 보이지 않는 감정을 시각화한다.", "note_summary_en": "Visualizes unseen emotions through traditional hanji.", "note_kr": "나는 전통 한지를 매개로 보이지 않는 감정의 형태를 시각화한다.\n무형문화재 신현세 한지장님의 한지는 시간과 손의 기억을 품은 재료이자, 나의 작업이 시작되는 자리이다.\n설화와 꽃말에서 출발한 이야기는 사랑과 행복이라는 감정의 상징으로 확장된다. 모빌이라는 형식은 감정이 \n고정되지 않고 관계 속에서 흔들리며 살아 있음을 드러낸다.\n나는 이 작업을 통해, 누군가의 공간에 조용히 머물다 가는 축복 같은 순간을 만들고자 한다.", "note_en": "I visualize the forms of unseen emotions through the medium of traditional Korean hanji.\n\nThe hanji crafted by intangible cultural heritage artisan Shin Hyun-se is not only a material imbued with the memory of time and hands, but also the point where my work begins. Narratives that originate from folktales and the symbolic language of flowers expand into representations of love and happiness. The form of the mobile reveals that emotions are not fixed, but remain alive—swaying within relationships.\n\nThrough this work, I seek to create moments that quietly dwell within someone’s space, like a passing blessing.", "works": [{"title_kr": "사랑의 즐거움", "title_en": "The Joy of Love", "meta_kr": "15cm x 35cm x 15cm · 한지에 복합재료 · 2025", "meta_en": "15cm x 35cm x 15cm · mixed media on hanji · 2025", "image": "images/group/hong-yehwa-1.jpg"}, {"title_kr": "틀림없이 행복해진", "title_en": "Surely Becoming Happy", "meta_kr": "25cm x 45cm x 25cm · 한지에 복합재료 · 2025", "meta_en": "25cm x 45cm x 25cm · mixed media on hanji · 2025", "image": "images/group/hong-yehwa-2.jpg"}]}, {"name_kr": "홍지연", "name_en": "Hong Ji Yeon", "note_summary_kr": "실의 숲으로 안식처를 만든다.", "note_summary_en": "Creates a refuge through forests of thread.", "note_kr": "아스팔트의 견고한 질서 속에서 상실된 안식처를 되찾기 위해, 수천가닥의 실을 심으며 부드러운 숲을 만듭니다. \n이 ‘녹색의 심연’은 작가 개인의 도피처를 넘어, 타인의 고립된 마음들이 잠시 머물 수 있는 공유된 숲입니다. \n딱딱하게 굳어버린 일상의 감각들이 이 질감의 숲 안에서 긴장을 내려놓고, 끝내 시각적 촉각적 평온의 감각으로 다가올수있기를 제안한다.", "note_en": "Within the rigid order of asphalt, I plant thousands of threads to create a soft forest, in an effort to reclaim a lost refuge.\n\nThis “green abyss” extends beyond a personal sanctuary, becoming a shared forest where the isolated minds of others may pause and rest. I propose that the senses, hardened by the routines of daily life, may release their tension within this textured forest, and ultimately arrive at a state of visual and tactile tranquility.", "works": [{"title_kr": "For;rest 푸른 숲에서의 휴식", "title_en": "For;rest — Rest in the Blue Forest", "meta_kr": "70x150cm · 천에실(아크릴사,울사,특수사) · 2023", "meta_en": "70x150cm · thread on fabric · 2023", "image": "images/group/hong-jiyeon-1.jpg"}, {"title_kr": "그리움의 창가Ⅰ,Ⅱ", "title_en": "Longing by the window", "meta_kr": "38x106cm · 천에실(아크릴사,특수사) · 2025", "meta_en": "38x106cm · thread on fabric · 2025", "image": "images/group/hong-jiyeon-2.jpg"}]}]}</script>
 
 <script>
 const BODY = document.body;
@@ -1091,9 +640,6 @@ const SHOP_GRID = document.getElementById('shopGrid');
 const ARTIST_VIEW_ALL = document.getElementById('artistViewAll');
 const LIGHTBOX = document.getElementById('lightbox');
 const LIGHTBOX_IMAGE = document.getElementById('lightboxImage');
-const LIGHTBOX_CAPTION = document.getElementById('lightboxCaption');
-const LIGHTBOX_CAPTION_TITLE = document.getElementById('lightboxCaptionTitle');
-const LIGHTBOX_CAPTION_META = document.getElementById('lightboxCaptionMeta');
 const EXHIBITIONS_CARDS = document.getElementById('exhibitionsCards');
 const EXHIBITION_MODAL = document.getElementById('exhibitionModal');
 const EXHIBITION_MODAL_CONTENT = document.getElementById('exhibitionModalContent');
@@ -1108,17 +654,6 @@ const REMOTE_JSON = {
   artists: 'https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-site/main/data/artists.json',
   works: 'https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-site/main/data/works.json'
 };
-
-const IMAGE_RAW_BASE = 'https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/';
-
-function resolveAssetUrl(path) {
-  const value = String(path || '').trim();
-  if (!value) return '';
-  if (/^(https?:)?\/\//i.test(value) || value.startsWith('data:') || value.startsWith('blob:')) return value;
-  if (value.startsWith('/')) return value;
-  if (value.startsWith('images/')) return IMAGE_RAW_BASE + value;
-  return value;
-}
 
 const FALLBACK_ARTISTS = [
   {
@@ -1222,32 +757,20 @@ function availabilityText(work, lang) {
 
 let currentLightboxIndex = 0;
 let lightboxTouchStartX = 0;
+let lightboxTouchCurrentX = 0;
 let lightboxTouchStartY = 0;
+let lightboxTouchCurrentY = 0;
+let lightboxTouchStartTime = 0;
+let lightboxTouchLastX = 0;
+let lightboxTouchLastTime = 0;
+let lightboxVelocityX = 0;
 let lightboxTouchActive = false;
-let lightboxTouchMoved = false;
-let lightboxSwipeLocked = false;
-let lightboxDragOffsetX = 0;
-let lightboxAnimating = false;
-const LIGHTBOX_SWIPE_THRESHOLD = 42;
-const LIGHTBOX_VERTICAL_TOLERANCE = 88;
-const lightboxZoom = {
-  scale: 1,
-  min: 1,
-  max: 4,
-  x: 0,
-  y: 0,
-  pointers: new Map(),
-  dragging: false,
-  startDragX: 0,
-  startDragY: 0,
-  startScale: 1,
-  startX: 0,
-  startY: 0,
-  startDistance: 0,
-  startMidX: 0,
-  startMidY: 0,
-  lastTapAt: 0
-};
+let lightboxDidSwipe = false;
+let lightboxSuppressTapCloseUntil = 0;
+const LIGHTBOX_SWIPE_THRESHOLD = 34;
+const LIGHTBOX_FLICK_DISTANCE = 20;
+const LIGHTBOX_FLICK_VELOCITY = 0.42;
+const LIGHTBOX_VERTICAL_TOLERANCE = 56;
 
 function mode() {
   return BODY.classList.contains('mode-en') ? 'en' : 'ko';
@@ -1599,7 +1122,7 @@ function renderArtists() {
   ARTISTS_GRID.innerHTML = artistsData.map((artist, idx) => `
     <article class="artist-card ${idx === currentArtistIndex ? 'active' : ''}" data-index="${idx}">
       <div class="artist-card-image">
-        <img src="${escapeHtml(resolveAssetUrl(artist.image || ''))}" alt="${escapeHtml(lang === 'en' ? artist.name_en : artist.name_kr)}" loading="lazy" />
+        <img src="${escapeHtml(artist.image || '')}" alt="${escapeHtml(lang === 'en' ? artist.name_en : artist.name_kr)}" loading="lazy" />
       </div>
       <div class="artist-card-copy">
         <h3 class="artist-card-name">${escapeHtml(lang === 'en' ? artist.name_en : artist.name_kr)}</h3>
@@ -1631,7 +1154,7 @@ function renderArtistDetail() {
   const works = getArtistWorks(artist);
 
   ARTIST_DETAIL_SHELL.style.display = 'grid';
-  ARTIST_PROFILE_IMAGE.src = resolveAssetUrl(artist.image || '');
+  ARTIST_PROFILE_IMAGE.src = artist.image || '';
   ARTIST_PROFILE_IMAGE.alt = lang === 'en' ? artist.name_en : artist.name_kr;
   ARTIST_DETAIL_NAME.textContent = lang === 'en' ? artist.name_en : artist.name_kr;
   ARTIST_DETAIL_LINE.textContent = lang === 'en' ? artist.bio_en : artist.bio_kr;
@@ -1640,32 +1163,32 @@ function renderArtistDetail() {
   WORKS_GRID.innerHTML = works.map((work, idx) => `
     <article class="work-card">
       <div class="work-thumb" data-index="${idx}">
-        <img src="${escapeHtml(resolveAssetUrl(work.image || ''))}" alt="${escapeHtml(workTitle(work, lang))}" loading="lazy" />
+        <img src="${escapeHtml(work.image || '')}" alt="${escapeHtml(workTitle(work, lang))}" loading="lazy" />
       </div>
       <div class="work-caption">
         <div class="work-title">${escapeHtml(workTitle(work, lang))}</div>
         <div class="work-line">${escapeHtml(workMaterial(work, lang))}</div>
         <div class="work-line">${escapeHtml(workSize(work, lang))}</div>
         <div class="work-line">${escapeHtml(work.year || '')}</div>
+        <div class="work-line">${escapeHtml(work.price || '')}</div>
+        <div class="work-line">${escapeHtml(availabilityText(work, lang))}</div>
       </div>
     </article>
   `).join('');
 
   currentLightboxItems = works.map(work => ({
-    standard: resolveAssetUrl(work.image || ''),
-    zoom: resolveAssetUrl(work.zoom || work.image || ''),
+    standard: work.image || '',
+    zoom: work.zoom || work.image || '',
     title_kr: work.title_kr || '',
     title_en: work.title_en || '',
-    meta_kr: `${workMaterial(work, 'ko')}
-${workSize(work, 'ko')}
-${work.year || ''}${work.price ? `
-${work.price}` : ''}${availabilityText(work, 'ko') ? `
-${availabilityText(work, 'ko')}` : ''}`,
-    meta_en: `${workMaterial(work, 'en')}
-${workSize(work, 'en')}
-${work.year || ''}${work.price ? `
-${work.price}` : ''}${availabilityText(work, 'en') ? `
-${availabilityText(work, 'en')}` : ''}`,
+    material_kr: work.material_kr || '',
+    material_en: work.material_en || '',
+    size_kr: work.size_kr || '',
+    size_en: work.size_en || '',
+    year: work.year || '',
+    price: work.price || '',
+    status_kr: availabilityText(work, 'ko'),
+    status_en: availabilityText(work, 'en'),
     caption_kr: work.caption_kr || '',
     caption_en: work.caption_en || ''
   }));
@@ -1685,7 +1208,7 @@ function renderShop() {
   SHOP_GRID.innerHTML = items.map((work, idx) => `
     <article class="shop-card">
       <div class="shop-thumb" data-index="${idx}">
-        <img src="${escapeHtml(resolveAssetUrl(work.image || ''))}" alt="${escapeHtml(workTitle(work, lang))}" loading="lazy" />
+        <img src="${escapeHtml(work.image || '')}" alt="${escapeHtml(workTitle(work, lang))}" loading="lazy" />
       </div>
       <div class="shop-info">
         <div class="work-title">${escapeHtml(workTitle(work, lang))}</div>
@@ -1822,9 +1345,9 @@ function openExhibitionModal(kind) {
                 <div class="accordion-note">${escapeHtml(m === 'en' ? artist.note_en : artist.note_kr)}</div>
                 <div class="accordion-works">
                   ${
-                    artist.works.map((work, workIdx) => `
-                      <div class="accordion-work" data-group-artist-index="${idx}" data-group-work-index="${workIdx}">
-                        <img src="${escapeHtml(resolveAssetUrl(work.image))}" alt="${escapeHtml(m === 'en' ? work.title_en : work.title_kr)}" />
+                    artist.works.map(work => `
+                      <div class="accordion-work">
+                        <img src="${escapeHtml(work.image)}" alt="${escapeHtml(m === 'en' ? work.title_en : work.title_kr)}" />
                         <div class="accordion-work-caption"><strong>${escapeHtml(m === 'en' ? work.title_en : work.title_kr)}</strong><br>${escapeHtml(m === 'en' ? work.meta_en : work.meta_kr)}</div>
                       </div>
                     `).join('')
@@ -1887,25 +1410,6 @@ function openExhibitionModal(kind) {
       }
     });
   });
-
-
-  EXHIBITION_MODAL.querySelectorAll('[data-group-artist-index][data-group-work-index]').forEach(card => {
-    card.addEventListener('click', () => {
-      const artistIndex = Number(card.dataset.groupArtistIndex);
-      const workIndex = Number(card.dataset.groupWorkIndex);
-      const artist = DATA.group_artists[artistIndex];
-      if (!artist || !Array.isArray(artist.works)) return;
-      const lightboxItems = artist.works.map(work => ({
-        standard: resolveAssetUrl(work.image || ''),
-        zoom: resolveAssetUrl(work.zoom || work.image || ''),
-        title_kr: work.title_kr || '',
-        title_en: work.title_en || '',
-        meta_kr: work.meta_kr || '',
-        meta_en: work.meta_en || ''
-      }));
-      openLightbox(workIndex, lightboxItems);
-    });
-  });
 }
 
 function closeExhibitionModal() {
@@ -1917,16 +1421,7 @@ function closeExhibitionModal() {
 function openLightbox(index, items) {
   currentLightboxItems = items;
   currentLightboxIndex = index;
-  lightboxZoom.lastTapAt = 0;
-  lightboxTouchActive = false;
-  lightboxTouchMoved = false;
-  lightboxSwipeLocked = false;
-  lightboxDragOffsetX = 0;
-  LIGHTBOX_IMAGE.style.transition = 'none';
   updateLightbox();
-  requestAnimationFrame(() => {
-    LIGHTBOX_IMAGE.style.transition = 'transform .34s cubic-bezier(.22,.78,.2,1), opacity .34s ease';
-  });
   LIGHTBOX.classList.add('open');
   LIGHTBOX.setAttribute('aria-hidden', 'false');
   document.body.classList.add('modal-open');
@@ -1936,129 +1431,11 @@ function openLightbox(index, items) {
 function openSoloLightbox(index, works) {
   currentLightboxItems = works;
   currentLightboxIndex = index;
-  lightboxZoom.lastTapAt = 0;
-  lightboxTouchActive = false;
-  lightboxTouchMoved = false;
-  lightboxSwipeLocked = false;
-  lightboxDragOffsetX = 0;
-  LIGHTBOX_IMAGE.style.transition = 'none';
   updateLightbox();
-  requestAnimationFrame(() => {
-    LIGHTBOX_IMAGE.style.transition = 'transform .34s cubic-bezier(.22,.78,.2,1), opacity .34s ease';
-  });
   LIGHTBOX.classList.add('open');
   LIGHTBOX.setAttribute('aria-hidden', 'false');
   document.body.classList.add('modal-open');
   document.body.classList.add('lightbox-open');
-}
-
-function lightboxTransform(x = 0, y = 0, scale = 1) {
-  return `translate(-50%, -50%) translate3d(${x}px, ${y}px, 0) scale(${scale})`;
-}
-
-function clamp(value, min, max) {
-  return Math.min(max, Math.max(min, value));
-}
-
-function getLightboxMetrics() {
-  const vw = LIGHTBOX.clientWidth || window.innerWidth || 1;
-  const vh = LIGHTBOX.clientHeight || window.innerHeight || 1;
-  const iw = LIGHTBOX_IMAGE.naturalWidth || vw;
-  const ih = LIGHTBOX_IMAGE.naturalHeight || vh;
-  const fit = Math.min((vw * 0.92) / iw, (vh * 0.92) / ih);
-  const baseW = iw * fit;
-  const baseH = ih * fit;
-  return { vw, vh, iw, ih, fit, baseW, baseH };
-}
-
-function clampLightboxPan() {
-  const m = getLightboxMetrics();
-  if (!m) return;
-  const maxX = Math.max(0, (m.baseW * lightboxZoom.scale - m.vw * 0.92) / 2);
-  const maxY = Math.max(0, (m.baseH * lightboxZoom.scale - m.vh * 0.92) / 2);
-  lightboxZoom.x = clamp(lightboxZoom.x, -maxX, maxX);
-  lightboxZoom.y = clamp(lightboxZoom.y, -maxY, maxY);
-}
-
-function renderLightboxZoom(extraX = 0, extraY = 0, forceScale = null) {
-  const scale = forceScale == null ? lightboxZoom.scale : forceScale;
-  if (scale <= 1.01) {
-    lightboxZoom.x = 0;
-    lightboxZoom.y = 0;
-  } else {
-    clampLightboxPan();
-  }
-  const tx = (scale <= 1.01 ? 0 : lightboxZoom.x) + extraX;
-  const ty = (scale <= 1.01 ? 0 : lightboxZoom.y) + extraY;
-  LIGHTBOX_IMAGE.style.transform = lightboxTransform(tx, ty, scale);
-  LIGHTBOX.classList.toggle('zoomed', scale > 1.01);
-}
-
-function resetLightboxZoom(animated = false) {
-  lightboxZoom.scale = 1;
-  lightboxZoom.x = 0;
-  lightboxZoom.y = 0;
-  lightboxZoom.dragging = false;
-  lightboxZoom.startDistance = 0;
-  lightboxZoom.pointers.clear();
-  LIGHTBOX_IMAGE.style.transition = animated
-    ? 'transform .28s cubic-bezier(.22,.78,.2,1), opacity .28s ease'
-    : 'none';
-  renderLightboxZoom();
-  if (!animated) {
-    requestAnimationFrame(() => {
-      LIGHTBOX_IMAGE.style.transition = 'transform .34s cubic-bezier(.22,.78,.2,1), opacity .34s ease';
-    });
-  }
-}
-
-function zoomLightboxAroundPoint(nextScale, clientX, clientY) {
-  const rect = LIGHTBOX.getBoundingClientRect();
-  const m = getLightboxMetrics();
-  if (!m) return;
-  const cx = clientX - rect.left - rect.width / 2;
-  const cy = clientY - rect.top - rect.height / 2;
-  const prevScale = lightboxZoom.scale;
-  const clampedScale = clamp(nextScale, lightboxZoom.min, lightboxZoom.max);
-  if (clampedScale === prevScale) return;
-  lightboxZoom.x = lightboxZoom.x + cx * (1 - clampedScale / prevScale);
-  lightboxZoom.y = lightboxZoom.y + cy * (1 - clampedScale / prevScale);
-  lightboxZoom.scale = clampedScale;
-  if (lightboxZoom.scale <= 1.01) {
-    lightboxZoom.scale = 1;
-    lightboxZoom.x = 0;
-    lightboxZoom.y = 0;
-  }
-  LIGHTBOX_IMAGE.style.transition = 'transform .18s ease, opacity .18s ease';
-  renderLightboxZoom();
-}
-
-function distanceBetween(a, b) {
-  const dx = a.x - b.x;
-  const dy = a.y - b.y;
-  return Math.hypot(dx, dy);
-}
-
-function midpointBetween(a, b) {
-  return { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
-}
-
-function preloadLightboxNeighbors() {
-  if (!currentLightboxItems.length) return;
-  const total = currentLightboxItems.length;
-  const indices = [
-    (currentLightboxIndex + 1) % total,
-    (currentLightboxIndex - 1 + total) % total
-  ];
-  indices.forEach(index => {
-    const item = currentLightboxItems[index];
-    if (!item) return;
-    const src = resolveAssetUrl(item.zoom || item.standard || item.image || '');
-    if (!src) return;
-    const img = new Image();
-    img.decoding = 'async';
-    img.src = src;
-  });
 }
 
 function updateLightbox() {
@@ -2066,111 +1443,30 @@ function updateLightbox() {
   const m = mode();
   if (!item) return;
 
-  const src = resolveAssetUrl(item.zoom || item.standard || item.image || '');
-  const title = m === 'en' ? (item.title_en || 'Artwork at KJS GALLERY') : (item.title_kr || 'KJS GALLERY 작품');
-
-  LIGHTBOX_IMAGE.decoding = 'async';
+  const src = item.zoom || item.standard || item.image || '';
   LIGHTBOX_IMAGE.src = src;
-  LIGHTBOX_IMAGE.alt = title;
-  resetLightboxZoom(false);
-  preloadLightboxNeighbors();
-
-  if (LIGHTBOX_CAPTION && LIGHTBOX_CAPTION_TITLE && LIGHTBOX_CAPTION_META) {
-    LIGHTBOX_CAPTION.hidden = true;
-    LIGHTBOX_CAPTION_TITLE.textContent = '';
-    LIGHTBOX_CAPTION_META.textContent = '';
-  }
-}
-
-function resetLightboxImagePosition() {
-  lightboxDragOffsetX = 0;
-  lightboxSwipeLocked = false;
-  LIGHTBOX.classList.remove('swiping');
-  LIGHTBOX_IMAGE.style.transition = 'transform .34s cubic-bezier(.22,.78,.2,1), opacity .34s ease';
-  renderLightboxZoom();
-  LIGHTBOX_IMAGE.style.opacity = '1';
-}
-
-function animateLightboxSlide(direction) {
-  if (lightboxAnimating || !currentLightboxItems.length) return;
-  if (lightboxZoom.scale > 1.01) return;
-  lightboxAnimating = true;
-
-  const width = Math.max(LIGHTBOX.clientWidth || 0, window.innerWidth || 0, 320);
-  const currentIndex = currentLightboxIndex;
-  const nextIndex = direction === 'next'
-    ? (currentIndex + 1) % currentLightboxItems.length
-    : (currentIndex - 1 + currentLightboxItems.length) % currentLightboxItems.length;
-  const outX = direction === 'next' ? -width * 0.24 : width * 0.24;
-  const inX = direction === 'next' ? width * 0.24 : -width * 0.24;
-
-  resetLightboxZoom(false);
-  LIGHTBOX.classList.add('swiping');
-  LIGHTBOX_IMAGE.style.transition = 'transform .28s cubic-bezier(.22,.78,.2,1), opacity .28s ease';
-  LIGHTBOX_IMAGE.style.transform = lightboxTransform(outX, 0, 1);
-  LIGHTBOX_IMAGE.style.opacity = '0';
-
-  const handleOut = (event) => {
-    if (event.propertyName !== 'transform') return;
-    LIGHTBOX_IMAGE.removeEventListener('transitionend', handleOut);
-    currentLightboxIndex = nextIndex;
-    updateLightbox();
-    LIGHTBOX_IMAGE.style.transition = 'none';
-    LIGHTBOX_IMAGE.style.transform = lightboxTransform(inX, 0, 1);
-    LIGHTBOX_IMAGE.style.opacity = '0';
-
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        LIGHTBOX_IMAGE.style.transition = 'transform .38s cubic-bezier(.22,.61,.36,1), opacity .38s ease';
-        LIGHTBOX_IMAGE.style.transform = lightboxTransform(0, 0, 1);
-        LIGHTBOX_IMAGE.style.opacity = '1';
-      });
-    });
-
-    const handleIn = (evt) => {
-      if (evt.propertyName !== 'transform') return;
-      LIGHTBOX_IMAGE.removeEventListener('transitionend', handleIn);
-      lightboxAnimating = false;
-      resetLightboxImagePosition();
-    };
-    LIGHTBOX_IMAGE.addEventListener('transitionend', handleIn);
-  };
-
-  LIGHTBOX_IMAGE.addEventListener('transitionend', handleOut);
+  LIGHTBOX_IMAGE.alt = m === 'en' ? (item.title_en || 'Artwork at KJS GALLERY') : (item.title_kr || 'KJS GALLERY 작품');
 }
 
 function closeLightbox() {
-  lightboxTouchActive = false;
-  lightboxTouchMoved = false;
-  lightboxAnimating = false;
-  lightboxZoom.lastTapAt = 0;
-  resetLightboxZoom(false);
   LIGHTBOX.classList.remove('open');
-  LIGHTBOX.classList.remove('swiping');
-  LIGHTBOX.classList.remove('zoomed');
   LIGHTBOX.setAttribute('aria-hidden', 'true');
   LIGHTBOX_IMAGE.src = '';
   LIGHTBOX_IMAGE.alt = '';
-  LIGHTBOX_IMAGE.style.transition = 'transform .34s cubic-bezier(.22,.78,.2,1), opacity .34s ease';
-  LIGHTBOX_IMAGE.style.transform = lightboxTransform(0, 0, 1);
-  LIGHTBOX_IMAGE.style.opacity = '1';
-  if (LIGHTBOX_CAPTION && LIGHTBOX_CAPTION_TITLE && LIGHTBOX_CAPTION_META) {
-    LIGHTBOX_CAPTION.hidden = true;
-    LIGHTBOX_CAPTION_TITLE.textContent = '';
-    LIGHTBOX_CAPTION_META.textContent = '';
-  }
   document.body.classList.remove('lightbox-open');
   if (!EXHIBITION_MODAL.classList.contains('open')) document.body.classList.remove('modal-open');
 }
 
 function prevLightbox() {
   if (!currentLightboxItems.length) return;
-  animateLightboxSlide('prev');
+  currentLightboxIndex = (currentLightboxIndex - 1 + currentLightboxItems.length) % currentLightboxItems.length;
+  updateLightbox();
 }
 
 function nextLightbox() {
   if (!currentLightboxItems.length) return;
-  animateLightboxSlide('next');
+  currentLightboxIndex = (currentLightboxIndex + 1) % currentLightboxItems.length;
+  updateLightbox();
 }
 
 
@@ -2307,286 +1603,72 @@ BRAND_HOME.addEventListener('click', e => { e.preventDefault(); page('home'); })
 
 LIGHTBOX.addEventListener('click', e => {
   if (!LIGHTBOX.classList.contains('open')) return;
-  if (e.target === LIGHTBOX) closeLightbox();
+  if (performance.now() < lightboxSuppressTapCloseUntil) return;
+  if (e.target === LIGHTBOX || e.target === LIGHTBOX_IMAGE) closeLightbox();
 });
-
-LIGHTBOX_IMAGE.addEventListener('load', () => {
-  if (!LIGHTBOX.classList.contains('open')) return;
-  if (lightboxAnimating || lightboxTouchActive || lightboxSwipeLocked || lightboxTouchMoved || lightboxZoom.dragging) return;
-  resetLightboxZoom(false);
-});
-
-LIGHTBOX.addEventListener('wheel', e => {
-  if (!LIGHTBOX.classList.contains('open')) return;
-  e.preventDefault();
-  const delta = -e.deltaY;
-  const factor = delta > 0 ? 1.14 : 0.88;
-  zoomLightboxAroundPoint(lightboxZoom.scale * factor, e.clientX, e.clientY);
-}, { passive: false });
-
-LIGHTBOX.addEventListener('pointerdown', e => {
-  if (!LIGHTBOX.classList.contains('open') || lightboxAnimating) return;
-  if (e.pointerType === 'touch') return;
-
-  LIGHTBOX.setPointerCapture?.(e.pointerId);
-  lightboxZoom.pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
-
-  const now = Date.now();
-  if (lightboxZoom.pointers.size === 1 && now - lightboxZoom.lastTapAt < 260) {
-    const targetScale = lightboxZoom.scale > 1.01 ? 1 : 2.2;
-    zoomLightboxAroundPoint(targetScale, e.clientX, e.clientY);
-    lightboxZoom.lastTapAt = 0;
-  } else if (lightboxZoom.pointers.size === 1) {
-    lightboxZoom.lastTapAt = now;
-  }
-
-  if (lightboxZoom.pointers.size === 1 && lightboxZoom.scale > 1.01) {
-    lightboxZoom.dragging = true;
-    lightboxZoom.startDragX = e.clientX - lightboxZoom.x;
-    lightboxZoom.startDragY = e.clientY - lightboxZoom.y;
-  }
-
-  if (lightboxZoom.pointers.size === 2) {
-    const [a, b] = [...lightboxZoom.pointers.values()];
-    lightboxZoom.startScale = lightboxZoom.scale;
-    lightboxZoom.startX = lightboxZoom.x;
-    lightboxZoom.startY = lightboxZoom.y;
-    lightboxZoom.startDistance = distanceBetween(a, b) || 1;
-    const mid = midpointBetween(a, b);
-    lightboxZoom.startMidX = mid.x;
-    lightboxZoom.startMidY = mid.y;
-    lightboxZoom.dragging = false;
-  }
-}, { passive: true });
-
-LIGHTBOX.addEventListener('pointermove', e => {
-  if (!LIGHTBOX.classList.contains('open')) return;
-  if (e.pointerType === 'touch') return;
-  if (lightboxZoom.pointers.has(e.pointerId)) {
-    lightboxZoom.pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
-  }
-
-  if (lightboxZoom.pointers.size === 2) {
-    const [a, b] = [...lightboxZoom.pointers.values()];
-    const dist = distanceBetween(a, b) || 1;
-    const mid = midpointBetween(a, b);
-    lightboxZoom.scale = clamp(lightboxZoom.startScale * (dist / lightboxZoom.startDistance), lightboxZoom.min, lightboxZoom.max);
-    lightboxZoom.x = lightboxZoom.startX + (mid.x - lightboxZoom.startMidX);
-    lightboxZoom.y = lightboxZoom.startY + (mid.y - lightboxZoom.startMidY);
-    if (lightboxZoom.scale <= 1.01) {
-      lightboxZoom.scale = 1;
-      lightboxZoom.x = 0;
-      lightboxZoom.y = 0;
-    }
-    LIGHTBOX_IMAGE.style.transition = 'none';
-    renderLightboxZoom();
-    return;
-  }
-
-  if (lightboxZoom.dragging && lightboxZoom.scale > 1.01) {
-    e.preventDefault();
-    lightboxZoom.x = e.clientX - lightboxZoom.startDragX;
-    lightboxZoom.y = e.clientY - lightboxZoom.startDragY;
-    LIGHTBOX_IMAGE.style.transition = 'none';
-    renderLightboxZoom();
-  }
-}, { passive: false });
-
-function endLightboxPointer(e) {
-  if (e.pointerType === 'touch') return;
-  lightboxZoom.pointers.delete(e.pointerId);
-  if (lightboxZoom.pointers.size < 2) {
-    lightboxZoom.startDistance = 0;
-  }
-  if (lightboxZoom.pointers.size === 0) {
-    lightboxZoom.dragging = false;
-    if (lightboxZoom.scale <= 1.01) resetLightboxZoom(false);
-  } else if (lightboxZoom.pointers.size === 1 && lightboxZoom.scale > 1.01) {
-    const p = [...lightboxZoom.pointers.values()][0];
-    lightboxZoom.dragging = true;
-    lightboxZoom.startDragX = p.x - lightboxZoom.x;
-    lightboxZoom.startDragY = p.y - lightboxZoom.y;
-  }
-}
-
-LIGHTBOX.addEventListener('pointerup', endLightboxPointer);
-LIGHTBOX.addEventListener('pointercancel', endLightboxPointer);
-
 LIGHTBOX.addEventListener('touchstart', e => {
-  if (!LIGHTBOX.classList.contains('open') || lightboxAnimating) return;
-  if (!e.touches || !e.touches.length) return;
-
-  if (e.touches.length === 2) {
-    lightboxTouchActive = false;
-    lightboxSwipeLocked = false;
-    lightboxTouchMoved = false;
-    const [a, b] = e.touches;
-    lightboxZoom.startScale = lightboxZoom.scale;
-    lightboxZoom.startX = lightboxZoom.x;
-    lightboxZoom.startY = lightboxZoom.y;
-    lightboxZoom.startDistance = distanceBetween({ x: a.clientX, y: a.clientY }, { x: b.clientX, y: b.clientY }) || 1;
-    const mid = midpointBetween({ x: a.clientX, y: a.clientY }, { x: b.clientX, y: b.clientY });
-    lightboxZoom.startMidX = mid.x;
-    lightboxZoom.startMidY = mid.y;
-    lightboxZoom.dragging = false;
-    LIGHTBOX_IMAGE.style.transition = 'none';
-    return;
-  }
-
+  if (!LIGHTBOX.classList.contains('open')) return;
   const touch = e.touches[0];
+  if (!touch) return;
+  const now = performance.now();
   lightboxTouchStartX = touch.clientX;
+  lightboxTouchCurrentX = touch.clientX;
   lightboxTouchStartY = touch.clientY;
+  lightboxTouchCurrentY = touch.clientY;
+  lightboxTouchStartTime = now;
+  lightboxTouchLastX = touch.clientX;
+  lightboxTouchLastTime = now;
+  lightboxVelocityX = 0;
+  lightboxDidSwipe = false;
   lightboxTouchActive = true;
-  lightboxTouchMoved = false;
-  lightboxSwipeLocked = false;
-  lightboxDragOffsetX = 0;
-  LIGHTBOX_IMAGE.style.transition = 'none';
-  LIGHTBOX_IMAGE.style.opacity = '1';
-
-  if (lightboxZoom.scale > 1.01) {
-    lightboxZoom.dragging = true;
-    lightboxZoom.startDragX = touch.clientX - lightboxZoom.x;
-    lightboxZoom.startDragY = touch.clientY - lightboxZoom.y;
-    return;
-  }
-
-  LIGHTBOX.classList.add('swiping');
 }, { passive: true });
-
 LIGHTBOX.addEventListener('touchmove', e => {
-  if (!LIGHTBOX.classList.contains('open') || lightboxAnimating) return;
-  if (!e.touches || !e.touches.length) return;
-
-  if (e.touches.length === 2) {
-    const [a, b] = e.touches;
-    const dist = distanceBetween({ x: a.clientX, y: a.clientY }, { x: b.clientX, y: b.clientY }) || 1;
-    const mid = midpointBetween({ x: a.clientX, y: a.clientY }, { x: b.clientX, y: b.clientY });
-    lightboxZoom.scale = clamp(lightboxZoom.startScale * (dist / lightboxZoom.startDistance), lightboxZoom.min, lightboxZoom.max);
-    lightboxZoom.x = lightboxZoom.startX + (mid.x - lightboxZoom.startMidX);
-    lightboxZoom.y = lightboxZoom.startY + (mid.y - lightboxZoom.startMidY);
-    if (lightboxZoom.scale <= 1.01) {
-      lightboxZoom.scale = 1;
-      lightboxZoom.x = 0;
-      lightboxZoom.y = 0;
-    }
-    e.preventDefault();
-    LIGHTBOX_IMAGE.style.transition = 'none';
-    renderLightboxZoom();
-    return;
-  }
-
+  if (!lightboxTouchActive) return;
   const touch = e.touches[0];
+  if (!touch) return;
 
-  if (lightboxZoom.scale > 1.01 && lightboxZoom.dragging) {
-    e.preventDefault();
-    lightboxZoom.x = touch.clientX - lightboxZoom.startDragX;
-    lightboxZoom.y = touch.clientY - lightboxZoom.startDragY;
-    LIGHTBOX_IMAGE.style.transition = 'none';
-    renderLightboxZoom();
-    return;
-  }
+  lightboxTouchCurrentX = touch.clientX;
+  lightboxTouchCurrentY = touch.clientY;
 
+  const now = performance.now();
+  const dt = Math.max(1, now - lightboxTouchLastTime);
+  lightboxVelocityX = (touch.clientX - lightboxTouchLastX) / dt;
+  lightboxTouchLastX = touch.clientX;
+  lightboxTouchLastTime = now;
+}, { passive: true });
+LIGHTBOX.addEventListener('touchend', e => {
   if (!lightboxTouchActive) return;
 
-  const diffX = touch.clientX - lightboxTouchStartX;
-  const diffY = touch.clientY - lightboxTouchStartY;
-  const absX = Math.abs(diffX);
-  const absY = Math.abs(diffY);
-
-  if (absX > 1 || absY > 1) {
-    lightboxTouchMoved = true;
-  }
-
-  if (!lightboxSwipeLocked) {
-    if (absX < 3 && absY < 3) return;
-
-    if (absX > absY * 0.72) {
-      lightboxSwipeLocked = true;
-      LIGHTBOX.classList.add('swiping');
-    } else if (absY > absX * 1.05) {
-      lightboxTouchActive = false;
-      lightboxTouchMoved = false;
-      lightboxSwipeLocked = false;
-      resetLightboxImagePosition();
-      return;
-    } else {
-      return;
-    }
-  }
-
-  e.preventDefault();
-  const width = Math.max(LIGHTBOX.clientWidth || 0, window.innerWidth || 0, 320);
-  const limit = width * 0.35;
-  lightboxDragOffsetX = clamp(diffX, -limit, limit);
-  LIGHTBOX_IMAGE.style.transform = lightboxTransform(lightboxDragOffsetX, 0, 1);
-  LIGHTBOX_IMAGE.style.opacity = '1';
-}, { passive: false });
-
-LIGHTBOX.addEventListener('touchend', e => {
-  if (e.touches && e.touches.length === 1 && lightboxZoom.scale > 1.01) {
-    const touch = e.touches[0];
-    lightboxZoom.dragging = true;
-    lightboxZoom.startDragX = touch.clientX - lightboxZoom.x;
-    lightboxZoom.startDragY = touch.clientY - lightboxZoom.y;
-    return;
-  }
-
-  if (e.touches && e.touches.length >= 2) return;
-
-  if (lightboxZoom.scale > 1.01) {
-    lightboxZoom.dragging = false;
-    if (!e.touches || e.touches.length === 0) renderLightboxZoom();
-    return;
-  }
-
-  if (!lightboxTouchActive) {
-    resetLightboxImagePosition();
-    return;
-  }
-  lightboxTouchActive = false;
-
-  if (!e.changedTouches || !e.changedTouches.length) {
-    resetLightboxImagePosition();
-    return;
-  }
-
   const touch = e.changedTouches[0];
-  const diffX = lightboxTouchStartX - touch.clientX;
-  const diffY = lightboxTouchStartY - touch.clientY;
+  const endX = touch ? touch.clientX : lightboxTouchCurrentX;
+  const endY = touch ? touch.clientY : lightboxTouchCurrentY;
+
+  const diffX = lightboxTouchStartX - endX;
+  const diffY = lightboxTouchStartY - endY;
   const absX = Math.abs(diffX);
   const absY = Math.abs(diffY);
+  const elapsed = Math.max(1, performance.now() - lightboxTouchStartTime);
+  const flick = Math.abs(lightboxVelocityX) > LIGHTBOX_FLICK_VELOCITY && absX >= LIGHTBOX_FLICK_DISTANCE;
+  const distanceEnough = absX >= LIGHTBOX_SWIPE_THRESHOLD;
+  const isHorizontal = absX > absY * 1.08 && absY < LIGHTBOX_VERTICAL_TOLERANCE;
 
-  if (!lightboxTouchMoved || !lightboxSwipeLocked) {
-    resetLightboxImagePosition();
-    return;
-  }
-  if (absY > LIGHTBOX_VERTICAL_TOLERANCE && absY > absX) {
-    resetLightboxImagePosition();
-    return;
-  }
-  if (absX < LIGHTBOX_SWIPE_THRESHOLD) {
-    LIGHTBOX_IMAGE.style.transition = 'transform .20s ease, opacity .20s ease';
-    LIGHTBOX_IMAGE.style.transform = lightboxTransform(0, 0, 1);
-    LIGHTBOX_IMAGE.style.opacity = '1';
-    const rebound = () => {
-      LIGHTBOX_IMAGE.removeEventListener('transitionend', rebound);
-      resetLightboxImagePosition();
-    };
-    LIGHTBOX_IMAGE.addEventListener('transitionend', rebound);
-    return;
+  if (isHorizontal && (distanceEnough || flick)) {
+    lightboxDidSwipe = true;
+    lightboxSuppressTapCloseUntil = performance.now() + 320;
+    if (diffX > 0) nextLightbox();
+    else prevLightbox();
+  } else if (absX > 8 || absY > 8 || elapsed > 280) {
+    lightboxDidSwipe = false;
   }
 
-  if (diffX > 0) nextLightbox();
-  else prevLightbox();
+  lightboxTouchActive = false;
+  lightboxVelocityX = 0;
 }, { passive: true });
-
 LIGHTBOX.addEventListener('touchcancel', () => {
   lightboxTouchActive = false;
-  lightboxTouchMoved = false;
-  lightboxSwipeLocked = false;
-  lightboxZoom.dragging = false;
-  resetLightboxImagePosition();
-});
+  lightboxVelocityX = 0;
+  lightboxDidSwipe = false;
+}, { passive: true });
 EXHIBITION_MODAL_CLOSE.addEventListener('click', closeExhibitionModal);
 EXHIBITION_MODAL.addEventListener('click', e => { if (e.target === EXHIBITION_MODAL) closeExhibitionModal(); });
 document.addEventListener('keydown', e => {
