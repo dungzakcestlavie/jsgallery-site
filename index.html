@@ -1230,10 +1230,11 @@ let lightboxTouchDragging = false;
 let lightboxTouchLastX = 0;
 let lightboxTouchLastTime = 0;
 let lightboxVelocityX = 0;
+let lightboxTouchAxisLocked = '';
 let lightboxAnimating = false;
-const LIGHTBOX_SWIPE_THRESHOLD = 56;
-const LIGHTBOX_VERTICAL_TOLERANCE = 42;
-const LIGHTBOX_FLICK_VELOCITY = 0.42;
+const LIGHTBOX_SWIPE_THRESHOLD = 28;
+const LIGHTBOX_VERTICAL_TOLERANCE = 64;
+const LIGHTBOX_FLICK_VELOCITY = 0.18;
 const lightboxZoom = {
   scale: 1,
   min: 1,
@@ -2371,15 +2372,16 @@ LIGHTBOX.addEventListener('pointercancel', endLightboxPointer);
 
 LIGHTBOX.addEventListener('touchstart', e => {
   if (!LIGHTBOX.classList.contains('open') || lightboxAnimating || lightboxZoom.scale > 1.01 || (e.touches && e.touches.length > 1)) return;
-  const touch = e.changedTouches[0];
+  const touch = e.touches[0] || e.changedTouches[0];
   if (!touch) return;
-  lightboxTouchStartX = touch.screenX;
-  lightboxTouchCurrentX = touch.screenX;
-  lightboxTouchStartY = touch.screenY;
-  lightboxTouchCurrentY = touch.screenY;
-  lightboxTouchLastX = touch.screenX;
+  lightboxTouchStartX = touch.clientX;
+  lightboxTouchCurrentX = touch.clientX;
+  lightboxTouchStartY = touch.clientY;
+  lightboxTouchCurrentY = touch.clientY;
+  lightboxTouchLastX = touch.clientX;
   lightboxTouchLastTime = performance.now();
   lightboxVelocityX = 0;
+  lightboxTouchAxisLocked = '';
   lightboxTouchActive = true;
   lightboxTouchDragging = false;
   LIGHTBOX.classList.remove('swiping');
@@ -2387,10 +2389,10 @@ LIGHTBOX.addEventListener('touchstart', e => {
 }, { passive: true });
 LIGHTBOX.addEventListener('touchmove', e => {
   if (!lightboxTouchActive || lightboxAnimating || lightboxZoom.scale > 1.01 || (e.touches && e.touches.length > 1)) return;
-  const touch = e.changedTouches[0];
+  const touch = e.touches[0] || e.changedTouches[0];
   if (!touch) return;
-  lightboxTouchCurrentX = touch.screenX;
-  lightboxTouchCurrentY = touch.screenY;
+  lightboxTouchCurrentX = touch.clientX;
+  lightboxTouchCurrentY = touch.clientY;
 
   const moveX = lightboxTouchCurrentX - lightboxTouchStartX;
   const moveY = lightboxTouchCurrentY - lightboxTouchStartY;
@@ -2399,25 +2401,27 @@ LIGHTBOX.addEventListener('touchmove', e => {
 
   const now = performance.now();
   const dt = Math.max(1, now - lightboxTouchLastTime);
-  lightboxVelocityX = (touch.screenX - lightboxTouchLastX) / dt;
-  lightboxTouchLastX = touch.screenX;
+  lightboxVelocityX = (touch.clientX - lightboxTouchLastX) / dt;
+  lightboxTouchLastX = touch.clientX;
   lightboxTouchLastTime = now;
 
-  if (!lightboxTouchDragging) {
-    if (absX < 8) return;
-    if (absY > absX * 0.9) {
-      lightboxTouchActive = false;
-      resetLightboxImagePosition();
-      return;
-    }
-    lightboxTouchDragging = true;
+  if (!lightboxTouchAxisLocked) {
+    if (absX < 4 && absY < 4) return;
+    lightboxTouchAxisLocked = absX >= absY ? 'x' : 'y';
   }
 
+  if (lightboxTouchAxisLocked === 'y') {
+    lightboxTouchActive = false;
+    resetLightboxImagePosition();
+    return;
+  }
+
+  lightboxTouchDragging = true;
   e.preventDefault();
   LIGHTBOX.classList.add('swiping');
-  const width = Math.max(LIGHTBOX.clientWidth || 0, window.innerWidth || 0, 320);
-  const limitedX = Math.max(Math.min(moveX, width * 0.42), -width * 0.42);
-  const opacity = Math.max(0.78, 1 - Math.abs(limitedX) / width * 0.32);
+  const width = Math.max(window.innerWidth || 0, LIGHTBOX.clientWidth || 0, 320);
+  const limitedX = Math.max(Math.min(moveX, width * 0.55), -width * 0.55);
+  const opacity = Math.max(0.86, 1 - Math.abs(limitedX) / width * 0.18);
   LIGHTBOX_IMAGE.style.transform = lightboxTransform(limitedX, 0, 1);
   LIGHTBOX_IMAGE.style.opacity = String(opacity);
 }, { passive: false });
@@ -2427,9 +2431,9 @@ LIGHTBOX.addEventListener('touchend', () => {
   const diffY = lightboxTouchStartY - lightboxTouchCurrentY;
   const absX = Math.abs(diffX);
   const absY = Math.abs(diffY);
-  const flick = Math.abs(lightboxVelocityX) > LIGHTBOX_FLICK_VELOCITY && absX > 18;
+  const flick = Math.abs(lightboxVelocityX) > LIGHTBOX_FLICK_VELOCITY && absX > 10;
 
-  if ((absX > LIGHTBOX_SWIPE_THRESHOLD || flick) && absY < LIGHTBOX_VERTICAL_TOLERANCE && absX > absY * 1.2) {
+  if ((absX > LIGHTBOX_SWIPE_THRESHOLD || flick) && absX > absY * 1.05 && absY < LIGHTBOX_VERTICAL_TOLERANCE) {
     if (diffX > 0) nextLightbox();
     else prevLightbox();
   } else {
@@ -2438,10 +2442,12 @@ LIGHTBOX.addEventListener('touchend', () => {
 
   lightboxTouchActive = false;
   lightboxTouchDragging = false;
+  lightboxTouchAxisLocked = '';
 });
 LIGHTBOX.addEventListener('touchcancel', () => {
   lightboxTouchActive = false;
   lightboxTouchDragging = false;
+  lightboxTouchAxisLocked = '';
   if (!lightboxAnimating) resetLightboxImagePosition();
 });
 EXHIBITION_MODAL_CLOSE.addEventListener('click', closeExhibitionModal);
