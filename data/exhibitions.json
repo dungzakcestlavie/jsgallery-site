@@ -1,6 +1,138 @@
 {
   "exhibitions": [
     {
+      "id": "ahn-solo-2026",
+      "type_kr": "개인전",
+      "type_en": "Solo Exhibition",
+      "title_kr": "응집",
+      "title_en": "Cohesion",
+      "date_kr": "2026.04.02 — 2026.04.12 · 김정숙 갤러리 · JS ART SPACE",
+      "date_en": "April 2 — April 12, 2026 · Kim Jung sook Gallery · JS ART SPACE",
+      "image": "https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/exhibitions/ahn-cohesion-cover.jpg",
+      "works": [
+        {
+          "id": "AJM-001",
+          "title_kr": "응집 (The Forest)",
+          "title_en": "Cohesion (The Forest)",
+          "material_kr": "oil on canvas",
+          "material_en": "oil on canvas",
+          "size_kr": "112.1 × 145.5 cm",
+          "size_en": "112.1 × 145.5 cm",
+          "year": "2026",
+          "image": "https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/standard/AJM-001.jpg",
+          "zoom": "https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/zoom/AJM-001.jpg"
+        },
+        {
+          "id": "AJM-002",
+          "title_kr": "응집 (The Forest)",
+          "title_en": "Cohesion (The Forest)",
+          "material_kr": "acrylic on canvas",
+          "material_en": "acrylic on canvas",
+          "size_kr": "112.1 × 145.5 cm",
+          "size_en": "112.1 × 145.5 cm",
+          "year": "2024",
+          "image": "https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/standard/AJM-002.jpg",
+          "zoom": "https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/zoom/AJM-002.jpg"
+        },
+        {
+          "id": "AJM-003",
+          "title_kr": "응집 (The Forest)",
+          "title_en": "Cohesion (The Forest)",
+          "material_kr": "oil and acrylic on canvas",
+          "material_en": "oil and acrylic on canvas",
+          "size_kr": "116.8 × 91 cm",
+          "size_en": "116.8 × 91 cm",
+          "year": "2023",
+          "image": "https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/standard/AJM-003.jpg",
+          "zoom": "https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/zoom/AJM-003.jpg"
+        },
+        {
+          "id": "AJM-004",
+          "title_kr": "응집 (The Forest)",
+          "title_en": "Cohesion (The Forest)",
+          "material_kr": "acrylic on canvas",
+          "material_en": "acrylic on canvas",
+          "size_kr": "116.8 × 91 cm",
+          "size_en": "116.8 × 91 cm",
+          "year": "2023",
+          "image": "https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/standard/AJM-004.jpg",
+          "zoom": "https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/zoom/AJM-004.jpg"
+        },
+        {
+          "id": "AJM-005",
+          "title_kr": "응집 (The Forest)",
+          "title_en": "Cohesion (The Forest)",
+          "material_kr": "oil and hanji on canvas",
+          "material_en": "oil and hanji on canvas",
+          "size_kr": "116.8 × 91 cm",
+          "size_en": "116.8 × 91 cm",
+          "year": "2023",
+          "image": "https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/standard/AJM-005.jpg",
+          "zoom": "https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/zoom/AJM-005.jpg"
+        },
+        {
+          "id": "AJM-006",
+          "title_kr": "응집 (The Forest)",
+          "title_en": "Cohesion (The Forest)",
+          "material_kr": "mixed media on canvas",
+          "material_en": "mixed media on canvas",
+          "size_kr": "116.8 × 91 cm",
+          "size_en": "116.8 × 91 cm",
+          "year": "2026",
+          "image": "https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/standard/AJM-006.jpg",
+          "zoom": "https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/zoom/AJM-006.jpg"
+        },
+        {
+          "id": "AJM-007",
+          "title_kr": "응집 (The Forest)",
+          "title_en": "Cohesion (The Forest)",
+          "material_kr": "oil and hanji on canvas",
+          "material_en": "oil and hanji on canvas",
+          "size_kr": "116.8 × 91 cm",
+          "size_en": "116.8 × 91 cm",
+          "year": "2023",
+          "image": "https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/standard/AJM-007.jpg",
+          "zoom": "https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/zoom/AJM-007.jpg"
+        },
+        {
+          "id": "AJM-008",
+          "title_kr": "응집 (The Forest)",
+          "title_en": "Cohesion (The Forest)",
+          "material_kr": "mixed media on canvas",
+          "material_en": "mixed media on canvas",
+          "size_kr": "92 × 92 cm",
+          "size_en": "92 × 92 cm",
+          "year": "2025",
+          "image": "https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/standard/AJM-008.jpg",
+          "zoom": "https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/zoom/AJM-008.jpg"
+        },
+        {
+          "id": "AJM-009",
+          "title_kr": "응집 (The Forest)",
+          "title_en": "Cohesion (The Forest)",
+          "material_kr": "oil and acrylic on canvas",
+          "material_en": "oil and acrylic on canvas",
+          "size_kr": "53 × 45 cm",
+          "size_en": "53 × 45 cm",
+          "year": "2024",
+          "image": "https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/standard/AJM-009.jpg",
+          "zoom": "https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/zoom/AJM-009.jpg"
+        },
+        {
+          "id": "AJM-010",
+          "title_kr": "응집 (The Forest)",
+          "title_en": "Cohesion (The Forest)",
+          "material_kr": "oil on canvas",
+          "material_en": "oil on canvas",
+          "size_kr": "53 × 45 cm",
+          "size_en": "53 × 45 cm",
+          "year": "2025",
+          "image": "https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/standard/AJM-010.jpg",
+          "zoom": "https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/works/zoom/AJM-010.jpg"
+        }
+      ]
+    },
+    {
       "id": "group",
       "type_kr": "그룹전",
       "type_en": "Group Exhibition",
