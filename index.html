@@ -237,6 +237,8 @@ main.page-swipe-active{position:relative;overflow:hidden}
   border:1px solid rgba(31,78,117,.14);
 }
 
+.hero-visual[role="button"]{cursor:pointer}
+.hero-visual[role="button"]:focus-visible{outline:2px solid rgba(184,150,62,.7);outline-offset:4px}
 .hero-visual{
   min-height:auto;
   height:100%;
@@ -504,7 +506,7 @@ they emerge through relationships within the exhibition.</div>
             <button class="btn btn-secondary" data-page-jump="contact"><span class="ko">문의</span><span class="en">Contact</span></button>
           </div>
         </div>
-        <div class="hero-visual">
+        <div class="hero-visual" id="heroVisual" role="button" tabindex="0" aria-label="Open current exhibition">
           <div class="hero-visual-frame" aria-hidden="true">
             <img class="hero-visual-image" id="heroImage" src="" alt="Current exhibition preview at KJS GALLERY" loading="eager" />
             <div class="hero-visual-label"></div>
@@ -3045,6 +3047,66 @@ document.addEventListener('keydown', e => {
     page('home');
   } catch (error) {
     console.error(error);
+  }
+})();
+</script>
+
+
+<script>
+(function(){
+  function openHeroExhibition(){
+    try{
+      if (typeof showPage === 'function') showPage('exhibitions');
+
+      const dataEl = document.getElementById('jsgallery-data-inline');
+      const raw = dataEl ? JSON.parse(dataEl.textContent) : null;
+      const exhibitions = Array.isArray(raw?.exhibitions) ? raw.exhibitions.slice() : [];
+
+      if (!exhibitions.length) return;
+
+      const sorted = exhibitions.sort((a, b) => {
+        const ad = a?.sort_date ? new Date(a.sort_date).getTime() : 0;
+        const bd = b?.sort_date ? new Date(b.sort_date).getTime() : 0;
+        return bd - ad;
+      });
+
+      const target = sorted[0];
+      if (!target) return;
+
+      if (typeof openExhibitionDetail === 'function') {
+        openExhibitionDetail(target.id);
+        return;
+      }
+      if (typeof openExhibition === 'function') {
+        openExhibition(target.id);
+        return;
+      }
+
+      const card = document.querySelector(`.exhibition-card[data-exhibition-id="${target.id}"]`);
+      if (card) card.click();
+    }catch(e){
+      console.error('Hero exhibition open failed:', e);
+    }
+  }
+
+  function bindHeroVisualClick(){
+    const hero = document.getElementById('heroVisual');
+    if (!hero || hero.dataset.bound === 'true') return;
+    hero.dataset.bound = 'true';
+
+    hero.addEventListener('click', openHeroExhibition);
+    hero.addEventListener('keydown', function(e){
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openHeroExhibition();
+      }
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', bindHeroVisualClick);
+  } else {
+    bindHeroVisualClick();
   }
 })();
 </script>
