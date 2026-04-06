@@ -276,7 +276,28 @@ main.page-swipe-active{position:relative;overflow:hidden}
 }
 }
     .hero-visual-image{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
-    .hero-visual-label{position:absolute;left:24px;bottom:22px;z-index:3;display:inline-flex;align-items:center;min-height:34px;padding:0 14px;border-radius:999px;background:rgba(255,255,255,.80);border:1px solid rgba(31,78,117,.10);color:var(--cobalt-deep);font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
+    .hero-visual-label{
+  position:absolute;
+  left:24px;
+  bottom:22px;
+  z-index:3;
+  display:inline-flex;
+  align-items:center;
+  min-height:auto;
+  padding:6px 10px;
+  border-radius:4px;
+  background:rgba(184,150,62,0.06);
+  border:1px solid rgba(184,150,62,0.6);
+  color:#b8963e;
+  font-family:"Inter","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  box-shadow:none;
+  backdrop-filter:blur(2px);
+  -webkit-backdrop-filter:blur(2px);
+}
     .section-head{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:22px;flex-wrap:wrap}
     .section-title{margin:0;font-size:clamp(28px,3vw,42px);line-height:1.12;letter-spacing:-.03em;color:var(--cobalt-deep)}
     .section-note{max-width:620px;font-size:15px;color:var(--muted)}
@@ -290,7 +311,24 @@ main.page-swipe-active{position:relative;overflow:hidden}
     .exhibition-thumb{aspect-ratio:1.35/1;overflow:hidden;background:var(--panel-2)}
     .exhibition-thumb img{width:100%;height:100%;object-fit:contain;object-position:center center;display:block;background:var(--panel-2);padding:10px}
     .exhibition-info{padding:16px 16px 18px}
-    .exhibition-type{font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--emerald-deep);margin-bottom:8px}
+    .exhibition-type{
+  display:inline-flex;
+  align-items:center;
+  width:max-content;
+  min-height:auto;
+  padding:6px 10px;
+  border-radius:4px;
+  background:rgba(184,150,62,0.06);
+  border:1px solid rgba(184,150,62,0.6);
+  color:#b8963e;
+  font-family:"Inter","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  font-size:11px;
+  font-weight:700;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  margin-bottom:8px;
+  box-shadow:none;
+}
     .exhibition-title{font-size:18px;font-weight:700;line-height:1.24;color:var(--cobalt-deep);margin:0 0 8px}
     .work-meta{margin-top:4px;font-size:13px;color:var(--muted);line-height:1.5;white-space:pre-line}
     .artist-note{margin:0 0 22px;padding:24px 24px 22px;border-radius:26px;background:linear-gradient(180deg, rgba(255,255,255,.92), rgba(237,244,246,.88));border:1px solid rgba(31,78,117,.08);box-shadow:var(--shadow)}
@@ -658,7 +696,7 @@ they emerge through relationships within the exhibition.</div>
       "type_kr": "개인전",
       "type_en": "Solo Exhibition",
       "date_kr": "2026.04.02 — 2026.04.12 · 김정숙 갤러리 · JS ART SPACE",
-      "date_en": "April 2 — April 12, 2026 · Kim Jung sook Gallery · JS ART SPACE",
+      "date_en": "2026.04.02 — 2026.04.12 · Kim Jung sook Gallery · JS ART SPACE",
       "intro_kr": "숲과 나무를 통해 존재와 관계, 공존을 사유하는 회화.",
       "intro_en": "A painting that reflects on existence, relation, and coexistence through the forest and trees.",
       "artist_kr": "안 정미",
@@ -805,6 +843,31 @@ they emerge through relationships within the exhibition.</div>
       "image": "https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/exhibitions/group-cover.jpg"
     },
     {
+      "id": "group-2026",
+      "sort_date": "2026-03-18",
+      "title_kr": "CONNECTION : IN PROGRESS",
+      "title_en": "CONNECTION : IN PROGRESS",
+      "type_kr": "그룹전",
+      "type_en": "Group Exhibition",
+      "date_kr": "2026.03.18 — 2026.03.30 · 김정숙 갤러리 · JS ART SPACE",
+      "date_en": "2026.03.18 — 2026.03.30 · Kim Jung sook Gallery · JS ART SPACE",
+      "intro_kr": "연결이라는 개념을 하나의 완결된 상태가 아닌, 진행중인 과정으로 바라본다.",
+      "intro_en": "Connection is approached not as a completed state, but as an ongoing process.",
+      "image": "images/exhibitions/group-cover.jpg"
+    },
+    {
+      "id": "solo-2026",
+      "sort_date": "2026-03-04",
+      "title_kr": "사유는 삶을 빚는다 — 어디에서",
+      "title_en": "Thought Shapes Life — Where",
+      "type_kr": "개인전",
+      "type_en": "Solo Exhibition",
+      "date_kr": "2026.03.04 — 2026.03.16 · 김정숙 갤러리",
+      "date_en": "2026.03.04 — 2026.03.16 · Kim Jung sook Gallery",
+      "intro_kr": "사유와 회화가 하나의 사건으로 읽히도록 구성된 초대전입니다.",
+      "intro_en": "An invited exhibition structured so that thought and painting are read as a single event."
+    },
+    {
       "id": "solo",
       "type_kr": "개인전",
       "type_en": "Solo Exhibition",
@@ -941,7 +1004,11 @@ they emerge through relationships within the exhibition.</div>
   "group_artists": [
     {
       "name_kr": "권희선",
-      "name_en": "Kwon Heesun",
+      "name_en": "Hee Sun Kwon",
+      "note_summary_kr": "찰나의 감정과 시간의 잔여를 포착한다.",
+      "note_summary_en": "Captures fleeting emotion and the residue of time.",
+      "note_kr": "‘찰나’는 불교에서 시간의 최소 단위를 뜻한다고 한다.\n존재는 그 미세한 순간 속에서 생겨나고 사라지며, 삶은 그렇게 짧은 찰나들의 겹침으로 이어진다. 영원하지 않고 매 순간 사라져가는 시간 위에서, 지나간 시간을 온전히 보내고 다가올 시간을 정성스럽게 맞이하기 위해 나만의 작은 의식을 치른다.\n\n만끽하고 싶은 여운과 끈적하게 남아 쉽게 지워지지 않는 감정의 잔여. 흘려보내기엔 어딘가 미련이 남는 그 감각을 붙들어 화면에 옮기며, 당연한 듯 주어지지만 결코 당연하지 않은 일상 속 ‘찰나’를 포착한다.\n\n그 과정은 단순한 재현이 아니라 스스로를 마주하는 시간이 된다. 어떤 날에는 위로가 되고, 또 어떤 날에는 기쁨이나 슬픔으로 머물며 감정의 순환을 이룬다.\n\n지극히 사적인 나의 찰나가 이를 마주하는 이들에게도 잠시 멈춰 설 수 있는 작은 틈이 되기를 바란다",
+      "note_en": "“Chalna,” a fleeting moment, is said to be the smallest unit of time in Buddhism.\nExistence arises and disappears within these infinitesimal moments, and life continues as an accumulation of such fleeting instants. Upon time that is never permanent and constantly fading, I perform my own small ritual—fully sending off what has passed and carefully welcoming what is to come.\n\nThe lingering aftertaste I wish to savor, and the residue of emotions that cling, stubborn and not easily erased. Holding onto sensations that feel too reluctant to simply let go, I translate them onto the surface, capturing these fleeting moments within everyday life—so naturally given, yet never truly ordinary.\n\nThis process is not mere representation, but a time of confronting myself. On some days, it becomes comfort; on others, it remains as joy or sorrow, forming a cycle of emotion.\n\nI hope that my deeply personal fleeting moments may offer those who encounter them a small space—a pause, however brief, in which they too can momentarily stand still.",
       "works": [
         {
           "title_kr": "구름의 함성",
