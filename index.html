@@ -1379,9 +1379,7 @@ they emerge through relationships within the exhibition.</div>
       ]
     }
   ]
-}</script>
-
-<script>
+}<script>
 const BODY = document.body;
 const DATA = JSON.parse(document.getElementById('jsgallery-data-inline').textContent);
 const GROUP_COVER = "https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-images/main/images/exhibitions/group-cover.jpg";
@@ -1503,7 +1501,6 @@ async function loadArtistWorksData() {
     artistsData[0].works_ids = worksData.map(work => work.id);
   }
 }
-
 
 function getArtistWorks(artist) {
   if (!artist) return [];
@@ -1813,7 +1810,6 @@ function finishPageSwipe(commit) {
   });
 }
 
-
 function setLang(lang) {
   BODY.classList.toggle('mode-en', lang === 'en');
   BODY.classList.toggle('mode-kr', lang === 'kr');
@@ -1875,7 +1871,6 @@ function renderArtistNote(artist) {
     if (enSub) enSub.textContent = artistNoteOpen ? 'Back to summary' : 'Expand full text';
   }
 }
-
 
 function nextLightboxItem() {
   if (!currentLightboxItems.length) return;
@@ -2185,12 +2180,19 @@ function renderExhibitions() {
   const heroImage = document.getElementById('heroImage');
   const heroLabel = document.querySelector('.hero-visual-label');
   const featured = cards[0];
+
   if (heroImage && featured) {
     heroImage.src = exhibitionImage(featured);
     heroImage.alt = m === 'en'
       ? `${exhibitionTitle(featured, m)} exhibition preview at KJS GALLERY`
       : `KJS GALLERY 전시 미리보기 ${exhibitionTitle(featured, m)}`;
+    heroImage.style.cursor = 'pointer';
+    heroImage.onclick = () => {
+      if (!featured || !featured.id) return;
+      openExhibitionModal(featured.id);
+    };
   }
+
   if (heroLabel && featured) {
     heroLabel.textContent = exhibitionType(featured, m);
   }
@@ -2610,7 +2612,6 @@ function nextLightbox() {
   animateLightboxSlide('next');
 }
 
-
 function initPageSwipe() {
   if (!MAIN) return;
 
@@ -2699,7 +2700,6 @@ function initPageSwipe() {
   }, { passive: true });
 }
 
-
 function renderAll() {
   syncContact();
   renderExhibitions();
@@ -2740,7 +2740,6 @@ document.querySelectorAll('.menu-link[data-page]').forEach(btn => btn.addEventLi
 MENU_BTN.addEventListener('click', () => MENU_PANEL.classList.contains('open') ? closeMenu() : openMenu());
 MENU_BACKDROP.addEventListener('click', closeMenu);
 BRAND_HOME.addEventListener('click', e => { e.preventDefault(); page('home'); });
-
 
 LIGHTBOX.addEventListener('click', e => {
   if (!LIGHTBOX.classList.contains('open')) return;
@@ -3024,8 +3023,10 @@ LIGHTBOX.addEventListener('touchcancel', () => {
   lightboxZoom.dragging = false;
   resetLightboxImagePosition();
 });
+
 EXHIBITION_MODAL_CLOSE.addEventListener('click', closeExhibitionModal);
 EXHIBITION_MODAL.addEventListener('click', e => { if (e.target === EXHIBITION_MODAL) closeExhibitionModal(); });
+
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
     closeMenu();
@@ -3048,6 +3049,3 @@ document.addEventListener('keydown', e => {
   }
 })();
 </script>
-
-</body>
-</html>
