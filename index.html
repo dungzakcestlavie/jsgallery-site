@@ -490,6 +490,38 @@ main.page-swipe-active{position:relative;overflow:hidden}
         pointer-events: none !important;
       }
     }
+
+
+    /* JSGALLERY MOBILE BUTTON PRIORITY TUNING ONLY — DO NOT TOUCH DESKTOP */
+    @media (max-width: 768px) {
+      .hero-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 18px;
+      }
+
+      .hero-actions [data-page-jump="exhibitions"] {
+        order: 1;
+      }
+
+      .hero-actions [data-page-jump="artists"] {
+        order: 2;
+      }
+
+      .hero-actions [data-page-jump="contact"] {
+        order: 3;
+      }
+
+      .hero-copy {
+        padding-bottom: 18px;
+      }
+
+      .hero-visual {
+        padding-top: 10px;
+      }
+    }
+
 </style>
 </head>
 <body class="mode-kr">
