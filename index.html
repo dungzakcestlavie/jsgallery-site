@@ -362,7 +362,21 @@ main.page-swipe-active{position:relative;overflow:hidden}
     .contact-links a{display:inline-flex;align-items:center;min-height:46px;padding:0 16px;border-radius:999px;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.14);font-size:14px;font-weight:800}
     .lightbox{position:fixed;inset:0;z-index:1400;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.92);padding:20px;overflow:hidden;touch-action:none}
     .lightbox.open{display:flex}
-    .lightbox img{display:block;position:absolute;left:50%;top:50%;max-width:92vw;max-height:92vh;width:auto;height:auto;object-fit:contain;border:none;box-shadow:none;will-change:transform,opacity;touch-action:none;user-select:none;-webkit-user-drag:none;transform:translate(-50%,-50%) translate3d(0,0,0) scale(1);transform-origin:center center;transition:transform .34s cubic-bezier(.22,.78,.2,1), opacity .34s ease}
+    .lightbox img{display:block;position:absolute;left:50%;top:50%;max-width:calc(100vw - 180px);max-height:calc(100vh - 120px);width:auto;height:auto;object-fit:contain;border:none;box-shadow:none;will-change:transform,opacity;touch-action:none;user-select:none;-webkit-user-drag:none;transform:translate(-50%,-50%) translate3d(0,0,0) scale(1);transform-origin:center center;transition:transform .34s cubic-bezier(.22,.78,.2,1), opacity .34s ease}
+    .lightbox-control{position:fixed;z-index:1403;display:flex;align-items:center;justify-content:center;border:1px solid rgba(255,255,255,.16);background:rgba(0,0,0,.28);color:rgba(255,255,255,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 12px 34px rgba(0,0,0,.22);touch-action:manipulation;user-select:none}
+    .lightbox-control:hover,.lightbox-control:focus-visible{background:rgba(255,255,255,.12);color:#fff;outline:none}
+    .lightbox-close{top:24px;right:24px;width:48px;height:48px;border-radius:999px;font-size:34px;line-height:1;font-weight:300}
+    .lightbox-arrow{top:50%;width:54px;height:72px;margin-top:-36px;border-radius:999px;font-size:54px;line-height:1;font-weight:200}
+    .lightbox-prev{left:24px}
+    .lightbox-next{right:24px}
+
+    @media (max-width:820px){
+      .lightbox img{max-width:92vw;max-height:88vh}
+      .lightbox-close{top:14px;right:14px;width:44px;height:44px;font-size:30px}
+      .lightbox-arrow{width:42px;height:58px;margin-top:-29px;font-size:42px;background:rgba(0,0,0,.18)}
+      .lightbox-prev{left:10px}
+      .lightbox-next{right:10px}
+    }
     .lightbox.swiping img{pointer-events:none}
     .lightbox.zoomed img{cursor:grab}
     .lightbox.zoomed img:active{cursor:grabbing}
@@ -646,6 +660,9 @@ they emerge through relationships within the exhibition.</div>
 </main>
 
 <div class="lightbox" id="lightbox" aria-hidden="true">
+  <button type="button" class="lightbox-control lightbox-close" id="lightboxClose" aria-label="Close fullscreen">×</button>
+  <button type="button" class="lightbox-control lightbox-arrow lightbox-prev" id="lightboxPrev" aria-label="Previous artwork">‹</button>
+  <button type="button" class="lightbox-control lightbox-arrow lightbox-next" id="lightboxNext" aria-label="Next artwork">›</button>
   <img id="lightboxImage" src="" alt="" />
   <div class="lightbox-caption" id="lightboxCaption" hidden>
     <div class="lightbox-caption-title" id="lightboxCaptionTitle"></div>
@@ -1763,6 +1780,9 @@ const LIGHTBOX_IMAGE = document.getElementById('lightboxImage');
 const LIGHTBOX_CAPTION = document.getElementById('lightboxCaption');
 const LIGHTBOX_CAPTION_TITLE = document.getElementById('lightboxCaptionTitle');
 const LIGHTBOX_CAPTION_META = document.getElementById('lightboxCaptionMeta');
+const LIGHTBOX_CLOSE = document.getElementById('lightboxClose');
+const LIGHTBOX_PREV = document.getElementById('lightboxPrev');
+const LIGHTBOX_NEXT = document.getElementById('lightboxNext');
 const EXHIBITIONS_CARDS = document.getElementById('exhibitionsCards');
 const EXHIBITION_MODAL = document.getElementById('exhibitionModal');
 const EXHIBITION_MODAL_CONTENT = document.getElementById('exhibitionModalContent');
@@ -3104,6 +3124,21 @@ MENU_BACKDROP.addEventListener('click', closeMenu);
 BRAND_HOME.addEventListener('click', e => { e.preventDefault(); page('home'); });
 
 
+LIGHTBOX_CLOSE?.addEventListener('click', e => {
+  e.stopPropagation();
+  closeLightbox();
+});
+
+LIGHTBOX_PREV?.addEventListener('click', e => {
+  e.stopPropagation();
+  prevLightbox();
+});
+
+LIGHTBOX_NEXT?.addEventListener('click', e => {
+  e.stopPropagation();
+  nextLightbox();
+});
+
 LIGHTBOX.addEventListener('click', e => {
   if (!LIGHTBOX.classList.contains('open')) return;
   if (e.target === LIGHTBOX) closeLightbox();
@@ -3124,6 +3159,7 @@ LIGHTBOX.addEventListener('wheel', e => {
 }, { passive: false });
 
 LIGHTBOX.addEventListener('pointerdown', e => {
+  if (e.target.closest?.('.lightbox-control')) return;
   if (!LIGHTBOX.classList.contains('open') || lightboxAnimating) return;
   if (e.pointerType === 'touch') return;
 
@@ -3212,6 +3248,7 @@ LIGHTBOX.addEventListener('pointerup', endLightboxPointer);
 LIGHTBOX.addEventListener('pointercancel', endLightboxPointer);
 
 LIGHTBOX.addEventListener('touchstart', e => {
+  if (e.target.closest?.('.lightbox-control')) return;
   if (!LIGHTBOX.classList.contains('open') || lightboxAnimating) return;
   if (!e.touches || !e.touches.length) return;
 
