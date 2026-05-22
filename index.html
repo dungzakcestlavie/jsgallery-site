@@ -2600,6 +2600,7 @@ function renderExhibitions() {
         <div class="exhibition-type">${escapeHtml(exhibitionType(item, m))}</div>
         <h3 class="exhibition-title">${escapeHtml(exhibitionTitle(item, m))}</h3>
         <div class="work-meta">${escapeHtml(exhibitionDate(item, m))}</div>
+        <p class="exhibition-intro">${escapeHtml(exhibitionIntro(item, m))}</p>
       </div>
     </article>
   `).join('');
