@@ -446,7 +446,51 @@ main.page-swipe-active{position:relative;overflow:hidden}
     .view-all-sub{font-size:11px;font-weight:500;letter-spacing:.02em;opacity:.55}
     .artist-note-full[hidden]{display:none !important}
     @media (max-width:820px){.artist-profile-layout{grid-template-columns:1fr}}
-  </style>
+  
+
+    /* JSGALLERY MOBILE LIGHTBOX CONTROL + FOCUS BACKGROUND FIX ONLY */
+    @media (max-width: 768px) {
+      .lightbox,
+      .viewer,
+      .modal,
+      .lightbox-overlay,
+      .viewer-overlay,
+      .modal-overlay {
+        background: rgba(0, 0, 0, 0.96) !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+      }
+
+      .lightbox-close,
+      .viewer-close,
+      .modal-close,
+      .close-btn {
+        width: 42px !important;
+        height: 42px !important;
+        font-size: 28px !important;
+        line-height: 42px !important;
+        top: max(12px, env(safe-area-inset-top)) !important;
+        right: max(12px, env(safe-area-inset-right)) !important;
+        border-radius: 50% !important;
+        z-index: 99999 !important;
+      }
+
+      .lightbox-prev,
+      .lightbox-next,
+      .viewer-prev,
+      .viewer-next,
+      .modal-prev,
+      .modal-next,
+      .arrow-prev,
+      .arrow-next,
+      .nav-arrow,
+      .prev-btn,
+      .next-btn {
+        display: none !important;
+        pointer-events: none !important;
+      }
+    }
+</style>
 </head>
 <body class="mode-kr">
 <header>
