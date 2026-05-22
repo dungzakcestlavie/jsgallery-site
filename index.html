@@ -1882,6 +1882,10 @@ function workSize(work, lang) {
   return lang === 'en' ? (work.size_en || work.size_kr || '') : (work.size_kr || work.size_en || '');
 }
 
+function workYear(work, lang) {
+  return lang === 'en' ? (work.year_en || work.year || work.year_kr || '') : (work.year_kr || work.year || work.year_en || '');
+}
+
 function availabilityText(work, lang) {
   if ((work.status || '').toLowerCase() === 'available') {
     return lang === 'en' ? 'Available for collection' : '소장 가능';
@@ -2315,7 +2319,7 @@ function renderArtistDetail() {
         <div class="work-title">${escapeHtml(workTitle(work, lang))}</div>
         <div class="work-line">${escapeHtml(workMaterial(work, lang))}</div>
         <div class="work-line">${escapeHtml(workSize(work, lang))}</div>
-        <div class="work-line">${escapeHtml(work.year || '')}</div>
+        <div class="work-line">${escapeHtml(workYear(work, lang))}</div>
       </div>
     </article>
   `).join('');
@@ -2327,12 +2331,12 @@ function renderArtistDetail() {
     title_en: work.title_en || '',
     meta_kr: `${workMaterial(work, 'ko')}
 ${workSize(work, 'ko')}
-${work.year || ''}${work.price ? `
+${workYear(work, 'ko')}${work.price ? `
 ${work.price}` : ''}${availabilityText(work, 'ko') ? `
 ${availabilityText(work, 'ko')}` : ''}`,
     meta_en: `${workMaterial(work, 'en')}
 ${workSize(work, 'en')}
-${work.year || ''}${work.price ? `
+${workYear(work, 'en')}${work.price ? `
 ${work.price}` : ''}${availabilityText(work, 'en') ? `
 ${availabilityText(work, 'en')}` : ''}`,
     caption_kr: work.caption_kr || '',
@@ -2362,7 +2366,7 @@ function renderShop() {
         <div class="work-title">${escapeHtml(workTitle(work, lang))}</div>
         <div class="work-meta">${escapeHtml(`${workMaterial(work, lang)}
 ${workSize(work, lang)}
-${work.year || ''}
+${workYear(work, lang)}
 ${work.price || ''}`)}</div>
         <div class="shop-status">${escapeHtml(availabilityText(work, lang))}</div>
       </div>
@@ -2375,12 +2379,12 @@ ${work.price || ''}`)}</div>
     title_en: work.title_en || '',
     meta_kr: `${work.material_kr || ''}
 ${work.size_kr || ''}
-${work.year || ''}
+${workYear(work, 'ko')}
 ${work.price || ''}
 ${availabilityText(work, 'ko')}`,
     meta_en: `${work.material_en || ''}
 ${work.size_en || ''}
-${work.year || ''}
+${workYear(work, 'en')}
 ${work.price || ''}
 ${availabilityText(work, 'en')}`
   }));
@@ -2480,6 +2484,9 @@ function exhibitionIsGroup(item) {
 }
 
 function normalizeExhibitionWork(work) {
+  const yearKr = work.year_kr || work.year || work.year_en || '';
+  const yearEn = work.year_en || work.year || work.year_kr || '';
+
   return {
     standard: resolveAssetUrl(work.image || work.standard || ''),
     zoom: resolveAssetUrl(work.zoom || work.image || work.standard || ''),
@@ -2489,7 +2496,9 @@ function normalizeExhibitionWork(work) {
     material_en: work.material_en || work.meta_en || '',
     size_kr: work.size_kr || '',
     size_en: work.size_en || '',
-    year: work.year || '',
+    year: work.year || yearKr || yearEn,
+    year_kr: yearKr,
+    year_en: yearEn,
     meta_kr: work.meta_kr || '',
     meta_en: work.meta_en || ''
   };
@@ -2500,7 +2509,8 @@ function renderGenericExhibitionWorks(works, lang) {
     const normalized = normalizeExhibitionWork(work);
     const material = lang === 'en' ? normalized.material_en : normalized.material_kr;
     const size = lang === 'en' ? normalized.size_en : normalized.size_kr;
-    const metaLines = [material, size, normalized.year].filter(Boolean).join('\n');
+    const year = lang === 'en' ? normalized.year_en : normalized.year_kr;
+    const metaLines = [material, size, year].filter(Boolean).join('\n');
     return `
       <article class="solo-work-card">
         <div class="solo-work-thumb" data-exhibition-work-index="${idx}">
