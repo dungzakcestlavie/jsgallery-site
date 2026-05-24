@@ -523,15 +523,25 @@ main.page-swipe-active{position:relative;overflow:hidden}
     }
 
 
-
-    /* JSGALLERY DESKTOP LIGHTBOX BACKGROUND ONLY FIX — DO NOT TOUCH ANYTHING ELSE */
+    /* JSGALLERY DESKTOP LIGHTBOX PURE BLACK BACKGROUND ONLY — DO NOT TOUCH ANYTHING ELSE */
     @media (min-width: 769px) {
+      body.lightbox-open::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: 1399;
+        background: #000 !important;
+        opacity: 1 !important;
+        pointer-events: none;
+      }
+
       .lightbox {
-        background: rgba(0, 0, 0, 0.94) !important;
-        backdrop-filter: blur(2px);
-        -webkit-backdrop-filter: blur(2px);
+        background: #000 !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
       }
     }
+
 </style>
 </head>
 <body class="mode-kr">
