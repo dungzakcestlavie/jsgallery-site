@@ -3377,7 +3377,18 @@ LIGHTBOX_NEXT?.addEventListener('click', e => {
 
 LIGHTBOX.addEventListener('click', e => {
   if (!LIGHTBOX.classList.contains('open')) return;
-  if (e.target === LIGHTBOX) closeLightbox();
+  if (e.target !== LIGHTBOX) return;
+
+  /* JSGALLERY DESKTOP LIGHTBOX CLICK CLOSE FIX ONLY
+     Desktop/laptop: background click does not close the Lightbox.
+     Mobile: existing background-click close behavior is preserved. */
+  if (window.matchMedia && window.matchMedia('(min-width: 769px)').matches) {
+    e.preventDefault();
+    e.stopPropagation();
+    return;
+  }
+
+  closeLightbox();
 });
 
 LIGHTBOX_IMAGE.addEventListener('load', () => {
