@@ -523,22 +523,21 @@ main.page-swipe-active{position:relative;overflow:hidden}
     }
 
 
-    /* JSGALLERY DESKTOP LIGHTBOX PURE BLACK BACKGROUND ONLY — DO NOT TOUCH ANYTHING ELSE */
+    /* JSGALLERY DESKTOP LIGHTBOX PURE BLACK BACKGROUND ONLY */
     @media (min-width: 769px) {
-      body.lightbox-open::before {
-        content: "";
-        position: fixed;
-        inset: 0;
-        z-index: 1399;
-        background: #000 !important;
-        opacity: 1 !important;
-        pointer-events: none;
+      body.lightbox-open::before{
+        content:"";
+        position:fixed;
+        inset:0;
+        z-index:1399;
+        background:#000 !important;
+        opacity:1 !important;
+        pointer-events:none;
       }
-
-      .lightbox {
-        background: #000 !important;
-        backdrop-filter: none !important;
-        -webkit-backdrop-filter: none !important;
+      .lightbox{
+        background:#000 !important;
+        backdrop-filter:none !important;
+        -webkit-backdrop-filter:none !important;
       }
     }
 
@@ -3149,7 +3148,6 @@ function resetLightboxImagePosition() {
 function animateLightboxSlide(direction) {
   if (lightboxAnimating || !currentLightboxItems.length) return;
   if (lightboxZoom.scale > 1.01) return;
-  lightboxAnimating = true;
 
   const width = Math.max(LIGHTBOX.clientWidth || 0, window.innerWidth || 0, 320);
   const currentIndex = currentLightboxIndex;
@@ -3159,39 +3157,79 @@ function animateLightboxSlide(direction) {
   const outX = direction === 'next' ? -width * 0.24 : width * 0.24;
   const inX = direction === 'next' ? width * 0.24 : -width * 0.24;
 
+  const nextItem = currentLightboxItems[nextIndex];
+  const nextSrc = resolveAssetUrl(nextItem?.zoom || nextItem?.standard || nextItem?.image || '');
+  if (!nextSrc) return;
+
+  lightboxAnimating = true;
   resetLightboxZoom(false);
   LIGHTBOX.classList.add('swiping');
-  LIGHTBOX_IMAGE.style.transition = 'transform .28s cubic-bezier(.22,.78,.2,1), opacity .28s ease';
+  LIGHTBOX_IMAGE.style.transition = 'transform .24s cubic-bezier(.22,.78,.2,1), opacity .24s ease';
   LIGHTBOX_IMAGE.style.transform = lightboxTransform(outX, 0, 1);
   LIGHTBOX_IMAGE.style.opacity = '0';
 
-  const handleOut = (event) => {
-    if (event.propertyName !== 'transform') return;
+  let outDone = false;
+  let inDone = false;
+  let loadFallbackTimer = null;
+  let inFallbackTimer = null;
+
+  const finishIn = () => {
+    if (inDone) return;
+    inDone = true;
+    if (inFallbackTimer) clearTimeout(inFallbackTimer);
+    LIGHTBOX_IMAGE.removeEventListener('transitionend', handleIn);
+    lightboxAnimating = false;
+    resetLightboxImagePosition();
+  };
+
+  const handleIn = (evt) => {
+    if (evt.propertyName && evt.propertyName !== 'transform') return;
+    finishIn();
+  };
+
+  const revealNextImage = () => {
+    if (loadFallbackTimer) clearTimeout(loadFallbackTimer);
+    LIGHTBOX_IMAGE.removeEventListener('load', revealNextImage);
+    LIGHTBOX_IMAGE.removeEventListener('error', revealNextImage);
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        LIGHTBOX_IMAGE.style.transition = 'transform .32s cubic-bezier(.22,.61,.36,1), opacity .32s ease';
+        LIGHTBOX_IMAGE.style.transform = lightboxTransform(0, 0, 1);
+        LIGHTBOX_IMAGE.style.opacity = '1';
+        LIGHTBOX_IMAGE.addEventListener('transitionend', handleIn);
+        inFallbackTimer = setTimeout(finishIn, 460);
+      });
+    });
+  };
+
+  const finishOut = () => {
+    if (outDone) return;
+    outDone = true;
     LIGHTBOX_IMAGE.removeEventListener('transitionend', handleOut);
+
     currentLightboxIndex = nextIndex;
     updateLightbox();
     LIGHTBOX_IMAGE.style.transition = 'none';
     LIGHTBOX_IMAGE.style.transform = lightboxTransform(inX, 0, 1);
     LIGHTBOX_IMAGE.style.opacity = '0';
 
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        LIGHTBOX_IMAGE.style.transition = 'transform .38s cubic-bezier(.22,.61,.36,1), opacity .38s ease';
-        LIGHTBOX_IMAGE.style.transform = lightboxTransform(0, 0, 1);
-        LIGHTBOX_IMAGE.style.opacity = '1';
-      });
-    });
+    if (LIGHTBOX_IMAGE.complete && LIGHTBOX_IMAGE.naturalWidth > 0) {
+      revealNextImage();
+    } else {
+      LIGHTBOX_IMAGE.addEventListener('load', revealNextImage, { once: true });
+      LIGHTBOX_IMAGE.addEventListener('error', revealNextImage, { once: true });
+      loadFallbackTimer = setTimeout(revealNextImage, 520);
+    }
+  };
 
-    const handleIn = (evt) => {
-      if (evt.propertyName !== 'transform') return;
-      LIGHTBOX_IMAGE.removeEventListener('transitionend', handleIn);
-      lightboxAnimating = false;
-      resetLightboxImagePosition();
-    };
-    LIGHTBOX_IMAGE.addEventListener('transitionend', handleIn);
+  const handleOut = (event) => {
+    if (event.propertyName && event.propertyName !== 'transform') return;
+    finishOut();
   };
 
   LIGHTBOX_IMAGE.addEventListener('transitionend', handleOut);
+  setTimeout(finishOut, 340);
 }
 
 function closeLightbox() {
@@ -3379,10 +3417,9 @@ LIGHTBOX.addEventListener('click', e => {
   if (!LIGHTBOX.classList.contains('open')) return;
   if (e.target !== LIGHTBOX) return;
 
-  /* JSGALLERY DESKTOP LIGHTBOX CLICK CLOSE FIX ONLY
-     Desktop/laptop: background click does not close the Lightbox.
-     Mobile: existing background-click close behavior is preserved. */
-  if (window.matchMedia && window.matchMedia('(min-width: 769px)').matches) {
+  // Desktop / notebook: background click must not close fullscreen.
+  // Mobile keeps the previous behavior.
+  if (window.matchMedia('(min-width: 769px)').matches) {
     e.preventDefault();
     e.stopPropagation();
     return;
