@@ -492,37 +492,6 @@ main.page-swipe-active{position:relative;overflow:hidden}
     }
 
 
-    /* JSGALLERY MOBILE BUTTON PRIORITY TUNING ONLY — DO NOT TOUCH DESKTOP */
-    @media (max-width: 768px) {
-      .hero-actions {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        margin-top: 18px;
-      }
-
-      .hero-actions [data-page-jump="exhibitions"] {
-        order: 1;
-      }
-
-      .hero-actions [data-page-jump="artists"] {
-        order: 2;
-      }
-
-      .hero-actions [data-page-jump="contact"] {
-        order: 3;
-      }
-
-      .hero-copy {
-        padding-bottom: 18px;
-      }
-
-      .hero-visual {
-        padding-top: 10px;
-      }
-    }
-
-
     /* JSGALLERY DESKTOP LIGHTBOX PURE BLACK BACKGROUND ONLY */
     @media (min-width: 769px) {
       body.lightbox-open::before{
@@ -542,108 +511,12 @@ main.page-swipe-active{position:relative;overflow:hidden}
     }
 
 
-    /* JSGALLERY VIEWER CONTROLS SUBTLE TUNING + LAST VIEWED RETURN ONLY */
-    .viewer-close,
-    .lightbox-close {
-      opacity: 0.45 !important;
-      transform: scale(0.88) !important;
-      background: rgba(0,0,0,0.28) !important;
-      border-color: rgba(255,255,255,0.18) !important;
-      color: rgba(255,255,255,0.82) !important;
-    }
-
-    .viewer-close:hover,
-    .lightbox-close:hover,
-    .viewer-close:focus-visible,
-    .lightbox-close:focus-visible {
-      opacity: 0.7 !important;
-    }
-
-    .viewer-arrow,
-    .lightbox-arrow,
-    .viewer-prev,
-    .viewer-next,
-    .lightbox-prev,
-    .lightbox-next {
-      opacity: 0.38 !important;
-      transform: scale(0.88) !important;
-      background: rgba(0,0,0,0.32) !important;
-      border-color: rgba(255,255,255,0.12) !important;
-      color: rgba(255,255,255,0.72) !important;
-    }
-
-    .viewer-arrow:hover,
-    .lightbox-arrow:hover,
-    .viewer-prev:hover,
-    .viewer-next:hover,
-    .lightbox-prev:hover,
-    .lightbox-next:hover,
-    .viewer-arrow:focus-visible,
-    .lightbox-arrow:focus-visible,
-    .viewer-prev:focus-visible,
-    .viewer-next:focus-visible,
-    .lightbox-prev:focus-visible,
-    .lightbox-next:focus-visible {
-      opacity: 0.62 !important;
-    }
-
-    @media (max-width: 767px) and (orientation: portrait) {
-      .viewer-close,
-      .lightbox-close {
-        opacity: 0.36 !important;
-        transform: scale(0.82) !important;
-      }
-
-      .viewer-arrow,
-      .lightbox-arrow,
-      .viewer-prev,
-      .viewer-next,
-      .lightbox-prev,
-      .lightbox-next {
-        display: flex !important;
-        pointer-events: auto !important;
-        opacity: 0.28 !important;
-        transform: scale(0.82) !important;
-      }
-    }
-
-    @media (max-width: 932px) and (orientation: landscape) {
-      .viewer-close,
-      .lightbox-close {
-        opacity: 0.34 !important;
-        transform: scale(0.78) !important;
-      }
-
-      .viewer-arrow,
-      .lightbox-arrow,
-      .viewer-prev,
-      .viewer-next,
-      .lightbox-prev,
-      .lightbox-next {
-        display: flex !important;
-        pointer-events: auto !important;
-        opacity: 0.25 !important;
-        transform: scale(0.78) !important;
-      }
-    }
-
-    /* KJSGALLERY VIEWER UI MICRO TUNING ONLY — MOBILE ARROWS REMOVE + DESKTOP X REDUCE */
-    @media (pointer: coarse) and (max-width: 767px) {
-      .viewer-prev,
-      .viewer-next,
-      .lightbox-prev,
-      .lightbox-next {
-        display: none !important;
-        pointer-events: none !important;
-        opacity: 0 !important;
-      }
-    }
-
+    /* KJSGALLERY DESKTOP VIEWER X BUTTON ONLY — DO NOT TOUCH MOBILE / HERO / LAYOUT */
     @media (hover: hover) and (pointer: fine) {
       .viewer-close,
       .lightbox-close {
-        transform: scale(0.88) !important;
-        opacity: 0.45 !important;
+        transform: scale(0.82) !important;
+        opacity: 0.42 !important;
         backdrop-filter: none !important;
         -webkit-backdrop-filter: none !important;
       }
@@ -652,7 +525,7 @@ main.page-swipe-active{position:relative;overflow:hidden}
       .lightbox-close:hover,
       .viewer-close:focus-visible,
       .lightbox-close:focus-visible {
-        opacity: 0.65 !important;
+        opacity: 0.62 !important;
       }
     }
 
