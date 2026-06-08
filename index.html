@@ -541,6 +541,92 @@ main.page-swipe-active{position:relative;overflow:hidden}
       }
     }
 
+
+    /* JSGALLERY VIEWER CONTROLS SUBTLE TUNING + LAST VIEWED RETURN ONLY */
+    .viewer-close,
+    .lightbox-close {
+      opacity: 0.45 !important;
+      transform: scale(0.88) !important;
+      background: rgba(0,0,0,0.28) !important;
+      border-color: rgba(255,255,255,0.18) !important;
+      color: rgba(255,255,255,0.82) !important;
+    }
+
+    .viewer-close:hover,
+    .lightbox-close:hover,
+    .viewer-close:focus-visible,
+    .lightbox-close:focus-visible {
+      opacity: 0.7 !important;
+    }
+
+    .viewer-arrow,
+    .lightbox-arrow,
+    .viewer-prev,
+    .viewer-next,
+    .lightbox-prev,
+    .lightbox-next {
+      opacity: 0.38 !important;
+      transform: scale(0.88) !important;
+      background: rgba(0,0,0,0.32) !important;
+      border-color: rgba(255,255,255,0.12) !important;
+      color: rgba(255,255,255,0.72) !important;
+    }
+
+    .viewer-arrow:hover,
+    .lightbox-arrow:hover,
+    .viewer-prev:hover,
+    .viewer-next:hover,
+    .lightbox-prev:hover,
+    .lightbox-next:hover,
+    .viewer-arrow:focus-visible,
+    .lightbox-arrow:focus-visible,
+    .viewer-prev:focus-visible,
+    .viewer-next:focus-visible,
+    .lightbox-prev:focus-visible,
+    .lightbox-next:focus-visible {
+      opacity: 0.62 !important;
+    }
+
+    @media (max-width: 767px) and (orientation: portrait) {
+      .viewer-close,
+      .lightbox-close {
+        opacity: 0.36 !important;
+        transform: scale(0.82) !important;
+      }
+
+      .viewer-arrow,
+      .lightbox-arrow,
+      .viewer-prev,
+      .viewer-next,
+      .lightbox-prev,
+      .lightbox-next {
+        display: flex !important;
+        pointer-events: auto !important;
+        opacity: 0.28 !important;
+        transform: scale(0.82) !important;
+      }
+    }
+
+    @media (max-width: 932px) and (orientation: landscape) {
+      .viewer-close,
+      .lightbox-close {
+        opacity: 0.34 !important;
+        transform: scale(0.78) !important;
+      }
+
+      .viewer-arrow,
+      .lightbox-arrow,
+      .viewer-prev,
+      .viewer-next,
+      .lightbox-prev,
+      .lightbox-next {
+        display: flex !important;
+        pointer-events: auto !important;
+        opacity: 0.25 !important;
+        transform: scale(0.78) !important;
+      }
+    }
+
 </style>
 </head>
 <body class="mode-kr">
@@ -2026,6 +2112,8 @@ let currentArtistIndex = 0;
 let artistsData = [];
 let worksData = [];
 let currentLightboxItems = [];
+let currentLightboxSourceElements = [];
+let lastViewedWorkElement = null;
 
 const REMOTE_JSON = {
   artists: 'https://raw.githubusercontent.com/dungzakcestlavie/jsgallery-site/main/data/artists.json',
@@ -2487,16 +2575,41 @@ function renderArtistNote(artist) {
 }
 
 
+function setLightboxSourceElements(elements) {
+  currentLightboxSourceElements = Array.isArray(elements) ? elements.filter(Boolean) : [];
+}
+
+function updateLastViewedWorkElement() {
+  const element = currentLightboxSourceElements[currentLightboxIndex];
+  if (element && typeof element.scrollIntoView === 'function') {
+    lastViewedWorkElement = element;
+  }
+}
+
+function scrollToLastViewedWork() {
+  const element = lastViewedWorkElement;
+  if (!element || typeof element.scrollIntoView !== 'function') return;
+
+  requestAnimationFrame(() => {
+    element.scrollIntoView({
+      behavior: 'smooth',
+      block: 'center'
+    });
+  });
+}
+
 function nextLightboxItem() {
   if (!currentLightboxItems.length) return;
   currentLightboxIndex = (currentLightboxIndex + 1) % currentLightboxItems.length;
   updateLightbox();
+  updateLastViewedWorkElement();
 }
 
 function prevLightboxItem() {
   if (!currentLightboxItems.length) return;
   currentLightboxIndex = (currentLightboxIndex - 1 + currentLightboxItems.length) % currentLightboxItems.length;
   updateLightbox();
+  updateLastViewedWorkElement();
 }
 
 function syncContact() {
@@ -2599,9 +2712,10 @@ ${availabilityText(work, 'en')}` : ''}`,
 
   currentLightboxItems = lightboxItems;
 
-  WORKS_GRID.querySelectorAll('.work-thumb').forEach(el => {
+  const workThumbElements = Array.from(WORKS_GRID.querySelectorAll('.work-thumb'));
+  workThumbElements.forEach(el => {
     el.addEventListener('click', () => {
-      openLightbox(Number(el.dataset.index), lightboxItems);
+      openLightbox(Number(el.dataset.index), lightboxItems, workThumbElements);
     });
   });
 }
@@ -2643,8 +2757,9 @@ ${work.price || ''}
 ${availabilityText(work, 'en')}`
   }));
 
-  SHOP_GRID.querySelectorAll('.shop-thumb').forEach(el => {
-    el.addEventListener('click', () => openLightbox(Number(el.dataset.index), lightboxItems));
+  const shopThumbElements = Array.from(SHOP_GRID.querySelectorAll('.shop-thumb'));
+  shopThumbElements.forEach(el => {
+    el.addEventListener('click', () => openLightbox(Number(el.dataset.index), lightboxItems, shopThumbElements));
   });
 }
 
@@ -2681,8 +2796,9 @@ function renderSoloWorks() {
     </article>
   `).join('');
 
-  grid.querySelectorAll('[data-solo-index]').forEach(el => {
-    el.addEventListener('click', () => openSoloLightbox(Number(el.dataset.soloIndex), works));
+  const soloWorkThumbElements = Array.from(grid.querySelectorAll('[data-solo-index]'));
+  soloWorkThumbElements.forEach(el => {
+    el.addEventListener('click', () => openSoloLightbox(Number(el.dataset.soloIndex), works, soloWorkThumbElements));
   });
 }
 
@@ -2884,11 +3000,12 @@ function openExhibitionModal(exhibitionId) {
       <div id="genericExhibitionWorksGrid" class="solo-works-grid">${renderGenericExhibitionWorks(exhibition.works || [], m)}</div>
     `;
 
-    EXHIBITION_MODAL.querySelectorAll('[data-exhibition-work-index]').forEach(card => {
+    const exhibitionWorkElements = Array.from(EXHIBITION_MODAL.querySelectorAll('[data-exhibition-work-index]'));
+    exhibitionWorkElements.forEach(card => {
       card.addEventListener('click', () => {
         const workIndex = Number(card.dataset.exhibitionWorkIndex);
         const lightboxItems = (exhibition.works || []).map(normalizeExhibitionWork);
-        openLightbox(workIndex, lightboxItems);
+        openLightbox(workIndex, lightboxItems, exhibitionWorkElements);
       });
     });
   } else {
@@ -2943,7 +3060,8 @@ function openExhibitionModal(exhibitionId) {
     });
   });
 
-  EXHIBITION_MODAL.querySelectorAll('[data-group-artist-index][data-group-work-index]').forEach(card => {
+  const groupWorkCardElements = Array.from(EXHIBITION_MODAL.querySelectorAll('[data-group-artist-index][data-group-work-index]'));
+  groupWorkCardElements.forEach(card => {
     card.addEventListener('click', () => {
       const artistIndex = Number(card.dataset.groupArtistIndex);
       const workIndex = Number(card.dataset.groupWorkIndex);
@@ -2957,7 +3075,7 @@ function openExhibitionModal(exhibitionId) {
         meta_kr: work.meta_kr || '',
         meta_en: work.meta_en || ''
       }));
-      openLightbox(workIndex, lightboxItems);
+      openLightbox(workIndex, lightboxItems, groupWorkCardElements.filter(item => Number(item.dataset.groupArtistIndex) === artistIndex));
     });
   });
 }
@@ -2968,9 +3086,11 @@ function closeExhibitionModal() {
   document.body.classList.remove('lightbox-open');
 }
 
-function openLightbox(index, items) {
+function openLightbox(index, items, sourceElements = []) {
   currentLightboxItems = items;
   currentLightboxIndex = index;
+  setLightboxSourceElements(sourceElements);
+  updateLastViewedWorkElement();
   lightboxZoom.lastTapAt = 0;
   lightboxTouchActive = false;
   lightboxTouchMoved = false;
@@ -2987,9 +3107,11 @@ function openLightbox(index, items) {
   document.body.classList.add('lightbox-open');
 }
 
-function openSoloLightbox(index, works) {
+function openSoloLightbox(index, works, sourceElements = []) {
   currentLightboxItems = works;
   currentLightboxIndex = index;
+  setLightboxSourceElements(sourceElements);
+  updateLastViewedWorkElement();
   lightboxZoom.lastTapAt = 0;
   lightboxTouchActive = false;
   lightboxTouchMoved = false;
@@ -3210,6 +3332,7 @@ function animateLightboxSlide(direction) {
 
     currentLightboxIndex = nextIndex;
     updateLightbox();
+    updateLastViewedWorkElement();
     LIGHTBOX_IMAGE.style.transition = 'none';
     LIGHTBOX_IMAGE.style.transform = lightboxTransform(inX, 0, 1);
     LIGHTBOX_IMAGE.style.opacity = '0';
@@ -3254,6 +3377,7 @@ function closeLightbox() {
   }
   document.body.classList.remove('lightbox-open');
   if (!EXHIBITION_MODAL.classList.contains('open')) document.body.classList.remove('modal-open');
+  scrollToLastViewedWork();
 }
 
 function prevLightbox() {
