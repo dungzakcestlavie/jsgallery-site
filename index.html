@@ -627,6 +627,35 @@ main.page-swipe-active{position:relative;overflow:hidden}
       }
     }
 
+    /* KJSGALLERY VIEWER UI MICRO TUNING ONLY — MOBILE ARROWS REMOVE + DESKTOP X REDUCE */
+    @media (pointer: coarse) and (max-width: 767px) {
+      .viewer-prev,
+      .viewer-next,
+      .lightbox-prev,
+      .lightbox-next {
+        display: none !important;
+        pointer-events: none !important;
+        opacity: 0 !important;
+      }
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      .viewer-close,
+      .lightbox-close {
+        transform: scale(0.88) !important;
+        opacity: 0.45 !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+      }
+
+      .viewer-close:hover,
+      .lightbox-close:hover,
+      .viewer-close:focus-visible,
+      .lightbox-close:focus-visible {
+        opacity: 0.65 !important;
+      }
+    }
+
 </style>
 </head>
 <body class="mode-kr">
