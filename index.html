@@ -529,7 +529,62 @@ main.page-swipe-active{position:relative;overflow:hidden}
       }
     }
 
+
+    /* JSGALLERY TABLET ONLY REMOVE VIEWER ARROWS + SUBTLE CLOSE BUTTON TUNING */
+    .is-tablet .viewer-prev,
+    .is-tablet .viewer-next,
+    .is-tablet .lightbox-prev,
+    .is-tablet .lightbox-next {
+      display: none !important;
+      pointer-events: none !important;
+      opacity: 0 !important;
+    }
+
+    .is-tablet .viewer-close,
+    .is-tablet .lightbox-close {
+      width: 40px !important;
+      height: 40px !important;
+      top: 18px !important;
+      right: 18px !important;
+      font-size: 22px !important;
+      line-height: 40px !important;
+      background: rgba(0,0,0,.10) !important;
+      border: 1px solid rgba(255,255,255,.10) !important;
+      color: rgba(255,255,255,.45) !important;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      box-shadow: none !important;
+      opacity: .72 !important;
+      transition: opacity .18s ease, transform .18s ease;
+    }
+
+    .is-tablet .viewer-close:hover,
+    .is-tablet .viewer-close:active,
+    .is-tablet .lightbox-close:hover,
+    .is-tablet .lightbox-close:active {
+      opacity: .88 !important;
+      transform: scale(.97);
+    }
+
 </style>
+<script>
+(function(){
+  if (document.documentElement.classList.contains('is-ipad') ||
+      document.documentElement.classList.contains('is-tablet')) {
+    document.documentElement.classList.add('is-tablet');
+    return;
+  }
+
+  const IS_TABLET =
+    navigator.maxTouchPoints > 1 &&
+    Math.min(window.screen.width, window.screen.height) >= 768;
+
+  if (IS_TABLET) {
+    document.documentElement.classList.add('is-tablet');
+  }
+})();
+</script>
+
 </head>
 <body class="mode-kr">
 <header>
