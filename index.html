@@ -566,6 +566,36 @@ main.page-swipe-active{position:relative;overflow:hidden}
       transform: scale(.97);
     }
 
+
+
+    /* JSGALLERY — PHONE ONLY VIEWER CLOSE BUTTON MICRO TUNING */
+    @media (hover:none) and (pointer:coarse) and (max-width:767px){
+
+      .lightbox-close{
+        width:44px !important;
+        height:44px !important;
+        top:14px !important;
+        right:14px !important;
+        font-size:24px !important;
+        line-height:44px !important;
+        opacity:.56 !important;
+        border:1px solid rgba(255,255,255,.16) !important;
+        background:rgba(0,0,0,.10) !important;
+        box-shadow:none !important;
+        backdrop-filter:none !important;
+        -webkit-backdrop-filter:none !important;
+      }
+
+      .lightbox-close:hover{
+        opacity:.56 !important;
+      }
+
+      .lightbox-close:active{
+        opacity:.72 !important;
+      }
+
+    }
+
 </style>
 <script>
 (function(){
