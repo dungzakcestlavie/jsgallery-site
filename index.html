@@ -598,97 +598,15 @@ main.page-swipe-active{position:relative;overflow:hidden}
 
 
 
-    /* JSGALLERY.ART — PHONE LANDSCAPE LAYOUT + FULLSCREEN VIEWER TUNING ONLY */
+
+
+
+
+
+
+
+    /* JSGALLERY.ART — PHONE LANDSCAPE VIEWER RESTORE FIRST */
     @media (hover:none) and (pointer:coarse) and (orientation:landscape) and (max-height:520px) {
-
-      .site-header,
-      .header,
-      .topbar,
-      header {
-        min-height: 86px !important;
-        padding: 12px 18px !important;
-      }
-
-      .header-top {
-        height: 48px !important;
-        min-height: 48px !important;
-      }
-
-      .logo,
-      .brand,
-      .logo-wrap {
-        transform: scale(0.82);
-        transform-origin: left center;
-      }
-
-      .lang-toggle,
-      .language-toggle,
-      .lang-switch {
-        transform: scale(0.84);
-        transform-origin: right center;
-      }
-
-      .nav,
-      .nav-tabs,
-      .menu-tabs,
-      .category-tabs,
-      nav.primary {
-        gap: 10px !important;
-        margin-top: 8px !important;
-        padding: 0 14px 10px !important;
-      }
-
-      .nav button,
-      .nav-tabs button,
-      .menu-tabs button,
-      .category-tabs button,
-      nav.primary button {
-        padding: 10px 20px !important;
-        font-size: 16px !important;
-        border-radius: 999px !important;
-        min-height: 40px !important;
-      }
-
-      .hero,
-      .main-hero,
-      .gallery-hero,
-      .hero-grid {
-        padding-top: 28px !important;
-        margin-top: 0 !important;
-      }
-
-      .hero-title,
-      .main-title,
-      .hero-logo {
-        margin-top: 8px !important;
-      }
-
-      .viewer-stage,
-      .viewer-inner,
-      .lightbox-inner,
-      .lightbox {
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        overflow: hidden !important;
-        box-sizing: border-box !important;
-        padding: 18px 72px 14px !important;
-      }
-
-      .viewer img,
-      .lightbox img,
-      .viewer-image,
-      .lightbox-image,
-      #lightboxImage {
-        max-width: calc(100vw - 104px) !important;
-        max-height: calc(100dvh - 58px) !important;
-        width: auto !important;
-        height: auto !important;
-        object-fit: contain !important;
-        object-position: center center !important;
-        margin: auto !important;
-      }
-
       .viewer-arrow,
       .lightbox-arrow,
       .viewer-prev,
@@ -705,64 +623,11 @@ main.page-swipe-active{position:relative;overflow:hidden}
       .viewer-close,
       .lightbox-close,
       .close-btn {
-        width: 44px !important;
-        height: 44px !important;
-        font-size: 26px !important;
-        line-height: 44px !important;
         opacity: 0.42 !important;
         background: rgba(0,0,0,0.16) !important;
-        border: 1px solid rgba(255,255,255,0.16) !important;
+        border-color: rgba(255,255,255,0.16) !important;
         color: rgba(255,255,255,0.68) !important;
         box-shadow: none !important;
-      }
-
-      .viewer-close:hover,
-      .lightbox-close:hover,
-      .close-btn:hover {
-        opacity: 0.55 !important;
-      }
-    }
-
-
-
-    /* JSGALLERY.ART — FIX PHONE LANDSCAPE BLACK VIEWER ONLY */
-    @media (hover:none) and (pointer:coarse) and (orientation:landscape) and (max-height:520px) {
-
-      .viewer-stage,
-      .viewer-inner,
-      .lightbox-inner {
-        width: 100vw !important;
-        height: 100dvh !important;
-        min-height: 100dvh !important;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-        padding: 14px 64px !important;
-        box-sizing: border-box !important;
-        overflow: hidden !important;
-      }
-
-      .lightbox.open {
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
-      }
-
-      .viewer img,
-      .lightbox img,
-      .viewer-image,
-      .lightbox-image,
-      #lightboxImage {
-        display: block !important;
-        visibility: visible !important;
-        opacity: 1 !important;
-        max-width: calc(100vw - 128px) !important;
-        max-height: calc(100dvh - 44px) !important;
-        width: auto !important;
-        height: auto !important;
-        object-fit: contain !important;
-        object-position: center center !important;
-        margin: auto !important;
       }
     }
 
