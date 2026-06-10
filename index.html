@@ -723,6 +723,49 @@ main.page-swipe-active{position:relative;overflow:hidden}
       }
     }
 
+
+
+    /* JSGALLERY.ART — FIX PHONE LANDSCAPE BLACK VIEWER ONLY */
+    @media (hover:none) and (pointer:coarse) and (orientation:landscape) and (max-height:520px) {
+
+      .viewer-stage,
+      .viewer-inner,
+      .lightbox-inner {
+        width: 100vw !important;
+        height: 100dvh !important;
+        min-height: 100dvh !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 14px 64px !important;
+        box-sizing: border-box !important;
+        overflow: hidden !important;
+      }
+
+      .lightbox.open {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+      }
+
+      .viewer img,
+      .lightbox img,
+      .viewer-image,
+      .lightbox-image,
+      #lightboxImage {
+        display: block !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        max-width: calc(100vw - 128px) !important;
+        max-height: calc(100dvh - 44px) !important;
+        width: auto !important;
+        height: auto !important;
+        object-fit: contain !important;
+        object-position: center center !important;
+        margin: auto !important;
+      }
+    }
+
 </style>
 <script>
 (function(){
