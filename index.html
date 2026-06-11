@@ -631,6 +631,137 @@ main.page-swipe-active{position:relative;overflow:hidden}
       }
     }
 
+
+    /* JSGALLERY.ART — PHONE LANDSCAPE HEADER/HERO MICRO TUNING ONLY */
+    @media (hover:none) and (pointer:coarse) and (orientation:landscape) and (max-height:520px){
+
+      header{
+        padding-top:calc(6px + var(--safe-top)) !important;
+      }
+
+      .header-top{
+        height:60px !important;
+        gap:10px !important;
+      }
+
+      .header-left{
+        gap:10px !important;
+      }
+
+      .menu-btn{
+        width:38px !important;
+        height:38px !important;
+      }
+
+      .menu-btn::before{
+        top:12px !important;
+      }
+
+      .menu-btn span{
+        top:18px !important;
+      }
+
+      .menu-btn::after{
+        top:24px !important;
+      }
+
+      .menu-btn span,
+      .menu-btn::before,
+      .menu-btn::after{
+        left:10px !important;
+        width:18px !important;
+      }
+
+      .brand-mark{
+        transform:translateY(-2px) !important;
+      }
+
+      .brand-mark .bottom{
+        margin-top:3px !important;
+      }
+
+      .lang-switch{
+        padding:2px !important;
+        gap:2px !important;
+      }
+
+      .lang-btn{
+        min-width:38px !important;
+        height:30px !important;
+        padding:0 10px !important;
+      }
+
+      nav.primary{
+        gap:8px !important;
+        padding-bottom:8px !important;
+      }
+
+      nav.primary button{
+        min-height:36px !important;
+        padding:0 14px !important;
+      }
+
+      section.page{
+        padding-top:16px !important;
+      }
+
+      .hero-grid{
+        gap:42px !important;
+      }
+
+      .hero-copy{
+        padding-top:18px !important;
+        padding-bottom:18px !important;
+      }
+
+      .eyebrow{
+        min-height:30px !important;
+        padding:0 12px !important;
+      }
+
+      .hero-logo{
+        margin-top:18px !important;
+      }
+
+      .hero-logo-main{
+        margin-top:2px !important;
+      }
+
+      .hero-logo-sub{
+        margin-top:7px !important;
+      }
+
+      .hero-desc{
+        margin-top:18px !important;
+        line-height:1.66 !important;
+      }
+
+      .hero-actions{
+        gap:9px !important;
+        margin-top:16px !important;
+      }
+
+      .hero-actions .btn{
+        min-height:46px !important;
+        padding:0 18px !important;
+      }
+
+      .hero-visual{
+        padding-top:24px !important;
+        padding-bottom:24px !important;
+      }
+
+      .menu-panel{
+        top:calc(64px + var(--safe-top) + 6px) !important;
+        padding:10px !important;
+      }
+
+      .menu-link{
+        min-height:46px !important;
+        padding:0 14px !important;
+      }
+    }
+
 </style>
 <script>
 (function(){
