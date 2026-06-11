@@ -762,6 +762,229 @@ main.page-swipe-active{position:relative;overflow:hidden}
       }
     }
 
+
+    /* JSGALLERY.ART — PHONE LANDSCAPE SECTION CARD RENDERING NORMALIZATION ONLY */
+    @media (hover:none) and (pointer:coarse) and (orientation:landscape) and (max-height:520px){
+
+      .wrap{
+        width:min(calc(100% - 20px), var(--maxw)) !important;
+      }
+
+      section.page{
+        padding-bottom:34px !important;
+      }
+
+      .section-head{
+        gap:12px !important;
+        margin-bottom:14px !important;
+      }
+
+      .section-title{
+        font-size:clamp(22px,4.2vw,32px) !important;
+        line-height:1.08 !important;
+      }
+
+      .section-note{
+        font-size:13px !important;
+        line-height:1.5 !important;
+      }
+
+      .feature-grid,
+      .contact-grid,
+      .cards-2,
+      .works-grid,
+      .shop-grid,
+      .artists-grid,
+      .solo-works-grid,
+      .accordion-works{
+        grid-template-columns:repeat(2, minmax(0, 1fr)) !important;
+        gap:12px !important;
+        align-items:start !important;
+      }
+
+      .feature,
+      .card,
+      .exhibition-card,
+      .artist-card,
+      .work-card,
+      .shop-card,
+      .solo-work-card,
+      .accordion-work,
+      .artist-note,
+      .artist-note-block,
+      .solo-note-block,
+      .contact-box{
+        width:100% !important;
+        max-width:100% !important;
+        min-height:0 !important;
+        height:auto !important;
+        margin-top:0 !important;
+        margin-bottom:0 !important;
+        transform:none !important;
+        box-shadow:var(--shadow) !important;
+      }
+
+      .feature,
+      .card,
+      .artist-note,
+      .artist-note-block,
+      .solo-note-block,
+      .contact-box{
+        padding:18px !important;
+        border-radius:22px !important;
+      }
+
+      .exhibition-info,
+      .artist-card-copy,
+      .work-caption,
+      .shop-info,
+      .solo-work-caption,
+      .accordion-work-caption{
+        padding:12px 13px 14px !important;
+      }
+
+      .feature-kicker,
+      .artist-note-title,
+      .solo-note-kicker,
+      .exhibition-section-kicker{
+        margin-bottom:8px !important;
+        font-size:11px !important;
+        line-height:1.2 !important;
+      }
+
+      .feature-title,
+      .contact-box h3,
+      .solo-note-title{
+        margin-bottom:9px !important;
+        font-size:clamp(19px,3.4vw,26px) !important;
+        line-height:1.14 !important;
+      }
+
+      .feature-desc,
+      .contact-box p,
+      .solo-note-copy,
+      .artist-detail-line,
+      .artist-note-full,
+      .artist-note-summary,
+      .work-meta,
+      .work-line,
+      .solo-work-meta,
+      .accordion-note{
+        font-size:13px !important;
+        line-height:1.55 !important;
+      }
+
+      .exhibition-title,
+      .artist-card-name,
+      .work-title,
+      .solo-work-title{
+        font-size:15px !important;
+        line-height:1.24 !important;
+        margin-bottom:6px !important;
+      }
+
+      .exhibition-thumb,
+      .artist-card-image,
+      .work-thumb,
+      .shop-thumb,
+      .solo-work-thumb,
+      .accordion-work img,
+      .exhibition-hero,
+      .solo-poster,
+      .artist-profile-image{
+        height:auto !important;
+        max-height:none !important;
+      }
+
+      .exhibition-thumb{
+        aspect-ratio:1.35 / 1 !important;
+      }
+
+      .artist-card-image,
+      .work-thumb,
+      .shop-thumb,
+      .solo-work-thumb{
+        aspect-ratio:1.18 / 1 !important;
+        padding:8px !important;
+      }
+
+      .exhibition-thumb img,
+      .artist-card-image img,
+      .work-thumb img,
+      .shop-thumb img,
+      .solo-work-thumb img,
+      .accordion-work img,
+      .exhibition-hero img,
+      .solo-poster img,
+      .artist-profile-image{
+        width:100% !important;
+        height:auto !important;
+        max-width:100% !important;
+        max-height:100% !important;
+        object-fit:contain !important;
+        object-position:center center !important;
+        display:block !important;
+        padding:8px !important;
+      }
+
+      .artist-detail-shell{
+        gap:14px !important;
+        margin-top:16px !important;
+      }
+
+      .artist-profile-layout{
+        grid-template-columns:minmax(150px,220px) 1fr !important;
+        gap:14px !important;
+      }
+
+      .artist-profile-image-wrap{
+        padding:8px !important;
+        border-radius:18px !important;
+      }
+
+      .artist-note-header{
+        gap:10px !important;
+        margin-bottom:8px !important;
+      }
+
+      .artist-note-summary{
+        padding:11px 13px !important;
+        border-radius:14px !important;
+      }
+
+      .view-all{
+        margin-top:7px !important;
+        font-size:12px !important;
+      }
+
+      .view-all-sub{
+        font-size:10px !important;
+      }
+
+      .contact-links{
+        gap:8px !important;
+      }
+
+      .contact-links a,
+      .bio-btn,
+      .shop-status{
+        min-height:34px !important;
+        padding:0 12px !important;
+        font-size:12px !important;
+      }
+
+      .exhibition-card:hover,
+      .artist-card:hover,
+      .feature:hover,
+      .card:hover,
+      .work-card:hover,
+      .shop-card:hover,
+      .solo-work-card:hover{
+        transform:none !important;
+      }
+    }
+
+
 </style>
 <script>
 (function(){
