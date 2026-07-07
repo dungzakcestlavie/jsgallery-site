@@ -277,28 +277,6 @@ main.page-swipe-active{position:relative;overflow:hidden}
   border-radius:0;
 }
     .hero-visual-image{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
-    .hero-visual-label{
-  position:absolute;
-  left:24px;
-  bottom:22px;
-  z-index:3;
-  display:inline-flex;
-  align-items:center;
-  min-height:auto;
-  padding:6px 10px;
-  border-radius:4px;
-  background:rgba(184,150,62,0.06);
-  border:1px solid rgba(184,150,62,0.6);
-  color:#b8963e;
-  font-family:"Inter","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
-  font-size:11px;
-  font-weight:700;
-  letter-spacing:.12em;
-  text-transform:uppercase;
-  box-shadow:none;
-  backdrop-filter:blur(2px);
-  -webkit-backdrop-filter:blur(2px);
-}
     .section-head{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:22px;flex-wrap:wrap}
     .section-title{margin:0;font-size:clamp(28px,3vw,42px);line-height:1.12;letter-spacing:-.03em;color:var(--cobalt-deep)}
     .section-note{max-width:620px;font-size:15px;color:var(--muted)}
@@ -1079,7 +1057,6 @@ they emerge through relationships within the exhibition.</div>
         <div class="hero-visual" id="heroVisual" role="button" tabindex="0" aria-label="Open current exhibition">
           <div class="hero-visual-frame" aria-hidden="true">
             <img class="hero-visual-image" id="heroImage" src="" alt="Current exhibition preview at KJS GALLERY" loading="eager" />
-            <div class="hero-visual-label"></div>
           </div>
         </div>
       </div>
@@ -3433,16 +3410,12 @@ function renderExhibitions() {
   });
 
   const heroImage = document.getElementById('heroImage');
-  const heroLabel = document.querySelector('.hero-visual-label');
   const featured = cards[0];
   if (heroImage && featured) {
     heroImage.src = exhibitionImage(featured);
     heroImage.alt = m === 'en'
       ? `${exhibitionTitle(featured, m)} exhibition preview at KJS GALLERY`
       : `KJS GALLERY 전시 미리보기 ${exhibitionTitle(featured, m)}`;
-  }
-  if (heroLabel && featured) {
-    heroLabel.textContent = exhibitionType(featured, m);
   }
 }
 
