@@ -342,6 +342,18 @@ main.page-swipe-active{position:relative;overflow:hidden}
     .artist-card-copy{padding:16px 16px 18px}
     .artist-card-name{margin:0 0 8px;font-size:17px;line-height:1.25;color:var(--cobalt-deep);font-weight:700}
     .artist-card-line{margin:0;color:var(--muted);font-size:13.5px;line-height:1.6;white-space:pre-line}
+
+    /* === Artists Directory (added) START — safe to remove this block to fully revert === */
+    .artists-directory-list{display:flex;flex-direction:column;gap:14px;max-width:640px;margin:0 0 8px}
+    .artist-directory-item{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:22px 26px;background:rgba(255,255,255,.94);border:1px solid rgba(31,78,117,.08);border-radius:20px;box-shadow:var(--shadow)}
+    .artist-directory-name{font-size:17px;font-weight:700;line-height:1.35;color:var(--cobalt-deep)}
+    .artist-directory-btn{display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 20px;border-radius:999px;background:linear-gradient(135deg, var(--cobalt), var(--emerald));color:#fff;font-size:14px;font-weight:700;white-space:nowrap;transition:.2s ease;flex:0 0 auto}
+    .artist-directory-btn:hover{transform:translateY(-1px);box-shadow:0 12px 24px rgba(31,78,117,.18)}
+    .artists-back-link{display:inline-flex;align-items:center;gap:6px;margin-bottom:22px;color:var(--cobalt-deep);font-size:14px;font-weight:700}
+    .artists-back-link:hover{opacity:.72}
+    .artists-classic-view[hidden],.artists-directory-view[hidden]{display:none !important}
+    /* === Artists Directory (added) END === */
+
     .artist-detail-name{margin:0;font-size:clamp(26px,2.3vw,34px);line-height:1.12;letter-spacing:-.02em;color:var(--cobalt-deep)}
     .artist-detail-line{margin:8px 0 0;font-size:14px;color:var(--muted);line-height:1.7;max-width:720px}
     .work-card,.shop-card{background:rgba(255,255,255,.92);border:1px solid rgba(31,78,117,.08);border-radius:24px;overflow:hidden;box-shadow:var(--shadow)}
@@ -1126,6 +1138,18 @@ they emerge through the relationships an exhibition creates.</div>
         </div>
       </div>
 
+      <!-- === Artists Directory (added) START — safe to remove this block to fully revert === -->
+      <div class="artists-directory-view" id="artistsDirectoryView">
+        <div class="artist-directory-list" id="artistsDirectoryList"></div>
+      </div>
+      <!-- === Artists Directory (added) END === -->
+
+      <div class="artists-classic-view" id="artistsClassicView" hidden>
+        <button type="button" class="artists-back-link" id="artistsBackToDirectory">
+          <span class="ko">← 작가 목록으로</span>
+          <span class="en">← Back to Artists Directory</span>
+        </button>
+
       <div class="artists-grid" id="artistsGrid"></div>
 
       <div class="artist-detail-shell" id="artistDetailShell">
@@ -1170,6 +1194,9 @@ they emerge through the relationships an exhibition creates.</div>
 
         <div class="works-grid" id="worksGrid"></div>
       </div>
+      <!-- === Artists Directory (added) — closes .artists-classic-view START === -->
+      </div>
+      <!-- === Artists Directory (added) — closes .artists-classic-view END === -->
     </div>
   </section>
 
@@ -3351,6 +3378,56 @@ function renderArtists() {
   });
 }
 
+/* === Artists Directory (added) START — safe to remove this block to fully revert === */
+const ARTISTS_DIRECTORY_LIST = document.getElementById('artistsDirectoryList');
+const ARTISTS_DIRECTORY_VIEW = document.getElementById('artistsDirectoryView');
+const ARTISTS_CLASSIC_VIEW = document.getElementById('artistsClassicView');
+const ARTISTS_BACK_TO_DIRECTORY = document.getElementById('artistsBackToDirectory');
+
+function renderArtistsDirectory() {
+  if (!ARTISTS_DIRECTORY_LIST) return;
+
+  const lang = mode();
+
+  ARTISTS_DIRECTORY_LIST.innerHTML = artistsData.map((artist, idx) => `
+    <div class="artist-directory-item" data-index="${idx}">
+      <div class="artist-directory-name">
+        <span class="ko">${escapeHtml(artist.name_kr)}</span>
+        <span class="en">${escapeHtml(artist.name_en)}</span>
+      </div>
+      <button type="button" class="artist-directory-btn" data-index="${idx}">
+        <span class="ko">작가 보기 →</span>
+        <span class="en">View Artist →</span>
+      </button>
+    </div>
+  `).join('');
+
+  ARTISTS_DIRECTORY_LIST.querySelectorAll('.artist-directory-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      showArtistsClassicView(Number(btn.dataset.index));
+    });
+  });
+}
+
+function showArtistsDirectoryView() {
+  if (ARTISTS_DIRECTORY_VIEW) ARTISTS_DIRECTORY_VIEW.hidden = false;
+  if (ARTISTS_CLASSIC_VIEW) ARTISTS_CLASSIC_VIEW.hidden = true;
+}
+
+function showArtistsClassicView(idx) {
+  currentArtistIndex = idx;
+  artistNoteOpen = false;
+  renderArtists();
+  renderArtistDetail();
+  if (ARTISTS_DIRECTORY_VIEW) ARTISTS_DIRECTORY_VIEW.hidden = true;
+  if (ARTISTS_CLASSIC_VIEW) ARTISTS_CLASSIC_VIEW.hidden = false;
+}
+
+if (ARTISTS_BACK_TO_DIRECTORY) {
+  ARTISTS_BACK_TO_DIRECTORY.addEventListener('click', showArtistsDirectoryView);
+}
+/* === Artists Directory (added) END === */
+
 function renderArtistDetail() {
   if (!ARTIST_DETAIL_SHELL || !ARTIST_PROFILE_IMAGE || !ARTIST_DETAIL_NAME || !ARTIST_DETAIL_LINE || !WORKS_GRID) return;
 
@@ -4227,6 +4304,7 @@ function renderAll() {
   renderExhibitions();
   renderArtists();
   renderArtistDetail();
+  renderArtistsDirectory(); /* === Artists Directory (added) === */
   renderShop();
 }
 
