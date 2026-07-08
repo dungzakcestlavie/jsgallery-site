@@ -288,11 +288,26 @@ main.page-swipe-active{position:relative;overflow:hidden}
     .feature-kicker{margin-bottom:14px;font-size:12px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;color:var(--emerald-deep)}
     .feature-title{margin:0 0 14px;font-size:clamp(24px,2.4vw,34px);line-height:1.12;letter-spacing:-.03em;color:var(--cobalt-deep)}
     .feature-desc{margin:0;font-size:15px;color:var(--muted);white-space:pre-line}
-    .exhibition-card{background:rgba(255,255,255,.92);border:1px solid rgba(31,78,117,.08);border-radius:24px;overflow:hidden;box-shadow:var(--shadow);cursor:pointer;transition:.2s ease}
+    .exhibition-card{background:rgba(255,255,255,.92);border:1px solid rgba(31,78,117,.08);border-radius:24px;overflow:hidden;box-shadow:var(--shadow);cursor:pointer;transition:.2s ease;display:flex;flex-direction:column}
     .exhibition-card:hover{transform:translateY(-2px);box-shadow:0 18px 36px rgba(31,78,117,.12)}
     .exhibition-thumb{aspect-ratio:1.35/1;overflow:hidden;background:var(--panel-2)}
     .exhibition-thumb img{width:100%;height:100%;object-fit:contain;object-position:center center;display:block;background:var(--panel-2);padding:10px}
-    .exhibition-info{padding:16px 16px 18px}
+    .exhibition-info{padding:16px 16px 18px;display:flex;flex-direction:column;flex:1}
+    .exhibition-body{flex:1}
+    .exhibition-card .exhibition-intro{display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}
+    .exhibition-view-btn{
+      display:flex;align-items:center;justify-content:center;
+      width:100%;box-sizing:border-box;
+      margin-top:14px;padding:9px 10px;
+      background:#fff;
+      border:1px solid rgba(184,150,62,.6);
+      border-radius:4px;
+      color:#b8963e;
+      font-family:"Inter","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+      font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+      cursor:pointer;transition:background-color .2s ease;
+    }
+    .exhibition-view-btn:hover{background:rgba(184,150,62,.08)}
     .exhibition-type{
   display:inline-flex;
   align-items:center;
@@ -399,6 +414,15 @@ main.page-swipe-active{position:relative;overflow:hidden}
     .solo-note-kicker{font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--emerald-deep);margin-bottom:10px}
     .solo-note-title{margin:0 0 12px;font-size:24px;line-height:1.18;letter-spacing:-.02em;color:var(--cobalt-deep)}
     .solo-note-copy{margin:0;color:var(--text);font-size:14.5px;line-height:1.82;white-space:pre-line}
+    .solo-note-copy.is-clamped{display:-webkit-box;-webkit-line-clamp:6;-webkit-box-orient:vertical;overflow:hidden}
+    .solo-note-readmore{
+      display:inline-flex;align-items:center;justify-content:center;
+      margin-top:12px;padding:8px 16px;
+      background:#fff;border:1px solid rgba(184,150,62,.6);border-radius:4px;
+      color:#b8963e;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+      cursor:pointer;transition:background-color .2s ease;
+    }
+    .solo-note-readmore:hover{background:rgba(184,150,62,.08)}
     .accordion-work{background:rgba(255,255,255,.88);border:1px solid rgba(31,78,117,.08);border-radius:18px;overflow:hidden}
     .accordion-work img{width:100%;aspect-ratio:1.08/1;object-fit:contain;object-position:center center;display:block;background:var(--panel-2);padding:10px}
     .accordion-work-caption{padding:12px 12px 14px;font-size:13px;line-height:1.6;color:var(--muted);white-space:pre-line}
@@ -3516,6 +3540,16 @@ function exhibitionHasWorks(item) {
   return Array.isArray(item.works) && item.works.length > 0;
 }
 
+function findArtistBio(item, lang) {
+  if (!item || !Array.isArray(artistsData)) return '';
+  const nameKr = item.artist_kr || '';
+  const nameEn = item.artist_en || '';
+  if (!nameKr && !nameEn) return '';
+  const match = artistsData.find(a => (nameKr && a.name_kr === nameKr) || (nameEn && a.name_en === nameEn));
+  if (!match) return '';
+  return lang === 'en' ? (match.bio_en || match.bio_kr || '') : (match.bio_kr || match.bio_en || '');
+}
+
 function exhibitionIsGroup(item) {
   if (!item) return false;
   const type = String(item.type_en || item.type_kr || '').toLowerCase();
@@ -3572,16 +3606,28 @@ function renderExhibitions() {
     <article class="exhibition-card" data-exhibition-id="${escapeHtml(item.id || '')}">
       <div class="exhibition-thumb"><img src="${escapeHtml(exhibitionImage(item))}" alt="${escapeHtml(exhibitionTitle(item, m))}" /></div>
       <div class="exhibition-info">
-        <div class="exhibition-type">${escapeHtml(exhibitionType(item, m))}</div>
-        <h3 class="exhibition-title">${escapeHtml(exhibitionTitle(item, m))}</h3>
-        <div class="work-meta">${escapeHtml(exhibitionDate(item, m))}</div>
-        <p class="exhibition-intro">${escapeHtml(exhibitionIntro(item, m))}</p>
+        <div class="exhibition-body">
+          <div class="exhibition-type">${escapeHtml(exhibitionType(item, m))}</div>
+          <h3 class="exhibition-title">${escapeHtml(exhibitionTitle(item, m))}</h3>
+          <div class="work-meta">${escapeHtml(exhibitionDate(item, m))}</div>
+          <p class="exhibition-intro">${escapeHtml(exhibitionIntro(item, m))}</p>
+        </div>
+        <button type="button" class="exhibition-view-btn" data-exhibition-id="${escapeHtml(item.id || '')}">
+          <span class="ko">전시 보기</span><span class="en">View Exhibition</span>
+        </button>
       </div>
     </article>
   `).join('');
 
   EXHIBITIONS_CARDS.querySelectorAll('.exhibition-card').forEach((card) => {
     card.addEventListener('click', () => openExhibitionModal(card.dataset.exhibitionId));
+  });
+
+  EXHIBITIONS_CARDS.querySelectorAll('.exhibition-view-btn').forEach((btn) => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openExhibitionModal(btn.dataset.exhibitionId);
+    });
   });
 
   const heroImage = document.getElementById('heroImage');
@@ -3592,6 +3638,29 @@ function renderExhibitions() {
       ? `${exhibitionTitle(featured, m)} exhibition preview at KJS GALLERY`
       : `KJS GALLERY 전시 미리보기 ${exhibitionTitle(featured, m)}`;
   }
+}
+
+function setupSoloNoteReadMore() {
+  requestAnimationFrame(() => {
+    const noteEl = EXHIBITION_MODAL_CONTENT.querySelector('.solo-note-copy');
+    const btn = EXHIBITION_MODAL_CONTENT.querySelector('.solo-note-readmore');
+    if (!noteEl || !btn) return;
+
+    const isOverflowing = noteEl.scrollHeight > noteEl.clientHeight + 2;
+    if (!isOverflowing) {
+      btn.style.display = 'none';
+      return;
+    }
+
+    btn.addEventListener('click', () => {
+      const expanded = noteEl.classList.toggle('is-expanded');
+      noteEl.classList.toggle('is-clamped', !expanded);
+      const koLabel = btn.querySelector('.ko');
+      const enLabel = btn.querySelector('.en');
+      if (koLabel) koLabel.textContent = expanded ? '접기' : '더 읽기';
+      if (enLabel) enLabel.textContent = expanded ? 'Show Less' : 'Read More';
+    });
+  });
 }
 
 function openExhibitionModal(exhibitionId) {
@@ -3656,14 +3725,18 @@ function openExhibitionModal(exhibitionId) {
           ${exhibitionArtistName(exhibition, m) ? `<div class="work-meta">${escapeHtml(exhibitionArtistName(exhibition, m))}</div>` : ``}
         </div>
       </div>
+      ${exhibitionIntro(exhibition, m) ? `<p class="exhibition-intro">${escapeHtml(exhibitionIntro(exhibition, m))}</p>` : ``}
       <div class="solo-note-block">
         <div class="solo-note-kicker">${m === 'en' ? 'Artist Note' : '작가 노트'}</div>
         <h3 class="solo-note-title">${escapeHtml(noteTitle)}</h3>
-        <p class="solo-note-copy">${escapeHtml(noteBody)}</p>
+        <p class="solo-note-copy is-clamped">${escapeHtml(noteBody)}</p>
+        <button type="button" class="solo-note-readmore"><span class="ko">더 읽기</span><span class="en">Read More</span></button>
       </div>
       <div class="exhibition-section-kicker">${m === 'en' ? 'Selected Works' : '작품'}</div>
       <div id="genericExhibitionWorksGrid" class="solo-works-grid">${renderGenericExhibitionWorks(exhibition.works || [], m)}</div>
+      ${(() => { const bio = findArtistBio(exhibition, m); return bio ? `<div class="exhibition-section-kicker">${m === 'en' ? 'Artist Bio' : '작가 소개'}</div><p class="exhibition-intro">${escapeHtml(bio)}</p>` : ''; })()}
     `;
+    setupSoloNoteReadMore();
 
     const exhibitionWorkElements = Array.from(EXHIBITION_MODAL.querySelectorAll('[data-exhibition-work-index]'));
     exhibitionWorkElements.forEach(card => {
@@ -3692,15 +3765,19 @@ function openExhibitionModal(exhibitionId) {
           <div class="work-meta">DCAR-13</div>
         </div>
       </div>
+      ${exhibitionIntro(exhibition, m) ? `<p class="exhibition-intro">${escapeHtml(exhibitionIntro(exhibition, m))}</p>` : ``}
       <div class="solo-note-block">
         <div class="solo-note-kicker">${m === 'en' ? 'Artist Note' : '작가 노트'}</div>
         <h3 class="solo-note-title">${soloNoteTitle}</h3>
-        <p class="solo-note-copy">${escapeHtml(soloNoteCopy)}</p>
+        <p class="solo-note-copy is-clamped">${escapeHtml(soloNoteCopy)}</p>
+        <button type="button" class="solo-note-readmore"><span class="ko">더 읽기</span><span class="en">Read More</span></button>
       </div>
       <div class="exhibition-section-kicker">${m === 'en' ? 'Selected Works' : '선정 작품'}</div>
       <div id="soloWorksGrid" class="solo-works-grid"></div>
+      ${(() => { const bio = findArtistBio(exhibition, m); return bio ? `<div class="exhibition-section-kicker">${m === 'en' ? 'Artist Bio' : '작가 소개'}</div><p class="exhibition-intro">${escapeHtml(bio)}</p>` : ''; })()}
     `;
     renderSoloWorks();
+    setupSoloNoteReadMore();
   }
 
   EXHIBITION_MODAL.classList.add('open');
