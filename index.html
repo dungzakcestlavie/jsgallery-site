@@ -408,6 +408,20 @@
     .accordion-panel{display:none;padding:0 18px 18px}
     .accordion-item.open .accordion-panel{display:block}
     .accordion-note{margin:2px 0 16px;color:var(--text);line-height:1.72;white-space:pre-line}
+    .group-note-block{margin:2px 0 18px;padding:18px 20px;border-radius:20px;background:rgba(255,255,255,.72);border:1px solid rgba(31,78,117,.08)}
+    .group-note-kicker{font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--emerald-deep);margin-bottom:8px}
+    .group-note-title{margin:0 0 10px;font-size:21px;line-height:1.24;color:var(--cobalt-deep)}
+    .group-note-summary{margin:0;color:var(--text);font-size:14.5px;line-height:1.78;white-space:pre-line}
+    .group-note-full{margin:14px 0 0;color:var(--text);font-size:14.5px;line-height:1.82;white-space:pre-line}
+    .group-note-full[hidden]{display:none !important}
+    .group-note-readmore{
+      display:inline-flex;align-items:center;justify-content:center;
+      margin-top:12px;padding:8px 16px;
+      background:#fff;border:1px solid rgba(184,150,62,.6);border-radius:4px;
+      color:#b8963e;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+      cursor:pointer;transition:background-color .2s ease;
+    }
+    .group-note-readmore:hover{background:rgba(184,150,62,.08)}
     .accordion-works{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
     .solo-modal-head{display:grid;grid-template-columns:minmax(320px,1.05fr) minmax(260px,.95fr);gap:20px;align-items:start;margin-bottom:22px}
     .solo-poster{width:100%;aspect-ratio:1.18 / 1;border-radius:22px;overflow:hidden;background:var(--panel-2);border:1px solid rgba(31,78,117,.08)}
@@ -4160,7 +4174,15 @@ function openExhibitionModal(exhibitionId) {
                 <span class="arrow">⌄</span>
               </button>
               <div class="accordion-panel" style="${idx === 0 ? 'display:block' : 'display:none'}">
-                <div class="accordion-note">${escapeHtml(m === 'en' ? artist.note_en : artist.note_kr)}</div>
+                <div class="group-note-block">
+                  <div class="group-note-kicker">${m === 'en' ? 'Artist Note' : '작가 노트'}</div>
+                  <h3 class="group-note-title">${escapeHtml(m === 'en' ? artist.name_en : artist.name_kr)}</h3>
+                  <p class="group-note-summary">${escapeHtml(m === 'en' ? (artist.note_summary_en || '') : (artist.note_summary_kr || ''))}</p>
+                  <div class="group-note-full" hidden>${escapeHtml(m === 'en' ? (artist.note_en || '') : (artist.note_kr || ''))}</div>
+                  <button type="button" class="group-note-readmore" aria-expanded="false">
+                    <span class="ko">더 읽기</span><span class="en">Read More</span>
+                  </button>
+                </div>
                 <div class="accordion-works">
                   ${
                     (artist.works || []).map((work, workIdx) => `
@@ -4270,6 +4292,30 @@ function openExhibitionModal(exhibitionId) {
         item.classList.add('open');
         if (panel) panel.style.display = 'block';
       }
+    });
+  });
+
+  EXHIBITION_MODAL.querySelectorAll('.group-note-readmore').forEach(btn => {
+    const block = btn.closest('.group-note-block');
+    const fullNote = block ? block.querySelector('.group-note-full') : null;
+    if (!fullNote) return;
+
+    if (!fullNote.textContent.trim()) {
+      btn.style.display = 'none';
+      return;
+    }
+
+    btn.addEventListener('click', (event) => {
+      event.stopPropagation();
+
+      const expanded = btn.getAttribute('aria-expanded') === 'true';
+      fullNote.hidden = expanded;
+      btn.setAttribute('aria-expanded', String(!expanded));
+
+      const koLabel = btn.querySelector('.ko');
+      const enLabel = btn.querySelector('.en');
+      if (koLabel) koLabel.textContent = expanded ? '더 읽기' : '접기';
+      if (enLabel) enLabel.textContent = expanded ? 'Read More' : 'Show Less';
     });
   });
 
