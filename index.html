@@ -4140,7 +4140,7 @@ function openExhibitionModal(exhibitionId) {
 
   if (!exhibition) return;
 
-  if (exhibitionIsGroup(exhibition) && Array.isArray(DATA.group_artists) && DATA.group_artists.length) {
+  if (exhibitionIsGroup(exhibition) && Array.isArray(exhibition.artists) && exhibition.artists.length) {
     EXHIBITION_MODAL_CONTENT.innerHTML = `
       <div class="exhibition-hero"><img src="${escapeHtml(exhibitionImage(exhibition))}" alt="${escapeHtml(exhibitionTitle(exhibition, m))}" /></div>
       <div class="exhibition-section-kicker">${m === 'en' ? 'Exhibition Detail' : '전시 상세'}</div>
@@ -4153,7 +4153,7 @@ function openExhibitionModal(exhibitionId) {
       <div class="exhibition-section-kicker">${m === 'en' ? 'Participating Artists' : '참여 작가'}</div>
       <div class="accordion-list">
         ${
-          DATA.group_artists.map((artist, idx) => `
+          exhibition.artists.map((artist, idx) => `
             <div class="accordion-item ${idx === 0 ? 'open' : ''}">
               <button class="accordion-trigger" type="button" data-idx="${idx}">
                 <span>${escapeHtml(m === 'en' ? artist.name_en : artist.name_kr)}</span>
@@ -4166,7 +4166,7 @@ function openExhibitionModal(exhibitionId) {
                     (artist.works || []).map((work, workIdx) => `
                       <div class="accordion-work" data-group-artist-index="${idx}" data-group-work-index="${workIdx}">
                         <img src="${escapeHtml(resolveAssetUrl(work.image))}" alt="${escapeHtml(m === 'en' ? work.title_en : work.title_kr)}" />
-                        <div class="accordion-work-caption"><strong>${escapeHtml(m === 'en' ? work.title_en : work.title_kr)}</strong><br>${escapeHtml(m === 'en' ? work.meta_en : work.meta_kr)}</div>
+                        <div class="accordion-work-caption"><strong>${escapeHtml(m === 'en' ? work.title_en : work.title_kr)}</strong><br>${escapeHtml((m === 'en' ? work.meta_en : work.meta_kr) || [m === 'en' ? work.material_en : work.material_kr, m === 'en' ? work.size_en : work.size_kr, work.year].filter(Boolean).join(' · '))}</div>
                       </div>
                     `).join('')
                   }
@@ -4278,7 +4278,7 @@ function openExhibitionModal(exhibitionId) {
     card.addEventListener('click', () => {
       const artistIndex = Number(card.dataset.groupArtistIndex);
       const workIndex = Number(card.dataset.groupWorkIndex);
-      const artist = DATA.group_artists[artistIndex];
+      const artist = exhibition.artists[artistIndex];
       if (!artist || !Array.isArray(artist.works)) return;
       const lightboxItems = artist.works.map(work => ({
         standard: resolveAssetUrl(work.image || ''),
