@@ -4240,8 +4240,17 @@ function findArtistBio(item, lang) {
 
 function exhibitionIsGroup(item) {
   if (!item) return false;
+
+  // 참여 작가 배열이 있으면 표시명과 관계없이 그룹전으로 판정한다.
+  // 예: type_kr = "4인 작품전", type_en = "Four-Artist Exhibition"
+  if (Array.isArray(item.artists) && item.artists.length > 0) return true;
+
   const type = String(item.type_en || item.type_kr || '').toLowerCase();
-  return item.id === 'group' || item.id === 'group-2026' || type.includes('group');
+  return (
+    item.id === 'group' ||
+    item.id === 'group-2026' ||
+    type.includes('group')
+  );
 }
 
 function normalizeExhibitionWork(work) {
