@@ -5320,6 +5320,33 @@ const POSTER_EXHIBITIONS = [
     "venue_en": "KIM JUNG SOOK GALLERY · JS ART SPACE",
     "image": "/images/exhibitions/2026/iiaa-2026.webp",
     "original": "/images/exhibitions/2026/iiaa-2026.jpg",
+    "photos": [
+      {
+        "image": "/images/exhibitions/2026/iiaa-2026-photo-1.jpg",
+        "width": 1048,
+        "height": 1144
+      },
+      {
+        "image": "/images/exhibitions/2026/iiaa-2026-photo-2.jpg",
+        "width": 2048,
+        "height": 1693
+      },
+      {
+        "image": "/images/exhibitions/2026/iiaa-2026-photo-3.jpg",
+        "width": 2048,
+        "height": 1048
+      },
+      {
+        "image": "/images/exhibitions/2026/iiaa-2026-photo-4.jpg",
+        "width": 2048,
+        "height": 1362
+      },
+      {
+        "image": "/images/exhibitions/2026/iiaa-2026-photo-5.jpg",
+        "width": 2048,
+        "height": 1536
+      }
+    ],
     "width": 1080,
     "height": 1080,
     "poster_only": true
@@ -5600,8 +5627,8 @@ function disposePosterZoom(){
   if(posterZoomCleanup){posterZoomCleanup();posterZoomCleanup=null;}
 }
 function setupPosterBoxZoom(){
-  const frame=EXHIBITION_MODAL_CONTENT.querySelector('.poster-zoom-frame');
-  if(!frame) return;
+  const cleanups=[];
+  EXHIBITION_MODAL_CONTENT.querySelectorAll('.poster-zoom-frame').forEach(frame=>{
   const img=frame.querySelector('img');
   let scale=1,x=0,y=0,lastTouch=null,lastDistance=0,mouse=null;
   const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
@@ -5656,8 +5683,10 @@ function setupPosterBoxZoom(){
   window.addEventListener('resize',draw);
   const resizeObserver=typeof ResizeObserver==='function'?new ResizeObserver(draw):null;
   resizeObserver?.observe(frame);
-  posterZoomCleanup=()=>{reset();resizeObserver?.disconnect();window.removeEventListener('resize',draw);document.removeEventListener('mousemove',move);document.removeEventListener('mouseup',up);img.removeEventListener('load',draw);};
+  cleanups.push(()=>{reset();resizeObserver?.disconnect();window.removeEventListener('resize',draw);document.removeEventListener('mousemove',move);document.removeEventListener('mouseup',up);img.removeEventListener('load',draw);});
   draw();
+  });
+  posterZoomCleanup=()=>cleanups.forEach(cleanup=>cleanup());
 }
 
 function openExhibitionModal(exhibitionId) {
@@ -5679,6 +5708,10 @@ function openExhibitionModal(exhibitionId) {
       <div class="poster-original poster-zoom-frame" style="aspect-ratio:${exhibition.width}/${exhibition.height}" tabindex="0" role="region" aria-label="${m === 'en' ? 'Poster: pinch or use the mouse wheel to zoom' : '포스터: 두 손가락 또는 마우스 휠로 확대·축소'}">
         <img src="${escapeHtml(exhibition.original)}" width="${exhibition.width}" height="${exhibition.height}" alt="${escapeHtml(exhibitionTitle(exhibition, m))}" decoding="async" draggable="false" />
       </div>
+      ${(exhibition.photos || []).map((photo, index) => `
+      <div class="poster-original poster-zoom-frame" style="aspect-ratio:${photo.width}/${photo.height};margin-top:20px" tabindex="0" role="region" aria-label="${m === 'en' ? 'Exhibition photo: pinch or use the mouse wheel to zoom' : '전시 사진: 두 손가락 또는 마우스 휠로 확대·축소'}">
+        <img src="${escapeHtml(photo.image)}" width="${photo.width}" height="${photo.height}" alt="${escapeHtml(exhibitionTitle(exhibition, m))} — ${m === 'en' ? 'Photo' : '사진'} ${index + 1}" loading="lazy" decoding="async" draggable="false" />
+      </div>`).join('')}
       ${exhibition.info_kr ? `<p class="exhibition-intro">${escapeHtml(m === 'en' ? exhibition.info_en : exhibition.info_kr)}</p>` : ''}
     `;
     EXHIBITION_MODAL.classList.add('open');
