@@ -5707,6 +5707,19 @@ function setupPosterBoxZoom(){
   posterZoomCleanup=()=>cleanups.forEach(cleanup=>cleanup());
 }
 
+function setupExhibitionPhotoViewer(exhibition){
+  const buttons=Array.from(EXHIBITION_MODAL_CONTENT.querySelectorAll('[data-exhibition-photo]'));
+  const items=(exhibition.photos||[]).map((photo,index)=>({
+    image:photo.image,zoom:photo.image,
+    title_kr:exhibition.title_kr+' — 사진 '+(index+1),
+    title_en:exhibition.title_en+' — Photo '+(index+1)
+  }));
+  buttons.forEach(button=>button.addEventListener('click',event=>{
+    event.preventDefault();event.stopPropagation();
+    openLightbox(Number(button.dataset.exhibitionPhoto),items,buttons);
+  }));
+}
+
 function openExhibitionModal(exhibitionId) {
   disposePosterZoom();
   const m = mode();
@@ -5727,13 +5740,14 @@ function openExhibitionModal(exhibitionId) {
         <img src="${escapeHtml(exhibition.original)}" width="${exhibition.width}" height="${exhibition.height}" alt="${escapeHtml(exhibitionTitle(exhibition, m))}" decoding="async" draggable="false" />
       </div>
       ${(exhibition.photos || []).map((photo, index) => `
-      <div class="poster-original poster-zoom-frame" style="aspect-ratio:${photo.width}/${photo.height};margin-top:20px" tabindex="0" role="region" aria-label="${m === 'en' ? 'Exhibition photo: pinch or use the mouse wheel to zoom' : '전시 사진: 두 손가락 또는 마우스 휠로 확대·축소'}">
+      <button type="button" class="poster-original exhibition-photo-open" data-exhibition-photo="${index}" style="width:100%;padding:0;border:0;background:transparent;cursor:zoom-in" aria-label="${escapeHtml(exhibitionTitle(exhibition, m))} — ${m === 'en' ? 'Open photo' : '사진 크게 보기'} ${index + 1}">
         <img src="${escapeHtml(photo.image)}" width="${photo.width}" height="${photo.height}" alt="${escapeHtml(exhibitionTitle(exhibition, m))} — ${m === 'en' ? 'Photo' : '사진'} ${index + 1}" loading="lazy" decoding="async" draggable="false" />
-      </div>`).join('')}
+      </button>`).join('')}
       ${exhibition.info_kr ? `<p class="exhibition-intro">${escapeHtml(m === 'en' ? exhibition.info_en : exhibition.info_kr)}</p>` : ''}
     `;
     EXHIBITION_MODAL.classList.add('open');
     setupPosterBoxZoom();
+    setupExhibitionPhotoViewer(exhibition);
     EXHIBITION_MODAL.setAttribute('aria-hidden', 'false');
     document.body.classList.add('modal-open');
     return;
