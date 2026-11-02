@@ -1177,7 +1177,7 @@ they emerge through the relationships an exhibition creates.</div>
     <div class="wrap">
       <div class="section-head">
         <h2 class="section-title"><span class="ko">전시</span><span class="en">Exhibitions</span></h2>
-        <div class="section-note"><div class="ko">개인전과 그룹전의 포스터 아카이브를 전시 시작일 순으로 소개합니다.</div><div class="en">An archive of solo and group exhibition posters, ordered by opening date.</div></div>
+        <div class="section-note"><div class="ko">개인전과 그룹전의 전체 아카이브를 최신 전시부터 소개합니다.</div><div class="en">The complete archive of solo and group exhibitions, newest first.</div></div>
       </div>
       <div class="cards-2" id="exhibitionsCards"></div>
     </div>
@@ -5192,7 +5192,7 @@ function renderSoloWorks() {
   });
 }
 
-// Poster archive: chronological by opening date. Existing exhibition data remains intact.
+// New poster exhibitions are merged with the complete existing archive, newest first.
 const POSTER_EXHIBITIONS = [
   {
     "id": "iiaa-2026",
@@ -5405,17 +5405,26 @@ function renderGenericExhibitionWorks(works, lang) {
 
 function renderExhibitions() {
   const m = mode();
-  const cards = POSTER_EXHIBITIONS;
+  const seen = new Set();
+  const cards = [...POSTER_EXHIBITIONS, ...getExhibitionsList()]
+    .filter(item => {
+      if (seen.has(item.id)) return false;
+      seen.add(item.id);
+      return true;
+    })
+    .sort((a, b) => String(b.sort_date || '').localeCompare(String(a.sort_date || '')));
 
   EXHIBITIONS_CARDS.innerHTML = cards.map((item) => `
     <article class="exhibition-card" data-exhibition-id="${escapeHtml(item.id || '')}">
-      <div class="exhibition-thumb"><img src="${escapeHtml(exhibitionImage(item))}" alt="${escapeHtml(exhibitionTitle(item, m))}" width="${item.width}" height="${item.height}" loading="lazy" decoding="async" /></div>
+      <div class="exhibition-thumb"><img src="${escapeHtml(exhibitionImage(item))}" alt="${escapeHtml(exhibitionTitle(item, m))}" ${item.width && item.height ? `width="${item.width}" height="${item.height}"` : ''} loading="lazy" decoding="async" /></div>
       <div class="exhibition-info">
         <div class="exhibition-body">
           <div class="exhibition-type">${escapeHtml(exhibitionType(item, m))}</div>
           <h3 class="exhibition-title">${escapeHtml(exhibitionTitle(item, m))}</h3>
           <div class="work-meta">${escapeHtml(exhibitionDate(item, m))}</div>
-          <div class="work-meta">${escapeHtml(m === 'en' ? item.venue_en : item.venue_kr)}</div>
+          ${item.poster_only
+            ? `<div class="work-meta">${escapeHtml(m === 'en' ? item.venue_en : item.venue_kr)}</div>`
+            : `<p class="exhibition-intro">${escapeHtml(exhibitionIntro(item, m))}</p>`}
         </div>
         <button type="button" class="exhibition-view-btn" data-exhibition-id="${escapeHtml(item.id || '')}">
           <span class="ko">전시 보기</span><span class="en">View Exhibition</span>
