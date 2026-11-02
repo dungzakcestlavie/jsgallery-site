@@ -1109,6 +1109,15 @@
 #page-wmaf .wmaf-photos figure{background:rgba(255,255,255,.82);border-color:rgba(156,119,35,.25)}
 #page-wmaf .wmaf-photos figcaption{color:var(--wmaf-gold);font-size:15px;font-weight:600;line-height:1.7}
 
+
+/* Only the five new poster details: stable frame, image-only transform. */
+#exhibitionModal .poster-zoom-frame{position:relative;display:block;width:100%;overflow:hidden!important;overscroll-behavior:contain;touch-action:pan-y;isolation:isolate;background:var(--panel-2)}
+#exhibitionModal .poster-zoom-frame img{position:absolute;inset:0;display:block;width:100%;height:100%;max-width:none;object-fit:contain;padding:0;transform-origin:center center;user-select:none;-webkit-user-select:none;-webkit-user-drag:none}
+#exhibitionModal .poster-zoom-frame.is-zoomed{touch-action:none;cursor:grab}
+#exhibitionModal .poster-zoom-frame.is-panning{cursor:grabbing}
+#exhibitionModal .poster-zoom-frame:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+#exhibitionModal .poster-zoom-tools{display:flex;align-items:center;gap:12px;margin:-6px 0 20px;color:var(--cobalt-deep);font-size:14px}
+#exhibitionModal .poster-zoom-reset{min-height:44px;padding:8px 16px;border:1px solid rgba(184,150,62,.5);border-radius:999px;background:transparent;color:var(--cobalt-deep);font:inherit;cursor:pointer}
 </style>
 <script>
 (function(){
@@ -5585,7 +5594,77 @@ function setupSoloNoteReadMore() {
   });
 }
 
+
+let posterZoomCleanup = null;
+function disposePosterZoom(){
+  if(posterZoomCleanup){posterZoomCleanup();posterZoomCleanup=null;}
+}
+function setupPosterBoxZoom(){
+  const frame=EXHIBITION_MODAL_CONTENT.querySelector('.poster-zoom-frame');
+  if(!frame) return;
+  const img=frame.querySelector('img');
+  const output=EXHIBITION_MODAL_CONTENT.querySelector('.poster-zoom-scale');
+  const resetButton=EXHIBITION_MODAL_CONTENT.querySelector('.poster-zoom-reset');
+  let scale=1,x=0,y=0,lastTouch=null,lastDistance=0,mouse=null;
+  const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
+  function draw(){
+    const width=frame.clientWidth,height=frame.clientHeight;
+    const ratio=(img.naturalWidth||Number(img.width))/(img.naturalHeight||Number(img.height));
+    const fitW=Math.min(width,height*ratio),fitH=Math.min(height,width/ratio);
+    const maxX=Math.max(0,(fitW*scale-width)/2),maxY=Math.max(0,(fitH*scale-height)/2);
+    x=clamp(x,-maxX,maxX);y=clamp(y,-maxY,maxY);
+    if(scale<=1){scale=1;x=0;y=0;}
+    img.style.transform=`translate3d(${x}px,${y}px,0) scale(${scale})`;
+    frame.classList.toggle('is-zoomed',scale>1);
+    output.value=scale.toFixed(1)+'×';
+  }
+  function reset(){scale=1;x=y=0;lastTouch=null;lastDistance=0;mouse=null;frame.classList.remove('is-panning');draw();}
+  function zoomTo(next,cx,cy){
+    next=clamp(next,1,3);
+    const rect=frame.getBoundingClientRect();
+    const ax=cx-rect.left-rect.width/2,ay=cy-rect.top-rect.height/2;
+    const factor=next/scale;
+    x=ax-(ax-x)*factor;y=ay-(ay-y)*factor;scale=next;draw();
+  }
+  const midpoint=t=>({x:(t[0].clientX+t[1].clientX)/2,y:(t[0].clientY+t[1].clientY)/2});
+  const distance=t=>Math.hypot(t[0].clientX-t[1].clientX,t[0].clientY-t[1].clientY);
+  frame.addEventListener('touchstart',e=>{
+    if(e.touches.length>=2){e.preventDefault();lastDistance=distance(e.touches);lastTouch=midpoint(e.touches);}
+    else if(e.touches.length===1){lastTouch={x:e.touches[0].clientX,y:e.touches[0].clientY};if(scale>1)e.preventDefault();}
+  },{passive:false});
+  frame.addEventListener('touchmove',e=>{
+    if(e.touches.length>=2){
+      e.preventDefault();e.stopPropagation();const center=midpoint(e.touches),d=distance(e.touches);
+      if(lastDistance>0)zoomTo(scale*d/lastDistance,center.x,center.y);
+      lastDistance=d;lastTouch=center;
+    }else if(e.touches.length===1&&scale>1){
+      e.preventDefault();e.stopPropagation();const point={x:e.touches[0].clientX,y:e.touches[0].clientY};
+      if(lastTouch){x+=point.x-lastTouch.x;y+=point.y-lastTouch.y;draw();}lastTouch=point;lastDistance=0;
+    }
+  },{passive:false});
+  const endTouch=e=>{lastDistance=0;lastTouch=e.touches.length===1?{x:e.touches[0].clientX,y:e.touches[0].clientY}:null;};
+  frame.addEventListener('touchend',endTouch);frame.addEventListener('touchcancel',endTouch);
+  ['gesturestart','gesturechange','gestureend'].forEach(type=>frame.addEventListener(type,e=>e.preventDefault(),{passive:false}));
+  frame.addEventListener('wheel',e=>{e.preventDefault();e.stopPropagation();zoomTo(scale*Math.exp(-clamp(e.deltaY,-300,300)*.004),e.clientX,e.clientY);},{passive:false});
+  frame.addEventListener('mousedown',e=>{if(e.button!==0||scale<=1)return;e.preventDefault();mouse={x:e.clientX,y:e.clientY};frame.classList.add('is-panning');});
+  const move=e=>{if(!mouse)return;x+=e.clientX-mouse.x;y+=e.clientY-mouse.y;mouse={x:e.clientX,y:e.clientY};draw();};
+  const up=()=>{mouse=null;frame.classList.remove('is-panning');};
+  document.addEventListener('mousemove',move);document.addEventListener('mouseup',up);
+  frame.addEventListener('dblclick',reset);
+  frame.addEventListener('keydown',e=>{
+    if(!['+','=','-','0'].includes(e.key))return;e.preventDefault();const r=frame.getBoundingClientRect();
+    if(e.key==='0')reset();else zoomTo(scale+(e.key==='-'?-.25:.25),r.left+r.width/2,r.top+r.height/2);
+  });
+  resetButton.addEventListener('click',reset);img.addEventListener('load',draw);
+  window.addEventListener('resize',draw);
+  const resizeObserver=typeof ResizeObserver==='function'?new ResizeObserver(draw):null;
+  resizeObserver?.observe(frame);
+  posterZoomCleanup=()=>{reset();resizeObserver?.disconnect();window.removeEventListener('resize',draw);document.removeEventListener('mousemove',move);document.removeEventListener('mouseup',up);img.removeEventListener('load',draw);};
+  draw();
+}
+
 function openExhibitionModal(exhibitionId) {
+  disposePosterZoom();
   const m = mode();
   const exhibition = getExhibitionById(exhibitionId);
 
@@ -5600,12 +5679,14 @@ function openExhibitionModal(exhibitionId) {
         <div class="work-meta">${escapeHtml(exhibitionDate(exhibition, m))}</div>
         <div class="work-meta">${escapeHtml(m === 'en' ? exhibition.venue_en : exhibition.venue_kr)}</div>
       </div>
-      <a class="poster-original" href="${escapeHtml(exhibition.original)}" target="_blank" rel="noopener" aria-label="${m === 'en' ? 'Open original poster' : '포스터 원본 보기'}">
-        <img src="${escapeHtml(exhibition.image)}" width="${exhibition.width}" height="${exhibition.height}" alt="${escapeHtml(exhibitionTitle(exhibition, m))}" decoding="async" />
-      </a>
+      <div class="poster-original poster-zoom-frame" style="aspect-ratio:${exhibition.width}/${exhibition.height}" tabindex="0" role="region" aria-label="${m === 'en' ? 'Poster: pinch or use the mouse wheel to zoom' : '포스터: 두 손가락 또는 마우스 휠로 확대·축소'}">
+        <img src="${escapeHtml(exhibition.original)}" width="${exhibition.width}" height="${exhibition.height}" alt="${escapeHtml(exhibitionTitle(exhibition, m))}" decoding="async" draggable="false" />
+      </div>
+      <div class="poster-zoom-tools"><button type="button" class="poster-zoom-reset">${m === 'en' ? 'Reset view' : '원본 맞춤'}</button><output class="poster-zoom-scale" aria-label="${m === 'en' ? 'Zoom' : '확대 배율'}">1.0×</output></div>
       ${exhibition.info_kr ? `<p class="exhibition-intro">${escapeHtml(m === 'en' ? exhibition.info_en : exhibition.info_kr)}</p>` : ''}
     `;
     EXHIBITION_MODAL.classList.add('open');
+    setupPosterBoxZoom();
     EXHIBITION_MODAL.setAttribute('aria-hidden', 'false');
     document.body.classList.add('modal-open');
     return;
@@ -5809,6 +5890,7 @@ function openExhibitionModal(exhibitionId) {
 }
 
 function closeExhibitionModal() {
+  disposePosterZoom();
   delete EXHIBITION_MODAL.dataset.posterId;
   EXHIBITION_MODAL.setAttribute('aria-hidden', 'true');
   EXHIBITION_MODAL.classList.remove('open');
