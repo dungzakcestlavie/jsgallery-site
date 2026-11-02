@@ -5304,6 +5304,17 @@ function getExhibitionsList() {
   return fallback;
 }
 
+function getArchiveExhibitions() {
+  const seen = new Set();
+  return [...POSTER_EXHIBITIONS, ...getExhibitionsList()]
+    .filter(item => {
+      if (seen.has(item.id)) return false;
+      seen.add(item.id);
+      return true;
+    })
+    .sort((a, b) => String(b.sort_date || '').localeCompare(String(a.sort_date || '')));
+}
+
 function getExhibitionById(id) {
   return POSTER_EXHIBITIONS.find(item => item.id === id) || getExhibitionsList().find(item => item.id === id) || null;
 }
@@ -5405,14 +5416,7 @@ function renderGenericExhibitionWorks(works, lang) {
 
 function renderExhibitions() {
   const m = mode();
-  const seen = new Set();
-  const cards = [...POSTER_EXHIBITIONS, ...getExhibitionsList()]
-    .filter(item => {
-      if (seen.has(item.id)) return false;
-      seen.add(item.id);
-      return true;
-    })
-    .sort((a, b) => String(b.sort_date || '').localeCompare(String(a.sort_date || '')));
+  const cards = getArchiveExhibitions();
 
   EXHIBITIONS_CARDS.innerHTML = cards.map((item) => `
     <article class="exhibition-card" data-exhibition-id="${escapeHtml(item.id || '')}">
@@ -5445,7 +5449,7 @@ function renderExhibitions() {
   });
 
   const heroImage = document.getElementById('heroImage');
-  const featured = getExhibitionsList()[0];
+  const featured = cards[0];
   if (heroImage && featured) {
     heroImage.src = exhibitionImage(featured);
     heroImage.alt = m === 'en'
@@ -6484,34 +6488,9 @@ document.addEventListener('keydown', e => {
 (function(){
   function openHeroExhibition(){
     try{
-      if (typeof showPage === 'function') showPage('exhibitions');
-
-      const dataEl = document.getElementById('jsgallery-data-inline');
-      const raw = dataEl ? JSON.parse(dataEl.textContent) : null;
-      const exhibitions = Array.isArray(raw?.exhibitions) ? raw.exhibitions.slice() : [];
-
-      if (!exhibitions.length) return;
-
-      const sorted = exhibitions.sort((a, b) => {
-        const ad = a?.sort_date ? new Date(a.sort_date).getTime() : 0;
-        const bd = b?.sort_date ? new Date(b.sort_date).getTime() : 0;
-        return bd - ad;
-      });
-
-      const target = sorted[0];
+      const target = getArchiveExhibitions()[0];
       if (!target) return;
-
-      if (typeof openExhibitionDetail === 'function') {
-        openExhibitionDetail(target.id);
-        return;
-      }
-      if (typeof openExhibition === 'function') {
-        openExhibition(target.id);
-        return;
-      }
-
-      const card = document.querySelector(`.exhibition-card[data-exhibition-id="${target.id}"]`);
-      if (card) card.click();
+      openExhibitionModal(target.id);
     }catch(e){
       console.error('Hero exhibition open failed:', e);
     }
