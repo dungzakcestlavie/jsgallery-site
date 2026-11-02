@@ -1048,7 +1048,17 @@
     }
 
 
-  </style>
+
+/* Poster archive: retain the existing card grid and original image proportions. */
+.poster-title{padding-right:44px;overflow-wrap:anywhere}
+.poster-original{display:block;margin:18px 0;color:inherit}
+.poster-original img{display:block;width:100%;height:auto;max-width:100%}
+#exhibitionsCards .exhibition-title,#exhibitionsCards .work-meta{overflow-wrap:anywhere}
+#exhibitionsCards .exhibition-thumb{aspect-ratio:1/1}
+#exhibitionsCards .exhibition-thumb img{object-fit:contain}
+.exhibition-modal-panel:has(.poster-original){max-height:calc(100dvh - 40px)}
+
+</style>
 <script>
 (function(){
   if (document.documentElement.classList.contains('is-ipad') ||
@@ -1167,7 +1177,7 @@ they emerge through the relationships an exhibition creates.</div>
     <div class="wrap">
       <div class="section-head">
         <h2 class="section-title"><span class="ko">전시</span><span class="en">Exhibitions</span></h2>
-        <div class="section-note"><div class="ko">현재 진행 중인 개인전과 그룹전을 하나의 구조 안에서 소개합니다.</div><div class="en">Current solo and group exhibitions, presented within a single structure.</div></div>
+        <div class="section-note"><div class="ko">개인전과 그룹전의 포스터 아카이브를 전시 시작일 순으로 소개합니다.</div><div class="en">An archive of solo and group exhibition posters, ordered by opening date.</div></div>
       </div>
       <div class="cards-2" id="exhibitionsCards"></div>
     </div>
@@ -4848,6 +4858,7 @@ function setLang(lang) {
   document.documentElement.lang = lang === 'en' ? 'en' : 'ko';
   if (typeof ARTIST_NOTE !== 'undefined' && ARTIST_NOTE) ARTIST_NOTE.classList.remove('expanded');
   renderAll();
+  if (EXHIBITION_MODAL.classList.contains('open') && EXHIBITION_MODAL.dataset.posterId) openExhibitionModal(EXHIBITION_MODAL.dataset.posterId);
 }
 
 function openMenu() {
@@ -5181,6 +5192,105 @@ function renderSoloWorks() {
   });
 }
 
+// Poster archive: chronological by opening date. Existing exhibition data remains intact.
+const POSTER_EXHIBITIONS = [
+  {
+    "id": "iiaa-2026",
+    "title_kr": "제3회 사단법인 인천국제미술협회 정기전",
+    "title_en": "3rd Regular Exhibition of the Incheon International Art Association",
+    "sort_date": "2026-09-12",
+    "date_kr": "2026년 9월 12일 – 9월 19일",
+    "date_en": "September 12–19, 2026",
+    "type_kr": "그룹전",
+    "type_en": "Group Exhibition",
+    "venue_kr": "김정숙 갤러리 · JS ART SPACE",
+    "venue_en": "KIM JUNG SOOK GALLERY · JS ART SPACE",
+    "image": "/images/exhibitions/2026/iiaa-2026.webp",
+    "original": "/images/exhibitions/2026/iiaa-2026.jpg",
+    "width": 1080,
+    "height": 1080,
+    "poster_only": true
+  },
+  {
+    "id": "modern-minhwa-2026",
+    "title_kr": "대한민국 대한명인 현대민화전승회 임원전",
+    "title_en": "Korean Daehan Master Association for the Transmission of Modern Minhwa — Executive Members Exhibition",
+    "sort_date": "2026-09-22",
+    "date_kr": "기간 확인 중",
+    "date_en": "Dates to be confirmed",
+    "type_kr": "그룹전",
+    "type_en": "Group Exhibition",
+    "venue_kr": "장소 확인 중",
+    "venue_en": "Venue to be confirmed",
+    "image": "/images/exhibitions/2026/modern-minhwa-2026.webp",
+    "original": "/images/exhibitions/2026/modern-minhwa-2026.jpg",
+    "width": 898,
+    "height": 1280,
+    "poster_only": true,
+    "info_kr": "일월오봉도 · 김유경",
+    "info_en": "Sun, Moon and Five Peaks · 김유경",
+    "date_source": "Filename only: 09.22–10.12; not printed on supplied poster",
+    "sort_date_source": "filename"
+  },
+  {
+    "id": "tough-horizon-2026",
+    "title_kr": "터프한 수평선",
+    "title_en": "Tough Horizon",
+    "sort_date": "2026-10-13",
+    "date_kr": "2026년 10월 13일 – 10월 23일",
+    "date_en": "October 13–23, 2026",
+    "type_kr": "그룹전",
+    "type_en": "Group Exhibition",
+    "venue_kr": "김정숙 갤러리 · JS ART SPACE",
+    "venue_en": "KIM JUNG SOOK GALLERY · JS ART SPACE",
+    "image": "/images/exhibitions/2026/tough-horizon-2026.webp",
+    "original": "/images/exhibitions/2026/tough-horizon-2026.png",
+    "width": 1080,
+    "height": 1080,
+    "poster_only": true,
+    "info_kr": "2026 터프팅 초대전 · 7명의 터프팅 작가",
+    "info_en": "2026 Tufting Invitational · Seven tufting artists"
+  },
+  {
+    "id": "ohseonah-flying-2026",
+    "title_kr": "오선아 개인전 — Flying: 날아오르는 존재로서의 인식",
+    "title_en": "OHSEONAH — Flying: Perception as a Flying Being",
+    "sort_date": "2026-10-24",
+    "date_kr": "2026년 10월 24일 – 10월 31일",
+    "date_en": "October 24–31, 2026",
+    "type_kr": "개인전",
+    "type_en": "Solo Exhibition",
+    "venue_kr": "김정숙 갤러리",
+    "venue_en": "KIM JUNG SOOK GALLERY",
+    "image": "/images/exhibitions/2026/ohseonah-flying-2026.webp",
+    "original": "/images/exhibitions/2026/ohseonah-flying-2026.jpg",
+    "width": 1080,
+    "height": 1080,
+    "poster_only": true,
+    "info_kr": "작가: 오선아\n관람시간: 오전 10시 – 오후 6시\n오프닝: 10월 24일 오후 3시",
+    "info_en": "Artist: OHSEONAH\nHours: 10:00 AM–6:00 PM\nOpening reception: October 24, 3:00 PM"
+  },
+  {
+    "id": "jung-hyang-sook-2026",
+    "title_kr": "정향숙 초대개인전",
+    "title_en": "Jung Hyang Sook — Invitational Solo Exhibition",
+    "sort_date": "2026-11-02",
+    "date_kr": "2026년 11월 2일 – 11월 10일",
+    "date_en": "November 2–10, 2026",
+    "type_kr": "개인전",
+    "type_en": "Solo Exhibition",
+    "venue_kr": "김정숙 갤러리",
+    "venue_en": "KIM JUNG SOOK GALLERY",
+    "image": "/images/exhibitions/2026/jung-hyang-sook-2026.webp",
+    "original": "/images/exhibitions/2026/jung-hyang-sook-2026.jpg",
+    "width": 1448,
+    "height": 2048,
+    "poster_only": true,
+    "info_kr": "작가: 정향숙\n전시장 문의: 0507-1347-4149",
+    "info_en": "Artist: Jung Hyang Sook\nGallery enquiries: 0507-1347-4149"
+  }
+];
+
 function getExhibitionsList() {
   if (Array.isArray(DATA.exhibitions) && DATA.exhibitions.length) {
     return DATA.exhibitions
@@ -5195,7 +5305,7 @@ function getExhibitionsList() {
 }
 
 function getExhibitionById(id) {
-  return getExhibitionsList().find(item => item.id === id) || null;
+  return POSTER_EXHIBITIONS.find(item => item.id === id) || getExhibitionsList().find(item => item.id === id) || null;
 }
 
 function exhibitionTitle(item, lang) {
@@ -5215,7 +5325,7 @@ function exhibitionIntro(item, lang) {
 }
 
 function exhibitionImage(item) {
-  return resolveAssetUrl(item.image || (item.id === 'group' ? GROUP_COVER : SOLO_COVER));
+  return item.poster_only ? item.image : resolveAssetUrl(item.image || (item.id === 'group' ? GROUP_COVER : SOLO_COVER));
 }
 
 function exhibitionArtistName(item, lang) {
@@ -5295,17 +5405,17 @@ function renderGenericExhibitionWorks(works, lang) {
 
 function renderExhibitions() {
   const m = mode();
-  const cards = getExhibitionsList();
+  const cards = POSTER_EXHIBITIONS;
 
   EXHIBITIONS_CARDS.innerHTML = cards.map((item) => `
     <article class="exhibition-card" data-exhibition-id="${escapeHtml(item.id || '')}">
-      <div class="exhibition-thumb"><img src="${escapeHtml(exhibitionImage(item))}" alt="${escapeHtml(exhibitionTitle(item, m))}" /></div>
+      <div class="exhibition-thumb"><img src="${escapeHtml(exhibitionImage(item))}" alt="${escapeHtml(exhibitionTitle(item, m))}" width="${item.width}" height="${item.height}" loading="lazy" decoding="async" /></div>
       <div class="exhibition-info">
         <div class="exhibition-body">
           <div class="exhibition-type">${escapeHtml(exhibitionType(item, m))}</div>
           <h3 class="exhibition-title">${escapeHtml(exhibitionTitle(item, m))}</h3>
           <div class="work-meta">${escapeHtml(exhibitionDate(item, m))}</div>
-          <p class="exhibition-intro">${escapeHtml(exhibitionIntro(item, m))}</p>
+          <div class="work-meta">${escapeHtml(m === 'en' ? item.venue_en : item.venue_kr)}</div>
         </div>
         <button type="button" class="exhibition-view-btn" data-exhibition-id="${escapeHtml(item.id || '')}">
           <span class="ko">전시 보기</span><span class="en">View Exhibition</span>
@@ -5326,7 +5436,7 @@ function renderExhibitions() {
   });
 
   const heroImage = document.getElementById('heroImage');
-  const featured = cards[0];
+  const featured = getExhibitionsList()[0];
   if (heroImage && featured) {
     heroImage.src = exhibitionImage(featured);
     heroImage.alt = m === 'en'
@@ -5363,6 +5473,27 @@ function openExhibitionModal(exhibitionId) {
   const exhibition = getExhibitionById(exhibitionId);
 
   if (!exhibition) return;
+
+  if (exhibition.poster_only) {
+    EXHIBITION_MODAL.dataset.posterId = exhibition.id;
+    EXHIBITION_MODAL_CONTENT.innerHTML = `
+      <h2 class="section-title poster-title">${escapeHtml(exhibitionTitle(exhibition, m))}</h2>
+      <div class="exhibition-meta">
+        <div class="work-meta">${escapeHtml(exhibitionType(exhibition, m))}</div>
+        <div class="work-meta">${escapeHtml(exhibitionDate(exhibition, m))}</div>
+        <div class="work-meta">${escapeHtml(m === 'en' ? exhibition.venue_en : exhibition.venue_kr)}</div>
+      </div>
+      <a class="poster-original" href="${escapeHtml(exhibition.original)}" target="_blank" rel="noopener" aria-label="${m === 'en' ? 'Open original poster' : '포스터 원본 보기'}">
+        <img src="${escapeHtml(exhibition.image)}" width="${exhibition.width}" height="${exhibition.height}" alt="${escapeHtml(exhibitionTitle(exhibition, m))}" decoding="async" />
+      </a>
+      ${exhibition.info_kr ? `<p class="exhibition-intro">${escapeHtml(m === 'en' ? exhibition.info_en : exhibition.info_kr)}</p>` : ''}
+    `;
+    EXHIBITION_MODAL.classList.add('open');
+    EXHIBITION_MODAL.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('modal-open');
+    return;
+  }
+  delete EXHIBITION_MODAL.dataset.posterId;
 
   if (exhibitionIsGroup(exhibition) && Array.isArray(exhibition.artists) && exhibition.artists.length) {
     EXHIBITION_MODAL_CONTENT.innerHTML = `
@@ -5561,6 +5692,8 @@ function openExhibitionModal(exhibitionId) {
 }
 
 function closeExhibitionModal() {
+  delete EXHIBITION_MODAL.dataset.posterId;
+  EXHIBITION_MODAL.setAttribute('aria-hidden', 'true');
   EXHIBITION_MODAL.classList.remove('open');
   document.body.classList.remove('modal-open');
   document.body.classList.remove('lightbox-open');
