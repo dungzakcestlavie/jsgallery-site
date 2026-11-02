@@ -125,6 +125,7 @@
     nav.primary button{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:0 18px;border-radius:999px;border:1px solid rgba(31,78,117,.12);background:rgba(255,255,255,.58);color:var(--cobalt-deep);font-size:15px;font-weight:700;white-space:nowrap;transition:.2s ease}
     nav.primary button.active{background:linear-gradient(135deg, var(--cobalt), var(--emerald));color:#fff;border-color:transparent;box-shadow:0 12px 28px rgba(31,78,117,.18)}
     .menu-panel{display:none;position:fixed;top:calc(76px + var(--safe-top) + 8px);left:12px;width:min(340px, calc(100vw - 24px));z-index:110;background:rgba(250,252,252,.96);border:1px solid rgba(31,78,117,.10);border-radius:28px;box-shadow:0 24px 48px rgba(16,34,51,.12);padding:12px}
+    .menu-panel{max-height:calc(100dvh - 76px - var(--safe-top) - 20px);overflow-y:auto}
     .menu-panel.open{display:block}
     .menu-backdrop{display:none;position:fixed;inset:0;z-index:105;background:rgba(6,18,28,.10)}
     .menu-backdrop.open{display:block}
