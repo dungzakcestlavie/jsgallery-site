@@ -1058,6 +1058,25 @@
 #exhibitionsCards .exhibition-thumb img{object-fit:contain}
 .exhibition-modal-panel:has(.poster-original){max-height:calc(100dvh - 40px)}
 
+
+/* WMAF uses the gallery's existing typography, palette and panels. */
+.wmaf-wrap{max-width:1100px}
+.wmaf-intro{margin-bottom:20px;font-size:clamp(16px,2vw,19px);line-height:1.9}
+.wmaf-intro p{margin:0 0 14px}
+.wmaf-intro p:last-child{margin-bottom:0}
+.wmaf-details{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr);gap:20px}
+.wmaf-date{line-height:1.8;margin:0}
+.wmaf-venues{padding-left:24px;margin:0;line-height:1.8}
+.wmaf-venues li+li{margin-top:18px}
+#page-wmaf .contact-box{min-width:0;overflow-wrap:anywhere}
+@media(max-width:640px){.wmaf-details{grid-template-columns:minmax(0,1fr);gap:14px}#page-wmaf .contact-box{padding:22px}}
+
+.wmaf-poster{max-width:680px;margin:0 auto 32px}
+.wmaf-poster a{display:block}
+.wmaf-poster img,.wmaf-photos img{display:block;width:100%;height:auto;border-radius:18px}
+.wmaf-photos{display:grid;gap:28px;margin-top:32px}
+.wmaf-photos figure{margin:0;padding:14px;background:var(--panel-2);border-radius:24px;border:1px solid rgba(31,78,117,.08)}
+.wmaf-photos figcaption{padding:14px 8px 2px;font-size:14px;line-height:1.6;color:var(--cobalt-deep)}
 </style>
 <script>
 (function(){
@@ -1099,6 +1118,7 @@
     <button class="nav-btn active" data-page="home"><span class="ko">갤러리</span><span class="en">Gallery</span></button>
     <button class="nav-btn" data-page="about"><span class="ko">소개</span><span class="en">About</span></button>
     <button class="nav-btn" data-page="exhibitions"><span class="ko">전시</span><span class="en">Exhibitions</span></button>
+    <button class="nav-btn" data-page="wmaf"><span class="ko">월미도 아트페어</span><span class="en">Wolmido Art Fair</span></button>
     <button class="nav-btn" data-page="artists"><span class="ko">작가</span><span class="en">Artists</span></button>
     <button class="nav-btn" data-page="shop"><span class="ko">아트샵</span><span class="en">Art Shop</span></button>
     <button class="nav-btn" data-page="contact"><span class="ko">문의</span><span class="en">Contact</span></button>
@@ -1106,6 +1126,7 @@
   <div class="menu-panel" id="menuPanel" aria-hidden="true">
     <button class="menu-link" data-page="about">About</button>
     <button class="menu-link" data-page="exhibitions">Exhibition</button>
+    <button class="menu-link" data-page="wmaf"><span class="ko">월미도 아트페어</span><span class="en">Wolmido Art Fair</span></button>
     <button class="menu-link" data-page="artists">Artists</button>
     <button class="menu-link" data-page="shop">Art Shop</button>
     <button class="menu-link" data-page="js-art-space">JS ART SPACE</button>
@@ -1184,6 +1205,56 @@ they emerge through the relationships an exhibition creates.</div>
   </section>
 
   
+  <section class="page" id="page-wmaf">
+    <div class="wrap wmaf-wrap">
+      <div class="section-head">
+        <div>
+          <div class="feature-kicker">2026 · WMAF</div>
+          <h2 class="section-title"><span class="ko">제3회 월미도 아트페어</span><span class="en">The 3rd Wolmido Art Fair</span></h2>
+        </div>
+      </div>
+      <figure class="wmaf-poster">
+        <a href="/images/wmaf/2026/poster.jpg" target="_blank" rel="noopener" aria-label="WMAF 2026 poster">
+          <img src="/images/wmaf/2026/poster.jpg" width="1452" height="2048" alt="2026 WMAF 제3회 월미도 아트페어 포스터 / The 3rd Wolmido Art Fair poster" loading="lazy" decoding="async">
+        </a>
+      </figure>
+      <article class="contact-box wmaf-intro">
+        <div class="ko">
+          <p>푸른 바다와 예술이 어우러지는 월미도에서 제3회 월미도 아트페어가 열립니다.</p>
+          <p>가정의 달 5월의 시작과 함께 사랑하는 가족과 바쁜 일상에서 벗어나 예술이 전하는 진정한 즐거움의 깊이를 만끽하시기를 바랍니다.</p>
+        </div>
+        <div class="en">
+          <p>The 3rd Wolmido Art Fair takes place on Wolmido, where art meets the blue sea.</p>
+          <p>As May, Korea’s month of family, begins, we invite you and your loved ones to step away from busy daily life and experience the deep joy that art brings.</p>
+        </div>
+      </article>
+      <div class="wmaf-details">
+        <article class="contact-box">
+          <h3 class="feature-title"><span class="ko">전시기간</span><span class="en">Dates</span></h3>
+          <p class="wmaf-date"><span class="ko">2026년 5월 1일(금) – 5월 3일(일)</span><span class="en">May 1 (Fri) – May 3 (Sun), 2026</span></p>
+        </article>
+        <article class="contact-box">
+          <h3 class="feature-title"><span class="ko">전시장소</span><span class="en">Venues</span></h3>
+          <ol class="wmaf-venues">
+            <li><span class="ko">월미문화로 (해안광장)</span><span class="en">Wolmi Culture Street (Seafront Plaza)</span></li>
+            <li><span class="ko">김정숙갤러리<br>인천 중구 월미로 266, 2층</span><span class="en">KIM JUNG SOOK GALLERY<br>2F, 266 Wolmi-ro, Jung-gu, Incheon</span></li>
+            <li><span class="ko">JS아트스페이스<br>인천 중구 월미로 260</span><span class="en">JS ART SPACE<br>260 Wolmi-ro, Jung-gu, Incheon</span></li>
+          </ol>
+        </article>
+      </div>
+      <div class="wmaf-photos">
+        <figure>
+          <img src="/images/wmaf/2026/seafront.jpg" width="968" height="434" alt="월미도 해안광장 아트페어 전경 / Art fair at Wolmido Seafront Plaza" loading="lazy" decoding="async">
+          <figcaption><span class="ko">월미도 해안광장 전경</span><span class="en">Wolmido Seafront Plaza</span></figcaption>
+        </figure>
+        <figure>
+          <img src="/images/wmaf/2026/group-photo.jpg" width="1080" height="1080" alt="2026 제3회 월미도 아트페어 단체사진 / Group photograph at the 3rd Wolmido Art Fair 2026" loading="lazy" decoding="async">
+          <figcaption><span class="ko">2026 제3회 월미도 아트페어 단체사진</span><span class="en">The 3rd Wolmido Art Fair 2026 — Group Photograph</span></figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
   <section class="page" id="page-artists">
     <div class="wrap">
       <div class="section-head">
@@ -4616,7 +4687,7 @@ function escapeHtml(value) {
     .replaceAll("'", '&#39;');
 }
 
-const PAGE_ORDER = ['home','about','exhibitions','artists','shop','contact'];
+const PAGE_ORDER = ['home','about','exhibitions','wmaf','artists','shop','contact'];
 const MAIN = document.querySelector('main');
 let pageSwipeState = null;
 let pageTransitionLock = false;
