@@ -1118,7 +1118,6 @@
 #exhibitionModal .poster-zoom-frame.is-zoomed{touch-action:none;cursor:grab}
 #exhibitionModal .poster-zoom-frame.is-panning{cursor:grabbing}
 #exhibitionModal .poster-zoom-frame:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
-#exhibitionModal .poster-zoom-tools{display:flex;align-items:center;gap:12px;margin:-6px 0 20px;color:var(--cobalt-deep);font-size:14px}
 </style>
 <script>
 (function(){
@@ -5604,7 +5603,6 @@ function setupPosterBoxZoom(){
   const frame=EXHIBITION_MODAL_CONTENT.querySelector('.poster-zoom-frame');
   if(!frame) return;
   const img=frame.querySelector('img');
-  const output=EXHIBITION_MODAL_CONTENT.querySelector('.poster-zoom-scale');
   let scale=1,x=0,y=0,lastTouch=null,lastDistance=0,mouse=null;
   const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
   function draw(){
@@ -5616,7 +5614,6 @@ function setupPosterBoxZoom(){
     if(scale<=1){scale=1;x=0;y=0;}
     img.style.transform=`translate3d(${x}px,${y}px,0) scale(${scale})`;
     frame.classList.toggle('is-zoomed',scale>1);
-    output.value=scale.toFixed(1)+'×';
   }
   function reset(){scale=1;x=y=0;lastTouch=null;lastDistance=0;mouse=null;frame.classList.remove('is-panning');draw();}
   function zoomTo(next,cx,cy){
@@ -5682,7 +5679,6 @@ function openExhibitionModal(exhibitionId) {
       <div class="poster-original poster-zoom-frame" style="aspect-ratio:${exhibition.width}/${exhibition.height}" tabindex="0" role="region" aria-label="${m === 'en' ? 'Poster: pinch or use the mouse wheel to zoom' : '포스터: 두 손가락 또는 마우스 휠로 확대·축소'}">
         <img src="${escapeHtml(exhibition.original)}" width="${exhibition.width}" height="${exhibition.height}" alt="${escapeHtml(exhibitionTitle(exhibition, m))}" decoding="async" draggable="false" />
       </div>
-      <div class="poster-zoom-tools"><output class="poster-zoom-scale" aria-label="${m === 'en' ? 'Zoom' : '확대 배율'}">1.0×</output></div>
       ${exhibition.info_kr ? `<p class="exhibition-intro">${escapeHtml(m === 'en' ? exhibition.info_en : exhibition.info_kr)}</p>` : ''}
     `;
     EXHIBITION_MODAL.classList.add('open');
