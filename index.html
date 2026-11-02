@@ -1074,6 +1074,8 @@
 
 .wmaf-poster{max-width:680px;margin:0 auto 32px}
 .wmaf-poster a{display:block}
+#page-wmaf .wmaf-image-open{display:block;width:100%;padding:0;border:0;background:transparent;cursor:zoom-in;border-radius:18px}
+#page-wmaf .wmaf-image-open:focus-visible{outline:2px solid var(--gold);outline-offset:4px}
 .wmaf-poster img,.wmaf-photos img{display:block;width:100%;height:auto;border-radius:18px}
 .wmaf-photos{display:grid;gap:28px;margin-top:32px}
 .wmaf-photos figure{margin:0;padding:14px;background:var(--panel-2);border-radius:24px;border:1px solid rgba(31,78,117,.08)}
@@ -1255,9 +1257,9 @@ they emerge through the relationships an exhibition creates.</div>
         </div>
       </div>
       <figure class="wmaf-poster">
-        <a href="/images/wmaf/2026/poster.jpg" target="_blank" rel="noopener" aria-label="WMAF 2026 poster">
+        <button type="button" class="wmaf-image-open" aria-label="2026 WMAF 포스터 확대 / Enlarge WMAF poster">
           <img src="/images/wmaf/2026/poster.jpg" width="1452" height="2048" alt="2026 WMAF 제3회 월미도 아트페어 포스터 / The 3rd Wolmido Art Fair poster" loading="lazy" decoding="async">
-        </a>
+        </button>
       </figure>
       <article class="contact-box wmaf-intro">
         <div class="ko">
@@ -1285,11 +1287,11 @@ they emerge through the relationships an exhibition creates.</div>
       </div>
       <div class="wmaf-photos">
         <figure>
-          <img src="/images/wmaf/2026/seafront.jpg" width="968" height="434" alt="월미도 해안광장 아트페어 전경 / Art fair at Wolmido Seafront Plaza" loading="lazy" decoding="async">
+          <button type="button" class="wmaf-image-open" aria-label="사진 확대 / Enlarge photograph"><img src="/images/wmaf/2026/seafront.jpg" width="968" height="434" alt="월미도 해안광장 아트페어 전경 / Art fair at Wolmido Seafront Plaza" loading="lazy" decoding="async"></button>
           <figcaption><span class="ko">월미도 해안광장 전경</span><span class="en">Wolmido Seafront Plaza</span></figcaption>
         </figure>
         <figure>
-          <img src="/images/wmaf/2026/group-photo.jpg" width="1080" height="1080" alt="2026 제3회 월미도 아트페어 단체사진 / Group photograph at the 3rd Wolmido Art Fair 2026" loading="lazy" decoding="async">
+          <button type="button" class="wmaf-image-open" aria-label="사진 확대 / Enlarge photograph"><img src="/images/wmaf/2026/group-photo.jpg" width="1080" height="1080" alt="2026 제3회 월미도 아트페어 단체사진 / Group photograph at the 3rd Wolmido Art Fair 2026" loading="lazy" decoding="async"></button>
           <figcaption><span class="ko">2026 제3회 월미도 아트페어 단체사진</span><span class="en">The 3rd Wolmido Art Fair 2026 — Group Photograph</span></figcaption>
         </figure>
       </div>
@@ -5916,6 +5918,20 @@ function openLightbox(index, items, sourceElements = []) {
   document.body.classList.add('modal-open');
   document.body.classList.add('lightbox-open');
 }
+
+
+/* Reuse the existing gallery viewer for this event's poster and photographs. */
+const wmafImageButtons = [...document.querySelectorAll('#page-wmaf .wmaf-image-open')];
+wmafImageButtons.forEach((button,index)=>{
+  button.addEventListener('click',()=>{
+    const items=wmafImageButtons.map(el=>{
+      const image=el.querySelector('img');
+      const titles=image.alt.split(' / ');
+      return {image:image.getAttribute('src'),zoom:image.getAttribute('src'),title_kr:titles[0],title_en:titles[1]||titles[0]};
+    });
+    openLightbox(index,items,wmafImageButtons);
+  });
+});
 
 function openSoloLightbox(index, works, sourceElements = []) {
   currentLightboxItems = works;
