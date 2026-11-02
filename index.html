@@ -1115,7 +1115,7 @@
 /* Only the five new poster details: stable frame, image-only transform. */
 #exhibitionModal .poster-zoom-frame{position:relative;display:block;width:100%;overflow:hidden!important;overscroll-behavior:contain;touch-action:pan-y;isolation:isolate;background:var(--panel-2);cursor:zoom-in}
 #exhibitionModal .poster-zoom-frame img{position:absolute;inset:0;display:block;width:100%;height:100%;max-width:none;object-fit:contain;padding:0;transform-origin:center center;user-select:none;-webkit-user-select:none;-webkit-user-drag:none}
-#exhibitionModal .poster-zoom-frame.is-zoomed{touch-action:none;cursor:grab}
+#exhibitionModal .poster-zoom-frame.is-zoomed{overflow:auto!important;touch-action:none;cursor:grab}
 #exhibitionModal .poster-zoom-frame.is-panning{cursor:grabbing}
 #exhibitionModal .poster-zoom-frame:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
 </style>
@@ -5629,68 +5629,80 @@ function disposePosterZoom(){
 function setupPosterBoxZoom(){
   const cleanups=[];
   EXHIBITION_MODAL_CONTENT.querySelectorAll('.poster-zoom-frame').forEach(frame=>{
-  const img=frame.querySelector('img');
-  let scale=1,x=0,y=0,lastTouch=null,lastDistance=0,mouse=null;
-  let suppressClickUntil=0;
-  const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
-  function draw(){
-    const width=frame.clientWidth,height=frame.clientHeight;
-    const ratio=(img.naturalWidth||Number(img.width))/(img.naturalHeight||Number(img.height));
-    const fitW=Math.min(width,height*ratio),fitH=Math.min(height,width/ratio);
-    const maxX=Math.max(0,(fitW*scale-width)/2),maxY=Math.max(0,(fitH*scale-height)/2);
-    x=clamp(x,-maxX,maxX);y=clamp(y,-maxY,maxY);
-    if(scale<=1){scale=1;x=0;y=0;}
-    img.style.transform=`translate3d(${x}px,${y}px,0) scale(${scale})`;
-    frame.classList.toggle('is-zoomed',scale>1);
-  }
-  function reset(){scale=1;x=y=0;lastTouch=null;lastDistance=0;mouse=null;frame.classList.remove('is-panning');draw();}
-  function zoomTo(next,cx,cy){
-    next=clamp(next,1,3);
-    const rect=frame.getBoundingClientRect();
-    const ax=cx-rect.left-rect.width/2,ay=cy-rect.top-rect.height/2;
-    const factor=next/scale;
-    x=ax-(ax-x)*factor;y=ay-(ay-y)*factor;scale=next;draw();
-  }
-  const midpoint=t=>({x:(t[0].clientX+t[1].clientX)/2,y:(t[0].clientY+t[1].clientY)/2});
-  const distance=t=>Math.hypot(t[0].clientX-t[1].clientX,t[0].clientY-t[1].clientY);
-  frame.addEventListener('touchstart',e=>{
-    if(e.touches.length>=2){e.preventDefault();lastDistance=distance(e.touches);lastTouch=midpoint(e.touches);}
-    else if(e.touches.length===1){lastTouch={x:e.touches[0].clientX,y:e.touches[0].clientY};if(scale>1)e.preventDefault();}
-  },{passive:false});
-  frame.addEventListener('touchmove',e=>{
-    if(e.touches.length>=2){
-      e.preventDefault();e.stopPropagation();suppressClickUntil=Date.now()+500;const center=midpoint(e.touches),d=distance(e.touches);
-      if(lastDistance>0)zoomTo(scale*d/lastDistance,center.x,center.y);
-      lastDistance=d;lastTouch=center;
-    }else if(e.touches.length===1&&scale>1){
-      e.preventDefault();e.stopPropagation();suppressClickUntil=Date.now()+500;const point={x:e.touches[0].clientX,y:e.touches[0].clientY};
-      if(lastTouch){x+=point.x-lastTouch.x;y+=point.y-lastTouch.y;draw();}lastTouch=point;lastDistance=0;
+    const img=frame.querySelector('img');
+    const stage=document.createElement('div');
+    stage.style.cssText='position:relative;min-width:100%;min-height:100%';
+    frame.appendChild(stage);stage.appendChild(img);
+    let scale=1,mouse=null,lastTouch=null,lastDistance=0,suppressClickUntil=0;
+    const clamp=(v,min,max)=>Math.max(min,Math.min(max,v));
+    function draw(){
+      frame.classList.toggle('is-zoomed',scale>1);
+      const width=frame.clientWidth,height=frame.clientHeight;
+      const ratio=(img.naturalWidth||Number(img.width))/(img.naturalHeight||Number(img.height));
+      const w=Math.min(width,height*ratio)*scale,h=Math.min(height,width/ratio)*scale;
+      const sw=Math.max(width,w),sh=Math.max(height,h);
+      stage.style.width=sw+'px';stage.style.height=sh+'px';
+      Object.assign(img.style,{inset:'auto',left:(sw-w)/2+'px',top:(sh-h)/2+'px',width:w+'px',height:h+'px',transform:'none'});
+      if(scale===1){frame.scrollLeft=0;frame.scrollTop=0;}
     }
-  },{passive:false});
-  const endTouch=e=>{lastDistance=0;lastTouch=e.touches.length===1?{x:e.touches[0].clientX,y:e.touches[0].clientY}:null;};
-  frame.addEventListener('touchend',endTouch);frame.addEventListener('touchcancel',endTouch);
-  ['gesturestart','gesturechange','gestureend'].forEach(type=>frame.addEventListener(type,e=>e.preventDefault(),{passive:false}));
-  frame.addEventListener('wheel',e=>{e.preventDefault();e.stopPropagation();zoomTo(scale*Math.exp(-clamp(e.deltaY,-300,300)*.004),e.clientX,e.clientY);},{passive:false});
-  frame.addEventListener('mousedown',e=>{if(e.button!==0||scale<=1)return;e.preventDefault();mouse={x:e.clientX,y:e.clientY,startX:e.clientX,startY:e.clientY};frame.classList.add('is-panning');});
-  const move=e=>{if(!mouse)return;if(Math.hypot(e.clientX-mouse.startX,e.clientY-mouse.startY)>4)suppressClickUntil=Date.now()+500;x+=e.clientX-mouse.x;y+=e.clientY-mouse.y;mouse.x=e.clientX;mouse.y=e.clientY;draw();};
-  const up=()=>{mouse=null;frame.classList.remove('is-panning');};
-  document.addEventListener('mousemove',move);document.addEventListener('mouseup',up);
-  frame.addEventListener('click',e=>{
-    if(Date.now()<suppressClickUntil)return;
-    e.preventDefault();e.stopPropagation();
-    if(scale>1)reset();else zoomTo(2,e.clientX,e.clientY);
-  });
-  frame.addEventListener('dblclick',reset);
-  frame.addEventListener('keydown',e=>{
-    if(!['+','=','-','0'].includes(e.key))return;e.preventDefault();const r=frame.getBoundingClientRect();
-    if(e.key==='0')reset();else zoomTo(scale+(e.key==='-'?-.25:.25),r.left+r.width/2,r.top+r.height/2);
-  });
-  img.addEventListener('load',draw);
-  window.addEventListener('resize',draw);
-  const resizeObserver=typeof ResizeObserver==='function'?new ResizeObserver(draw):null;
-  resizeObserver?.observe(frame);
-  cleanups.push(()=>{reset();resizeObserver?.disconnect();window.removeEventListener('resize',draw);document.removeEventListener('mousemove',move);document.removeEventListener('mouseup',up);img.removeEventListener('load',draw);});
-  draw();
+    function zoomTo(next,cx,cy){
+      next=clamp(next,1,3);
+      const r=frame.getBoundingClientRect(),ax=cx-r.left,ay=cy-r.top;
+      const factor=next/scale,sx=(frame.scrollLeft+ax)*factor-ax,sy=(frame.scrollTop+ay)*factor-ay;
+      scale=next;draw();frame.scrollLeft=sx;frame.scrollTop=sy;
+    }
+    function reset(){scale=1;mouse=lastTouch=null;lastDistance=0;frame.classList.remove('is-panning');draw();}
+    frame.addEventListener('click',e=>{
+      // Native scrollbar clicks must not toggle the image.
+      if(e.target===frame||Date.now()<suppressClickUntil)return;
+      e.preventDefault();e.stopPropagation();
+      if(scale>1)reset();else zoomTo(2,e.clientX,e.clientY);
+    });
+    frame.addEventListener('wheel',e=>{
+      if(scale>1&&!e.ctrlKey&&!e.metaKey){
+        e.preventDefault();e.stopPropagation();
+        frame.scrollLeft+=e.deltaX+(e.shiftKey?e.deltaY:0);
+        if(!e.shiftKey)frame.scrollTop+=e.deltaY;
+        return;
+      }
+      e.preventDefault();e.stopPropagation();zoomTo(scale*Math.exp(-clamp(e.deltaY,-300,300)*.004),e.clientX,e.clientY);
+    },{passive:false});
+    frame.addEventListener('mousedown',e=>{
+      if(e.button!==0||scale<=1||e.target===frame)return;
+      e.preventDefault();mouse={x:e.clientX,y:e.clientY,startX:e.clientX,startY:e.clientY};frame.classList.add('is-panning');
+    });
+    const move=e=>{if(!mouse)return;
+      if(Math.hypot(e.clientX-mouse.startX,e.clientY-mouse.startY)>4)suppressClickUntil=Date.now()+500;
+      frame.scrollLeft+=mouse.x-e.clientX;frame.scrollTop+=mouse.y-e.clientY;mouse.x=e.clientX;mouse.y=e.clientY;
+    };
+    const up=()=>{mouse=null;frame.classList.remove('is-panning');};
+    document.addEventListener('mousemove',move);document.addEventListener('mouseup',up);
+    const center=t=>({x:(t[0].clientX+t[1].clientX)/2,y:(t[0].clientY+t[1].clientY)/2});
+    const distance=t=>Math.hypot(t[0].clientX-t[1].clientX,t[0].clientY-t[1].clientY);
+    frame.addEventListener('touchstart',e=>{
+      if(e.touches.length>=2){e.preventDefault();lastDistance=distance(e.touches);lastTouch=center(e.touches);}
+      else{lastTouch={x:e.touches[0].clientX,y:e.touches[0].clientY};if(scale>1)e.preventDefault();}
+    },{passive:false});
+    frame.addEventListener('touchmove',e=>{
+      if(e.touches.length>=2){e.preventDefault();e.stopPropagation();suppressClickUntil=Date.now()+500;
+        const c=center(e.touches),d=distance(e.touches);if(lastDistance)zoomTo(scale*d/lastDistance,c.x,c.y);lastDistance=d;lastTouch=c;
+      }else if(e.touches.length===1&&scale>1){e.preventDefault();e.stopPropagation();suppressClickUntil=Date.now()+500;
+        const p={x:e.touches[0].clientX,y:e.touches[0].clientY};if(lastTouch){frame.scrollLeft+=lastTouch.x-p.x;frame.scrollTop+=lastTouch.y-p.y;}lastTouch=p;lastDistance=0;
+      }
+    },{passive:false});
+    const end=e=>{lastDistance=0;lastTouch=e.touches.length===1?{x:e.touches[0].clientX,y:e.touches[0].clientY}:null;};
+    frame.addEventListener('touchend',end);frame.addEventListener('touchcancel',end);
+    ['gesturestart','gesturechange','gestureend'].forEach(t=>frame.addEventListener(t,e=>e.preventDefault(),{passive:false}));
+    frame.addEventListener('keydown',e=>{
+      const steps={ArrowLeft:[-60,0],ArrowRight:[60,0],ArrowUp:[0,-60],ArrowDown:[0,60]};
+      if(scale>1&&steps[e.key]){e.preventDefault();frame.scrollLeft+=steps[e.key][0];frame.scrollTop+=steps[e.key][1];return;}
+      if(!['+','=','-','0'].includes(e.key))return;e.preventDefault();const r=frame.getBoundingClientRect();
+      if(e.key==='0')reset();else zoomTo(scale+(e.key==='-'?-.25:.25),r.left+r.width/2,r.top+r.height/2);
+    });
+    img.addEventListener('load',draw);window.addEventListener('resize',draw);
+    const observer=typeof ResizeObserver==='function'?new ResizeObserver(draw):null;observer?.observe(frame);
+    cleanups.push(()=>{observer?.disconnect();window.removeEventListener('resize',draw);document.removeEventListener('mousemove',move);document.removeEventListener('mouseup',up);img.removeEventListener('load',draw);});
+    draw();
   });
   posterZoomCleanup=()=>cleanups.forEach(cleanup=>cleanup());
 }
