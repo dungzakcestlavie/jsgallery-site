@@ -1078,6 +1078,37 @@
 .wmaf-photos{display:grid;gap:28px;margin-top:32px}
 .wmaf-photos figure{margin:0;padding:14px;background:var(--panel-2);border-radius:24px;border:1px solid rgba(31,78,117,.08)}
 .wmaf-photos figcaption{padding:14px 8px 2px;font-size:14px;line-height:1.6;color:var(--cobalt-deep)}
+
+/* Bright seaside palette and bilingual typography, scoped to WMAF only. */
+#page-wmaf{
+  --wmaf-ink:#163f50;--wmaf-gold:#806019;
+  background:linear-gradient(135deg,#f1fbff 0%,#e0f5fc 45%,#e5f8f1 100%);
+  color:var(--wmaf-ink);
+  font-family:"Inter","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+}
+#page-wmaf .section-title,#page-wmaf .feature-title{
+  font-family:"Playfair Display","Noto Serif KR","Batang",serif;
+  color:var(--wmaf-gold)!important;font-weight:700!important;
+  line-height:1.4!important;letter-spacing:-.025em;
+}
+#page-wmaf .section-title{font-size:clamp(28px,3.2vw,44px)!important}
+#page-wmaf .feature-kicker{color:var(--wmaf-gold);font-weight:700;letter-spacing:.16em}
+#page-wmaf .contact-box{
+  background:linear-gradient(135deg,#d5f1ff 0%,#d7f5ed 100%);
+  color:var(--wmaf-ink);border:1px solid rgba(156,119,35,.3);
+  box-shadow:0 14px 36px rgba(24,125,151,.1),inset 0 1px 0 rgba(255,255,255,.9);
+}
+#page-wmaf .contact-box h3{font-size:clamp(23px,2.2vw,30px)!important;margin-bottom:18px}
+#page-wmaf .contact-box p,#page-wmaf .wmaf-venues{
+  color:var(--wmaf-ink)!important;font-size:clamp(17px,1.3vw,19px)!important;
+  font-weight:500!important;line-height:1.95!important;letter-spacing:.005em;
+}
+#page-wmaf .wmaf-venues li::marker{color:var(--wmaf-gold);font-weight:700}
+#page-wmaf .wmaf-date{font-weight:600!important}
+#page-wmaf .wmaf-photos figure{background:rgba(255,255,255,.82);border-color:rgba(156,119,35,.25)}
+#page-wmaf .wmaf-photos figcaption{color:var(--wmaf-gold);font-size:15px;font-weight:600;line-height:1.7}
+
 </style>
 <script>
 (function(){
@@ -1097,6 +1128,7 @@
 })();
 </script>
 
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Noto+Sans+KR:wght@400;500;600;700&amp;family=Noto+Serif+KR:wght@600;700&amp;display=swap" rel="stylesheet" />
 </head>
 <body class="mode-kr">
 <header>
